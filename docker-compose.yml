@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+
+  rabbit:
+    image: rabbitmq:3.8.5-management-alpine
+    container_name: rabbit
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  server:
+    container_name: server
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    depends_on:
+      - rabbit
+    #ports:
+    #  - "5000:5000"
