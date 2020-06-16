@@ -2,14 +2,6 @@ plugins {
     id 'java'
 }
 
-jar {
-    manifest {
-        attributes(
-                'Main-Class': 'Main'
-        )
-    }
-}
-
 group 'pcd.maldini-gorini-angelini'
 version '1.0-SNAPSHOT'
 
@@ -20,5 +12,12 @@ repositories {
 dependencies {
     // https://mvnrepository.com/artifact/com.rabbitmq/amqp-client
     implementation group: 'com.rabbitmq', name: 'amqp-client', version: '5.9.0'
+
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
+    
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
