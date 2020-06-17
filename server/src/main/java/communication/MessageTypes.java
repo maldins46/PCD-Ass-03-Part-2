@@ -28,6 +28,6 @@ public enum MessageTypes {
         } else {
             return null;
         }
-        // todo switch
+        // todo switch -> ma sembra essere impossibile con message perchè è un'interfaccia
     }
 }
