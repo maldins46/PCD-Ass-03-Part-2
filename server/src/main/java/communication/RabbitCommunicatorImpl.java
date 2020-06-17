@@ -40,7 +40,13 @@ public final class RabbitCommunicatorImpl implements RabbitCommunicator {
             e.printStackTrace();
         }
 
-        if (serverQueueCallbacks.size() > 0) {
+        // fixme due call?
+        handlerCallback(serverQueueCallbacks, Destinations.SERVER_QUEUE_NAME);
+        handlerCallback(matchTopicCallbacks, Destinations.MATCH_TOPIC_NAME);
+    }
+
+    private void handlerCallback(final Map<MessageTypes, Callback> callbacks, final Destinations destinations){
+        if (callbacks.size() > 0) {
             final DeliverCallback serverQueueCallback = (consumerTag, rawMsg) -> {
                 final Gson gson = new Gson();
                 final String stringifiedMsg = new String(rawMsg.getBody(), StandardCharsets.UTF_8);
@@ -49,7 +55,7 @@ public final class RabbitCommunicatorImpl implements RabbitCommunicator {
                 switch (msgType) {
                     case NEW_PLAYER_MSG:
                         NewPlayerMsg newPlayerMsg = gson.fromJson(stringifiedMsg, NewPlayerMsg.class);
-                        serverQueueCallbacks.get(msgType).execute(newPlayerMsg);
+                        callbacks.get(msgType).execute(newPlayerMsg);
                         break;
 
 
@@ -59,41 +65,16 @@ public final class RabbitCommunicatorImpl implements RabbitCommunicator {
             };
 
             try {
-                channel.queueDeclare(Destinations.SERVER_QUEUE_NAME.toString(), false, false, false, null);
-                channel.basicConsume(Destinations.SERVER_QUEUE_NAME.toString(), true, serverQueueCallback, consumerTag -> { });
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if (matchTopicCallbacks.size() > 0) {
-            final DeliverCallback matchTopicCallback = (consumerTag, rawMsg) -> {
-                final Gson gson = new Gson();
-                final String stringifiedMsg = new String(rawMsg.getBody(), StandardCharsets.UTF_8);
-                final MessageTypes msgType = MessageTypes.valueOfString((String) rawMsg.getProperties().getHeaders().get("type"));
-
-                switch (msgType) {
-                    case NEW_PLAYER_MSG: {
-                        NewPlayerMsg newPlayerMsg = gson.fromJson(stringifiedMsg, NewPlayerMsg.class);
-                        matchTopicCallbacks.get(msgType).execute(newPlayerMsg);
-                        break;
-                    }
-
-                    default:
-                        break;
+                channel.queueDeclare(destinations.toString(), false, false, false, null);
+                if (destinations.equals(Destinations.MATCH_TOPIC_NAME)){
+                    final String queueName = channel.queueDeclare().getQueue();
+                    channel.queueBind(queueName, destinations.toString(), "");
                 }
-            };
-
-            try {
-                channel.exchangeDeclare(Destinations.MATCH_TOPIC_NAME.toString(), "fanout");
-                final String queueName = channel.queueDeclare().getQueue();
-                channel.queueBind(queueName, Destinations.MATCH_TOPIC_NAME.toString(), "");
-                channel.basicConsume(queueName, true, matchTopicCallback, consumerTag -> { });
+                channel.basicConsume(destinations.toString(), true, serverQueueCallback, consumerTag -> { });
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
     }
 
 
