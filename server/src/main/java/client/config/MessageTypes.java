@@ -1,7 +1,6 @@
 package client.config;
 
-import client.messages.Message;
-import client.messages.NewPlayerMsg;
+import client.messages.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +12,10 @@ public final class MessageTypes {
     private static Map<String, Class<? extends Message>> initializeTypes() {
         Map<String, Class<? extends Message>> msgTypes = new HashMap<>();
         msgTypes.put("new-player-msg", NewPlayerMsg.class);
-        // todo put types
+        msgTypes.put("game-data-msg", GameDataMsg.class);
+        msgTypes.put("request-ack-msg", RequestAckMsg.class);
+        msgTypes.put("select-request-msg", SelectRequestMsg.class);
+        msgTypes.put("swap-request-msg", SwapRequestMsg.class);
         return msgTypes;
     }
 
