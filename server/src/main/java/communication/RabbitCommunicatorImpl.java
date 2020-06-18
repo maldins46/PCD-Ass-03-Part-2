@@ -50,8 +50,8 @@ public final class RabbitCommunicatorImpl implements RabbitCommunicator {
         handlerCallback(matchTopicCallbacks, Destinations.MATCH_TOPIC_NAME);
     }
 
-    private void handlerCallback(final Map<MessageTypes, Callback> callbacks, final Destinations destinations){
-        if (callbacks.size() > 0) {
+    private void handlerCallback(final Map<MessageTypes, Callback> callbacks, final Destinations destination){
+        if (!callbacks.isEmpty()) {
             final DeliverCallback serverQueueCallback = (consumerTag, rawMsg) -> {
                 final Gson gson = new Gson();
                 final String stringifiedMsg = new String(rawMsg.getBody(), StandardCharsets.UTF_8);
@@ -70,12 +70,12 @@ public final class RabbitCommunicatorImpl implements RabbitCommunicator {
             };
 
             try {
-                channel.queueDeclare(destinations.toString(), false, false, false, null);
-                if (destinations.equals(Destinations.MATCH_TOPIC_NAME)){
+                channel.queueDeclare(destination.toString(), false, false, false, null);
+                if (destination.equals(Destinations.MATCH_TOPIC_NAME)){
                     final String queueName = channel.queueDeclare().getQueue();
-                    channel.queueBind(queueName, destinations.toString(), "");
+                    channel.queueBind(queueName, destination.toString(), "");
                 }
-                channel.basicConsume(destinations.toString(), true, serverQueueCallback, consumerTag -> { });
+                channel.basicConsume(destination.toString(), true, serverQueueCallback, consumerTag -> { });
             } catch (IOException e) {
                 e.printStackTrace();
             }
