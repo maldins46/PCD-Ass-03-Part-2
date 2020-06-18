@@ -1,4 +1,4 @@
-package communication;
+package client.config;
 
 public final class Hosts {
     public static final String LOCAL = "localhost";

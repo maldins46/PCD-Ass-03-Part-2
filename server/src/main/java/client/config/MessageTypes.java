@@ -1,7 +1,7 @@
-package communication;
+package client.config;
 
-import communication.messages.Message;
-import communication.messages.NewPlayerMsg;
+import client.messages.Message;
+import client.messages.NewPlayerMsg;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +9,6 @@ import java.util.Map.Entry;
 
 public final class MessageTypes {
     private static final Map<String, Class<? extends Message>> MSG_TYPES = initializeTypes();
-
 
     private static Map<String, Class<? extends Message>> initializeTypes() {
         Map<String, Class<? extends Message>> msgTypes = new HashMap<>();

@@ -1,4 +1,4 @@
-package communication.messages;
+package client.messages;
 
 
 public class NewPlayerMsg implements Message {
