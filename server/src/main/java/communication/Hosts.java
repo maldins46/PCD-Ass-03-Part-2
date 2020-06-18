@@ -1,17 +1,11 @@
 package communication;
 
-public enum Hosts {
-    LOCAL {
-        @Override
-        public String toString() {
-            return "localhost";
-        }
-    },
+public final class Hosts {
+    public static final String LOCAL = "localhost";
+    public static final String INTERNAL_RABBIT = "rabbit";
 
-    INTERNAL_RABBIT {
-        @Override
-        public String toString() {
-            return "rabbit";
-        }
+
+    public static boolean isKnownHost(final String host) {
+        return LOCAL.equals(host) || INTERNAL_RABBIT.equals(host);
     }
 }

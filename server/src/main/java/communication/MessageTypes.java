@@ -3,31 +3,40 @@ package communication;
 import communication.messages.Message;
 import communication.messages.NewPlayerMsg;
 
-public enum MessageTypes {
-    NEW_PLAYER_MSG {
-        @Override
-        public String toString() {
-            return "new-player-msg";
-        }
-    };
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+public final class MessageTypes {
+    private static final Map<String, Class<? extends Message>> MSG_TYPES = initializeTypes();
 
 
-    public static MessageTypes valueOfString(final String text) {
-        for (MessageTypes type : MessageTypes.values()) {
-            if (type.toString().equals(text)) {
-                return type;
+    private static Map<String, Class<? extends Message>> initializeTypes() {
+        Map<String, Class<? extends Message>> msgTypes = new HashMap<>();
+        msgTypes.put("new-player-msg", NewPlayerMsg.class);
+        // todo put types
+        return msgTypes;
+    }
+
+
+    /**
+     * todo
+     */
+    public static Class<? extends Message> getClassFromType(final String type) {
+       return MSG_TYPES.get(type);
+    }
+
+
+    /**
+     * todo
+     */
+    public static String getTypeFromMessage(final Message message) {
+        for (Entry<String, Class<? extends Message>> entry : MSG_TYPES.entrySet()) {
+            if (message.getClass().isInstance(entry.getValue())) {
+                return entry.getKey();
             }
         }
 
-       return null;
-    }
-
-    public static MessageTypes valueFromMessage(final Message message) {
-        if (message instanceof NewPlayerMsg) {
-            return NEW_PLAYER_MSG;
-        } else {
-            return null;
-        }
-        // todo switch -> ma sembra essere impossibile con message perchè è un'interfaccia
+        return null;
     }
 }

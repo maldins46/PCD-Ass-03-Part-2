@@ -8,34 +8,49 @@ import com.rabbitmq.client.DeliverCallback;
 import com.rabbitmq.client.AMQP;
 
 import communication.messages.Message;
-import communication.messages.NewPlayerMsg;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 public final class RabbitCommunicatorImpl implements RabbitCommunicator {
 
-    private final Hosts host;
+    /**
+     * todo
+     */
+    private final String host;
+
+    /**
+     * todo
+     */
+    private final Set<MicroCallback> microCallbacks;
+
+    /**
+     * todo
+     */
     private Connection connection;
+
+    /**
+     * todo
+     */
     private Channel channel;
 
-    private final Map<MessageTypes, Callback> serverQueueCallbacks;
-    private final Map<MessageTypes, Callback> matchTopicCallbacks;
 
-
-    RabbitCommunicatorImpl(final Hosts host, final Map<MessageTypes, Callback> serverQueueCallbacks, final Map<MessageTypes, Callback> matchTopicCallbacks) {
+    /**
+     * todo
+     */
+    RabbitCommunicatorImpl(final String host, final Set<MicroCallback> microCallbacks) {
         this.host = host;
-        this.serverQueueCallbacks = serverQueueCallbacks;
-        this.matchTopicCallbacks = matchTopicCallbacks;
+        this.microCallbacks = microCallbacks;
     }
 
 
     @Override
     public void connect() {
         final ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(host.toString());
+        factory.setHost(host);
 
         try {
             connection = factory.newConnection();
@@ -45,40 +60,67 @@ public final class RabbitCommunicatorImpl implements RabbitCommunicator {
             e.printStackTrace();
         }
 
-        // fixme due call?
-        handlerCallback(serverQueueCallbacks, Destinations.SERVER_QUEUE_NAME);
-        handlerCallback(matchTopicCallbacks, Destinations.MATCH_TOPIC_NAME);
+        activateCallbackForDest(Destinations.SERVER_QUEUE_NAME);
+        activateCallbackForDest(Destinations.MATCH_TOPIC_NAME);
     }
 
-    private void handlerCallback(final Map<MessageTypes, Callback> callbacks, final Destinations destinations){
-        if (callbacks.size() > 0) {
-            final DeliverCallback serverQueueCallback = (consumerTag, rawMsg) -> {
+
+    /**
+     * todo
+     */
+    private void activateCallbackForDest(final String destination) {
+        final Set<MicroCallback> destinationMicroCallbacks = microCallbacks.stream()
+                .filter(microCallback -> microCallback.getDestination().equals(destination))
+                .collect(Collectors.toSet());
+
+        if (!destinationMicroCallbacks.isEmpty()) {
+            final DeliverCallback destCallback = (consumerTag, rawMsg) -> {
                 final Gson gson = new Gson();
+
                 final String stringifiedMsg = new String(rawMsg.getBody(), StandardCharsets.UTF_8);
-                final MessageTypes msgType = MessageTypes.valueOfString((String) rawMsg.getProperties().getHeaders().get("type"));
+                final String typeHeader = (String) rawMsg.getProperties().getHeaders().get("type");
 
-                switch (msgType) {
-                    case NEW_PLAYER_MSG:
-                        NewPlayerMsg newPlayerMsg = gson.fromJson(stringifiedMsg, NewPlayerMsg.class);
-                        callbacks.get(msgType).execute(newPlayerMsg);
-                        break;
+                final Class<? extends Message> messageClass = MessageTypes.getClassFromType(typeHeader);
+                final Message message = gson.fromJson(stringifiedMsg, messageClass);
 
-
-                    default:
-                        break;
-                }
+                destinationMicroCallbacks.stream()
+                        .filter(microCallback -> microCallback.getMessageType().equals(typeHeader))
+                        .forEach(microCallback -> microCallback.execute(message));
             };
 
-            try {
-                channel.queueDeclare(destinations.toString(), false, false, false, null);
-                if (destinations.equals(Destinations.MATCH_TOPIC_NAME)){
-                    final String queueName = channel.queueDeclare().getQueue();
-                    channel.queueBind(queueName, destinations.toString(), "");
-                }
-                channel.basicConsume(destinations.toString(), true, serverQueueCallback, consumerTag -> { });
-            } catch (IOException e) {
-                e.printStackTrace();
+            createDestAndSendMsg(destination, destCallback);
+        }
+    }
+
+
+    /**
+     *
+     * @param destination
+     * @param destCallback
+     */
+    private void createDestAndSendMsg(String destination, DeliverCallback destCallback) {
+        try {
+            if (destination.equals(Destinations.MATCH_TOPIC_NAME)) {
+                // create exchange and queue if not present (miming a subscribe mechanism)
+                channel.queueDeclare(destination, false, false, false, null);
+                final String queueName = channel.queueDeclare().getQueue();
+                channel.queueBind(queueName, destination, "");
+
+                // subscribe to the queue
+                channel.basicConsume(queueName, true, destCallback, consumerTag -> {
+                });
+
+            } else if (destination.equals(Destinations.SERVER_QUEUE_NAME)) {
+                // create a queue with a specified name, if not present
+                channel.queueDeclare(destination, false, false, false, null);
+
+                // subscribe to the queue
+                channel.basicConsume(destination, true, destCallback, consumerTag -> {
+                });
             }
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -94,36 +136,35 @@ public final class RabbitCommunicatorImpl implements RabbitCommunicator {
 
 
     @Override
-    public void sendMessage(final Message message, final Destinations destination) {
-        MessageTypes msgType = MessageTypes.valueFromMessage(message);
-        AMQP.BasicProperties headers = new AMQP.BasicProperties();
-        headers.getHeaders().put("type", msgType.toString());
+    public void sendMessage(final Message message, final String destination) {
+        // generates the appropriate header
+        String msgType = MessageTypes.getTypeFromMessage(message);
+        AMQP.BasicProperties msgProperties = new AMQP.BasicProperties();
+        msgProperties.getHeaders().put("type", msgType);
 
         Gson gson = new Gson();
         String rawMsg = gson.toJson(message);
 
-        switch (destination) {
-            case MATCH_TOPIC_NAME:
-                try {
-                    channel.exchangeDeclare(Destinations.MATCH_TOPIC_NAME.toString(), "fanout");
-                    channel.basicPublish(Destinations.MATCH_TOPIC_NAME.toString(), "", headers, rawMsg.getBytes());
+        if (destination.equals(Destinations.MATCH_TOPIC_NAME)) {
+            try {
+                // declares a custom exchange for the match, if not present,
+                // and publishes a message in it
+                channel.exchangeDeclare(Destinations.MATCH_TOPIC_NAME, "fanout");
+                channel.basicPublish(Destinations.MATCH_TOPIC_NAME, "", msgProperties, rawMsg.getBytes());
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                break;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-            case SERVER_QUEUE_NAME:
-                try {
-                channel.queueDeclare(Destinations.SERVER_QUEUE_NAME.toString(), false, false, false, null);
-                channel.basicPublish("", Destinations.SERVER_QUEUE_NAME.toString(), headers, rawMsg.getBytes());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                break;
-
-            default:
-                break;
+        } else if (destination.equals(Destinations.SERVER_QUEUE_NAME)) {
+            try {
+                // declares the server queue, if not present, and publishes
+                // a message in it
+                channel.queueDeclare(Destinations.SERVER_QUEUE_NAME, false, false, false, null);
+                channel.basicPublish("", Destinations.SERVER_QUEUE_NAME, msgProperties, rawMsg.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

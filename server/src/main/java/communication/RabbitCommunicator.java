@@ -2,8 +2,9 @@ package communication;
 
 import communication.messages.Message;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
+
 
 /**
  * Facade module that handles a connection over the AMQP protocol, with
@@ -11,53 +12,40 @@ import java.util.Map;
  * messages and handle callbacks on receive.
  */
 public interface RabbitCommunicator {
+    /**
+     * todo
+     */
     void connect();
 
+    /**
+     * todo
+     */
     void disconnect();
 
-    void sendMessage(Message message, Destinations destination);
+    /**
+     * todo
+     */
+    void sendMessage(Message message, String destination);
 
 
     /**
-     * Standard builder class to ...
+     * todo
      */
     class RabbitCommunicatorBuilder {
-        private final Map<MessageTypes, Callback> serverQueueCallbacks = new HashMap<>();
-        private final Map<MessageTypes, Callback> matchTopicCallbacks = new HashMap<>();
-        private Hosts host;
+        private final Set<MicroCallback> microCallbacks = new HashSet<>();
+        private String host = Hosts.LOCAL;
 
 
-        public RabbitCommunicatorBuilder addCallback(final Callback callback, final Destinations destination) {
-            switch (destination) {
-                case SERVER_QUEUE_NAME:
-                    serverQueueCallbacks.put(callback.getMessageType(), callback);
-                    break;
-
-                case MATCH_TOPIC_NAME:
-                    matchTopicCallbacks.put(callback.getMessageType(), callback);
-                    break;
-
-                default:
-                    break;
-            }
-
+        public RabbitCommunicatorBuilder addCallback(final MicroCallback microCallback) {
+            if (Destinations.isKnownDestination(microCallback.getDestination()))
+                microCallbacks.add(microCallback);
             return this;
         }
 
 
-        public RabbitCommunicatorBuilder addHost(final Hosts host) {
-            switch (host) {
-                case LOCAL:
-                    this.host = Hosts.LOCAL;
-                    break;
-
-                case INTERNAL_RABBIT:
-                    this.host = Hosts.INTERNAL_RABBIT;
-                    break;
-
-                default:
-                    this.host = Hosts.LOCAL;
-                    break;
+        public RabbitCommunicatorBuilder addHost(final String host) {
+            if (Hosts.isKnownHost(host)) {
+                this.host = host;
             }
 
             return this;
@@ -65,7 +53,7 @@ public interface RabbitCommunicator {
 
 
         public RabbitCommunicator build() {
-            return new RabbitCommunicatorImpl(host, serverQueueCallbacks, matchTopicCallbacks);
+            return new RabbitCommunicatorImpl(host, microCallbacks);
         }
     }
 }
