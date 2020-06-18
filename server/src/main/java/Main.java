@@ -14,8 +14,10 @@ public class Main {
         gameData = new GameData();
         gameClient = new GameClient.Builder()
                 .addHost(Hosts.LOCAL)
-                .addCallback(Callbacks.newPlayer(gameClient, gameData))
-                .addCallback(Callbacks.selectRequest(gameClient, gameData))
+                .addCallback(Callbacks.newPlayerMsg(gameClient, gameData))
+                .addCallback(Callbacks.selectMsg(gameClient, gameData))
+                .addCallback(Callbacks.swapRequestMsg(gameClient, gameData))
+                .addCallback(Callbacks.rematchMsg(gameClient, gameData))
                 .build();
 
         gameClient.connect();

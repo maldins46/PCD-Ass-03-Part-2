@@ -1,9 +1,9 @@
 package client.messages;
 
-public final class RequestAckMsg extends GenericMsg {
+public final class AckMsg extends GenericMsg {
     private String ackedPlayer;
 
-    public RequestAckMsg(final String sender, final String ackedPlayer) {
+    public AckMsg(final String sender, final String ackedPlayer) {
         super(sender);
         this.ackedPlayer = ackedPlayer;
     }

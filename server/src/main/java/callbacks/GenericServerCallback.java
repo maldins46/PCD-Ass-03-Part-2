@@ -4,7 +4,7 @@ import client.CtxCallback;
 import client.GameClient;
 import client.config.Destinations;
 import client.messages.Message;
-import client.messages.RequestAckMsg;
+import client.messages.AckMsg;
 import model.GameData;
 
 public abstract class GenericServerCallback implements CtxCallback {
@@ -25,7 +25,7 @@ public abstract class GenericServerCallback implements CtxCallback {
     protected void sendResponses(final Message message) {
         client.sendMessage(data.generateGameDataMsg(), Destinations.MATCH_TOPIC_NAME);
 
-        final RequestAckMsg ack = new RequestAckMsg(Destinations.SERVER_QUEUE_NAME, message.getSender());
+        final AckMsg ack = new AckMsg(Destinations.SERVER_QUEUE_NAME, message.getSender());
         client.sendMessage(ack, message.getSender());
     }
 }

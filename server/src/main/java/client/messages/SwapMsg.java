@@ -2,12 +2,12 @@ package client.messages;
 
 import model.Tile;
 
-public final class SwapRequestMsg extends GenericMsg {
+public final class SwapMsg extends GenericMsg {
     private Tile firstTile;
     private Tile secondTile;
 
 
-    public SwapRequestMsg(final String sender, final Tile firstTile, final Tile secondTile) {
+    public SwapMsg(final String sender, final Tile firstTile, final Tile secondTile) {
         super(sender);
         this.firstTile = firstTile;
         this.secondTile = secondTile;

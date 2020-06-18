@@ -2,11 +2,11 @@ package client.messages;
 
 import model.Tile;
 
-public final class SelectRequestMsg extends GenericMsg {
+public final class SelectMsg extends GenericMsg {
     private Tile selectedTile;
 
 
-    public SelectRequestMsg(final String sender, final Tile selectedTile) {
+    public SelectMsg(final String sender, final Tile selectedTile) {
         super(sender);
         this.selectedTile = selectedTile;
     }

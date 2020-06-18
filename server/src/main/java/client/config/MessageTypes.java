@@ -13,9 +13,10 @@ public final class MessageTypes {
         Map<String, Class<? extends Message>> msgTypes = new HashMap<>();
         msgTypes.put("new-player-msg", NewPlayerMsg.class);
         msgTypes.put("game-data-msg", GameDataMsg.class);
-        msgTypes.put("request-ack-msg", RequestAckMsg.class);
-        msgTypes.put("select-request-msg", SelectRequestMsg.class);
-        msgTypes.put("swap-request-msg", SwapRequestMsg.class);
+        msgTypes.put("ack-msg", AckMsg.class);
+        msgTypes.put("select-msg", SelectMsg.class);
+        msgTypes.put("swap-msg", SwapMsg.class);
+        msgTypes.put("rematch-msg", RematchMsg.class);
         return msgTypes;
     }
 
