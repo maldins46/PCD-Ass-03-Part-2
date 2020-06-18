@@ -1,6 +1,24 @@
-public class Main {
-    public static void main(String[] args) {
-        System.out.println("Server ready!");
+import client.GameClient;
+import client.config.Hosts;
+import model.GameData;
+import callbacks.Callbacks;
 
+public class Main {
+    private static GameData gameData;
+    private static GameClient gameClient;
+
+
+    public static void main(final String[] args) {
+        System.out.println("Puzzle server started!");
+
+        gameData = new GameData();
+        gameClient = new GameClient.Builder()
+                .addHost(Hosts.LOCAL)
+                .addCallback(Callbacks.newPlayer(gameClient, gameData))
+                .addCallback(Callbacks.selectRequest(gameClient, gameData))
+                .build();
+
+        gameClient.connect();
+        System.out.println("Sever ready, waiting for messages");
     }
 }

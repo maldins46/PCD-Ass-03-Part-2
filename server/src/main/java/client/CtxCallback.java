@@ -10,7 +10,7 @@ public interface CtxCallback {
     /**
      * The type of the received message.
      */
-    String getMessageType();
+    Class<? extends Message> getMessageType();
 
     /**
      * The destination from which the message has been received.

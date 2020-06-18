@@ -4,14 +4,12 @@ import client.config.Destinations;
 import client.messages.GameDataMsg;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public final class GameData {
     public static final int PUZZLE_WIDTH = 4;
     public static final int PUZZLE_HEIGHT = 5;
     public static final int PUZZLE_SIZE = PUZZLE_WIDTH * PUZZLE_HEIGHT;
 
-    // todo oggetto gestione stato gioco
     private List<Tile> puzzle = new ArrayList<>();
     private Set<String> playerNames = new HashSet<>();
 
@@ -67,7 +65,7 @@ public final class GameData {
     }
 
 
-    private void setTileAsSelected(final int tileOriginaPos, final int tileCurrentPos, final String player) {
+    public void setTileAsSelected(final int tileOriginaPos, final int tileCurrentPos, final String player) {
         final Tile currTile = puzzle.get(tileOriginaPos);
 
         if (currTile.getSelectorPlayer() != null
@@ -78,7 +76,7 @@ public final class GameData {
     }
 
 
-    private void swapTile(final int tile1OriginaPos, final int tile1CurrentPos,
+    public void swapTile(final int tile1OriginaPos, final int tile1CurrentPos,
                           final int tile2OriginaPos, final int tile2CurrentPos,
                           final String player) {
         final Tile firstTile = puzzle.get(tile1OriginaPos);
@@ -97,11 +95,11 @@ public final class GameData {
 
     public void updateData(GameDataMsg updatedData) {
         puzzle = updatedData.getPuzzle();
-        playerNames = updatedData.getPlayerNames();
+        playerNames = updatedData.getPlayers();
     }
 
 
     public GameDataMsg generateGameDataMsg() {
-        return new GameDataMsg(puzzle, playerNames);
+        return new GameDataMsg(Destinations.SERVER_QUEUE_NAME, puzzle, playerNames);
     }
 }

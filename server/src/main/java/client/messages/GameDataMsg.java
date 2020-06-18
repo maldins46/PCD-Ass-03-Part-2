@@ -1,6 +1,5 @@
 package client.messages;
 
-import model.GameData;
 import model.Tile;
 
 import java.util.ArrayList;
@@ -8,15 +7,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class GameDataMsg implements Message {
-    private List<Tile> puzzle = new ArrayList<>();
-    private Set<String> playerNames = new HashSet<>();
+public class GameDataMsg extends GenericMsg {
+    private List<Tile> puzzle;
+    private Set<String> players;
 
-    public GameDataMsg() { }
 
-    public GameDataMsg(final List<Tile> puzzle, final Set<String> playerNames) {
+    public GameDataMsg(final String sender, final List<Tile> puzzle, final Set<String> players) {
+        super(sender);
         this.puzzle = puzzle;
-        this.playerNames = playerNames;
+        this.players = players;
     }
 
     public List<Tile> getPuzzle() {
@@ -27,11 +26,11 @@ public class GameDataMsg implements Message {
         this.puzzle = puzzle;
     }
 
-    public Set<String> getPlayerNames() {
-        return playerNames;
+    public Set<String> getPlayers() {
+        return players;
     }
 
-    public void setPlayerNames(final Set<String> playerNames) {
-        this.playerNames = playerNames;
+    public void setPlayers(final Set<String> players) {
+        this.players = players;
     }
 }

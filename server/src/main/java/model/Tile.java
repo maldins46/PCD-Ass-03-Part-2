@@ -7,7 +7,6 @@ public class Tile {
     // se null, nessun giocatore ha selezionato la casella
     private String selectorPlayer;
 
-    public Tile() { }
 
     public Tile(final int originalPosition) {
         this.originalPosition = originalPosition;

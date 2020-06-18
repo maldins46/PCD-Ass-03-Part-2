@@ -37,12 +37,12 @@ public interface GameClient {
      * Builder used to initialize the communicator class with the proper
      * configuration.
      */
-    class RabbitCommunicatorBuilder {
+    class Builder {
         private final Set<CtxCallback> stdCtxCallbacks = new HashSet<>();
         private String host = Hosts.LOCAL;
 
 
-        public RabbitCommunicatorBuilder addCallback(final CtxCallback ctxCallback) {
+        public Builder addCallback(final CtxCallback ctxCallback) {
             if (Destinations.isKnownDestination(ctxCallback.getDestination())) {
                 stdCtxCallbacks.add(ctxCallback);
             }
@@ -50,7 +50,7 @@ public interface GameClient {
         }
 
 
-        public RabbitCommunicatorBuilder addHost(final String host) {
+        public Builder addHost(final String host) {
             if (Hosts.isKnownHost(host)) {
                 this.host = host;
             }

@@ -135,7 +135,7 @@ public final class GameClientImpl implements GameClient {
 
             stdCtxCallbacks.stream()
                     .filter(ctxCallback -> ctxCallback.getDestination().equals(destination))
-                    .filter(ctxCallback -> ctxCallback.getMessageType().equals(typeHeader))
+                    .filter(ctxCallback -> ctxCallback.getMessageType().equals(messageClass))
                     .forEach(ctxCallback -> ctxCallback.execute(message));
         };
     }

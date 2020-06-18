@@ -1,13 +1,18 @@
 package client.messages;
 
-public final class RequestAckMsg implements Message {
-    private String player;
+public final class RequestAckMsg extends GenericMsg {
+    private String ackedPlayer;
 
-    public String getPlayer() {
-        return player;
+    public RequestAckMsg(final String sender, final String ackedPlayer) {
+        super(sender);
+        this.ackedPlayer = ackedPlayer;
     }
 
-    public void setPlayer(final String player) {
-        this.player = player;
+    public String getAckedPlayer() {
+        return ackedPlayer;
+    }
+
+    public void setAckedPlayer(final String ackedPlayer) {
+        this.ackedPlayer = ackedPlayer;
     }
 }

@@ -1,14 +1,19 @@
 package client.messages;
 
 
-public class NewPlayerMsg implements Message {
-    private String playerName;
+public final class NewPlayerMsg extends GenericMsg {
+    private String player;
 
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
+    public NewPlayerMsg(final String sender, final String player) {
+        super(sender);
+        this.player = player;
     }
 
-    public String getPlayerName() {
-        return playerName;
+    public String getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(final String player) {
+        this.player = player;
     }
 }
