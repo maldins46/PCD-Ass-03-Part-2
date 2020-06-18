@@ -88,7 +88,7 @@ public final class RabbitCommunicatorImpl implements RabbitCommunicator {
                         .forEach(microCallback -> microCallback.execute(message));
             };
 
-            createDestAndSendMsg(destination, destCallback);
+            createDestAndSetCallback(destination, destCallback);
         }
     }
 
@@ -98,7 +98,7 @@ public final class RabbitCommunicatorImpl implements RabbitCommunicator {
      * @param destination
      * @param destCallback
      */
-    private void createDestAndSendMsg(String destination, DeliverCallback destCallback) {
+    private void createDestAndSetCallback(String destination, DeliverCallback destCallback) {
         try {
             if (destination.equals(Destinations.MATCH_TOPIC_NAME)) {
                 // create exchange and queue if not present (miming a subscribe mechanism)

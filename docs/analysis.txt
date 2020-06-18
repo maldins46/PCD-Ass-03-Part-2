@@ -1,0 +1,27 @@
+Analisi del progetto:
+
+* Client
+  - Si connette al broker
+  - fa subcribe al topic; nel far ciò gli viene assegnata una queue con un nome casuale, che diventerà il suo id
+  - invia un messaggio alla queue del server, di tipo newPlayerMsg, specificando l'id
+  - il server risponde sul topic GameDataMsg con la configurazione attuale delle tiles, una lista dei
+    giocatori collegati al momento, l'id del nuovo giocatore, lo stato di ogni tile
+  - Quando il client clicca su una tile, viene inviato un FirstTileRequestMsg al server. Questo verifica se
+    la casella può essere effettivamente presa, e risponde con un GameDataMsg. Se la casella è stata già cliccata da qualcun altro,
+    il server non risponderà.
+  - Una volta ottenuto l'accesso alla prima tile, cliccando su un'altra tile inviato un SecondTileRequest al server.
+    Questo risponderà con un GameDataMsg, che specifica tra le altre cose se
+
+    ACK:
+     - ogni volta che un client invia un messaggio al server, deve rimanere bloccato fino all'arrivo del suo ack
+
+     GAME DATA:
+     - l'oggetto che mantiene lo stato del gioco. Contiene le caselle (per ognuna, le coordinate e lo stato, ovvero se
+       bloccata e da chi), un set di i giocatori.
+
+     CLIENT REQUESTS:
+     - newPlayerMsg: notifica l'arrivo di un nuovo giocatore, contiene l'id del giocatore
+     - LockTileRequestMsg: notifica la volontà di selezionare una casella, contiene le coordinate della casella
+     - SwapTileMsg: notifica la volontà di swappare una casella selezionata in precedenza con un'altra, contiene sia la
+       casella precedente, che quella da swappare. Qualunque incongruenza risulta nell'ignorare il messaggio da
+       parte del server.
