@@ -19,6 +19,6 @@ public final class RematchCallback extends GenericServerCallback {
     public void execute(final Message rawMessage) {
         final RematchMsg message = (RematchMsg) rawMessage;
         data.rematch();
-        sendResponses(message);
+        terminate(message);
     }
 }

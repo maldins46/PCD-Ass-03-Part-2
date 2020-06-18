@@ -24,6 +24,6 @@ public final class SwapCallback extends GenericServerCallback {
         data.swapTile(firstTile.getOriginalPosition(), firstTile.getCurrentPosition(),
                 secondTile.getOriginalPosition(), secondTile.getCurrentPosition(),
                 message.getFirstTile().getSelectorPlayer());
-        sendResponses(message);
+        terminate(message);
     }
 }

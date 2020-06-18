@@ -6,6 +6,7 @@ import client.config.Destinations;
 import client.messages.Message;
 import client.messages.AckMsg;
 import model.GameData;
+import playerTimers.PlayerTimers;
 
 public abstract class GenericServerCallback implements CtxCallback {
     protected final GameClient client;
@@ -22,10 +23,13 @@ public abstract class GenericServerCallback implements CtxCallback {
         return Destinations.SERVER_QUEUE_NAME;
     }
 
-    protected void sendResponses(final Message message) {
+    protected void terminate(final Message message) {
+        PlayerTimers.getInstance().addOrUpdateTimer(message.getSender());
+
         client.sendMessage(data.generateGameDataMsg(), Destinations.MATCH_TOPIC_NAME);
 
         final AckMsg ack = new AckMsg(Destinations.SERVER_QUEUE_NAME, message.getSender());
         client.sendMessage(ack, message.getSender());
+
     }
 }

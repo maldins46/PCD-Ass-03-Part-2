@@ -21,6 +21,6 @@ public final class SelectCallback extends GenericServerCallback {
         final SelectMsg message = (SelectMsg) rawMessage;
         final Tile tile = message.getSelectedTile();
         data.setTileAsSelected(tile.getOriginalPosition(), tile.getCurrentPosition(), tile.getSelectorPlayer());
-        sendResponses(message);
+        terminate(message);
     }
 }

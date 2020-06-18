@@ -26,6 +26,6 @@ public final class NewPlayerCallback extends GenericServerCallback {
         Destinations.addPlayerQueue(message.getSender());
         client.sendMessage(data.generateGameDataMsg(), Destinations.MATCH_TOPIC_NAME);
 
-        sendResponses(message);
+        terminate(message);
     }
 }
