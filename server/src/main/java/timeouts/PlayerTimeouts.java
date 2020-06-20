@@ -2,8 +2,8 @@ package timeouts;
 
 import common.client.GameClient;
 import common.client.config.Destinations;
-import common.model.GameData;
-import model.ServerGameData;
+import common.gameState.ModifiableGameState;
+import common.model.ModifiableGameStateImpl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,10 +41,10 @@ public final class PlayerTimeouts {
      * called again before the expiration.
      * @param player The player to process.
      * @param client The GameClient, used to respond to the player.
-     * @param gameData The data structure, that will be modified after timeout
+     * @param state The data structure, that will be modified after timeout
      *                 expiration.
      */
-    public static void addOrUpdateTimer(final String player, final GameClient client, final ServerGameData gameData) {
+    public static void addOrUpdateTimer(final String player, final GameClient client, final ModifiableGameState state) {
 
         if (PLAYERS_TIMEOUTS.containsKey(player)) {
             CompletableFuture<Void> oldTimeoutFuture = PLAYERS_TIMEOUTS.get(player);
@@ -52,8 +52,8 @@ public final class PlayerTimeouts {
         }
 
         final CompletableFuture<Void> newTimeoutFuture = schedulePlayerTimeout(() -> {
-            gameData.removePlayer(player);
-            client.sendMessage(gameData.generateGameDataMsg(), Destinations.MATCH_TOPIC_NAME);
+            state.removePlayer(player);
+            client.sendMessage(state.generateGameDataMsg(), Destinations.MATCH_TOPIC_NAME);
         });
 
         PLAYERS_TIMEOUTS.put(player, newTimeoutFuture);

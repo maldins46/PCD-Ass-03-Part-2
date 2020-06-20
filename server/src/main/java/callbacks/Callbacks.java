@@ -2,7 +2,7 @@ package callbacks;
 
 import common.client.CtxCallback;
 import common.client.GameClient;
-import common.model.GameData;
+import common.gameState.ModifiableGameState;
 
 /**
  * Factory that returns the callbacks used inside the server.
@@ -17,7 +17,7 @@ public final class Callbacks {
      * @param data The entire puzzle as is.
      * @return the callback.
      */
-    public static CtxCallback newPlayerMsg(final GameClient client, final GameData data) {
+    public static CtxCallback newPlayerMsg(final GameClient client, final ModifiableGameState data) {
         return new NewPlayerCallback(client, data);
     }
 
@@ -28,7 +28,7 @@ public final class Callbacks {
      * @param data The entire puzzle as is.
      * @return the callback.
      */
-    public static CtxCallback selectMsg(final GameClient client, final GameData data) {
+    public static CtxCallback selectMsg(final GameClient client, final ModifiableGameState data) {
         return new SelectCallback(client, data);
     }
 
@@ -39,7 +39,7 @@ public final class Callbacks {
      * @param data The entire puzzle as is.
      * @return the callback.
      */
-    public static CtxCallback swapRequestMsg(final GameClient client, final GameData data) {
+    public static CtxCallback swapRequestMsg(final GameClient client, final ModifiableGameState data) {
         return new SwapCallback(client, data);
     }
 
@@ -50,7 +50,7 @@ public final class Callbacks {
      * @param data The entire puzzle as is.
      * @return the callback.
      */
-    public static CtxCallback rematchMsg(final GameClient client, final GameData data) {
+    public static CtxCallback rematchMsg(final GameClient client, final ModifiableGameState data) {
         return new RematchCallback(client, data);
     }
 }

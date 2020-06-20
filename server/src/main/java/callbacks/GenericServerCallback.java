@@ -5,13 +5,13 @@ import common.client.GameClient;
 import common.client.config.Destinations;
 import common.client.messages.Message;
 import common.client.messages.AckMsg;
+import common.gameState.ModifiableGameState;
 import timeouts.PlayerTimeouts;
-import common.model.GameData;
 
 /**
  * The class is a base for callback.
  */
-public abstract class GenericServerCallback implements CtxCallback {
+abstract class GenericServerCallback implements CtxCallback {
 
     /**
      * Server for the callback.
@@ -21,17 +21,17 @@ public abstract class GenericServerCallback implements CtxCallback {
     /**
      * The game data.
      */
-    private final GameData data;
+    private final ModifiableGameState gameState;
 
 
     /**
      * Construct a generic callback with server and data.
      * @param client The game server.
-     * @param data The game data.
+     * @param gameState The game data.
      */
-    public GenericServerCallback(final GameClient client, final GameData data) {
+    public GenericServerCallback(final GameClient client, final ModifiableGameState gameState) {
         this.client = client;
-        this.data = data;
+        this.gameState = gameState;
     }
 
 
@@ -55,9 +55,9 @@ public abstract class GenericServerCallback implements CtxCallback {
      * @param message The received message.
      */
     private void terminate(final Message message) {
-        PlayerTimeouts.addOrUpdateTimer(message.getSender(), client, data);
+        PlayerTimeouts.addOrUpdateTimer(message.getSender(), client, gameState);
 
-        client.sendMessage(data.generateGameDataMsg(), Destinations.MATCH_TOPIC_NAME);
+        client.sendMessage(gameState.generateGameDataMsg(), Destinations.MATCH_TOPIC_NAME);
 
         final AckMsg ack = new AckMsg(Destinations.SERVER_QUEUE_NAME, message.getSender());
         client.sendMessage(ack, message.getSender());
@@ -85,7 +85,7 @@ public abstract class GenericServerCallback implements CtxCallback {
      * Getter for the game data instance, for child classes.
      * @return The game data.
      */
-    protected GameData getData() {
-        return data;
+    protected ModifiableGameState getGameState() {
+        return gameState;
     }
 }

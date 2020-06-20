@@ -3,30 +3,40 @@ package common.client.messages;
 import common.model.Tile;
 
 public final class SwapMsg extends GenericMsg {
-    private Tile firstTile;
-    private Tile secondTile;
+    private Tile startTile;
+    private Tile destTile;
+    private String selectorPlayer;
 
 
-    public SwapMsg(final String sender, final Tile firstTile, final Tile secondTile) {
+    public SwapMsg(final String sender, final Tile startTile, final Tile destTile, final String selectorPlayer) {
         super(sender);
-        this.firstTile = firstTile;
-        this.secondTile = secondTile;
+        this.startTile = startTile;
+        this.destTile = destTile;
+        this.selectorPlayer = selectorPlayer;
     }
 
 
-    public Tile getFirstTile() {
-        return firstTile;
+    public Tile getStartTile() {
+        return startTile;
     }
 
-    public void setFirstTile(final Tile firstTile) {
-        this.firstTile = firstTile;
+    public void setStartTile(final Tile startTile) {
+        this.startTile = startTile;
     }
 
-    public Tile getSecondTile() {
-        return secondTile;
+    public Tile getDestTile() {
+        return destTile;
     }
 
-    public void setSecondTile(final Tile secondTile) {
-        this.secondTile = secondTile;
+    public void setDestTile(final Tile destTile) {
+        this.destTile = destTile;
+    }
+
+    public String getSelectorPlayer() {
+        return selectorPlayer;
+    }
+
+    public void setSelectorPlayer(final String selectorPlayer) {
+        this.selectorPlayer = selectorPlayer;
     }
 }

@@ -3,21 +3,21 @@ package callbacks;
 import common.client.GameClient;
 import common.client.messages.Message;
 import common.client.messages.SelectMsg;
-import common.model.GameData;
+import common.gameState.ModifiableGameState;
 import common.model.Tile;
 
 /**
  * The callback used when a new player notifies the will to select a tile.
  */
-public final class SelectCallback extends GenericServerCallback {
+final class SelectCallback extends GenericServerCallback {
 
     /**
      * Standard callback, with superclass initialization.
      * @param client the game model.client.
-     * @param data the game data.
+     * @param state the game data.
      */
-    SelectCallback(final GameClient client, final GameData data) {
-        super(client, data);
+    SelectCallback(final GameClient client, final ModifiableGameState state) {
+        super(client, state);
     }
 
     @Override
@@ -29,6 +29,7 @@ public final class SelectCallback extends GenericServerCallback {
     public void executeBody(final Message rawMessage) {
         final SelectMsg message = (SelectMsg) rawMessage;
         final Tile tile = message.getSelectedTile();
-        getData().setTileAsSelected(tile.getOriginalPosition(), tile.getCurrentPosition(), tile.getSelectorPlayer());
+        final String selector = message.getSelectorPlayer();
+        getGameState().setTileAsSelected(tile, selector);
     }
 }

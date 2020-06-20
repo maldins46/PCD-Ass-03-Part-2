@@ -1,5 +1,8 @@
 package common.model;
 
+/**
+ * todo
+ */
 public class Tile {
     private int originalPosition;
     private int currentPosition;

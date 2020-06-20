@@ -1,13 +1,16 @@
 import common.client.GameClient;
 import common.client.config.Hosts;
-import common.model.GameData;
 import callbacks.Callbacks;
-import model.ServerGameData;
+import common.gameState.GameStates;
+import common.gameState.ModifiableGameState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Main {
-    private static GameData data;
+    private static final int PUZZLE_WIDTH = 5;
+    private static final int PUZZLE_HEIGHT = 4;
+
+    private static ModifiableGameState serverState;
     private static GameClient client;
 
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
@@ -19,13 +22,13 @@ public class Main {
         logger.info("Server started...");
 
         final String host = Hosts.LOCAL;
-        data = new ServerGameData();
+        serverState = GameStates.serverGameState(PUZZLE_WIDTH, PUZZLE_HEIGHT);
         client = new GameClient.Builder()
                 .addHost(host)
-                .addCallback(Callbacks.newPlayerMsg(client, data))
-                .addCallback(Callbacks.selectMsg(client, data))
-                .addCallback(Callbacks.swapRequestMsg(client, data))
-                .addCallback(Callbacks.rematchMsg(client, data))
+                .addCallback(Callbacks.newPlayerMsg(client, serverState))
+                .addCallback(Callbacks.selectMsg(client, serverState))
+                .addCallback(Callbacks.swapRequestMsg(client, serverState))
+                .addCallback(Callbacks.rematchMsg(client, serverState))
                 .build();
 
         logger.info("Connecting to the RabbitMQ Broker with host " + host + "...");

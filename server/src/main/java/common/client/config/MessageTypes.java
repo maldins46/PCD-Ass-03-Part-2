@@ -1,7 +1,6 @@
 package common.client.config;
 
 import common.client.messages.*;
-import model.client.messages.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +22,7 @@ public final class MessageTypes {
     private static Map<String, Class<? extends Message>> initializeTypes() {
         Map<String, Class<? extends Message>> msgTypes = new HashMap<>();
         msgTypes.put("new-player-msg", NewPlayerMsg.class);
-        msgTypes.put("game-data-msg", GameDataMsg.class);
+        msgTypes.put("game-state-msg", GameStateMsg.class);
         msgTypes.put("ack-msg", AckMsg.class);
         msgTypes.put("select-msg", SelectMsg.class);
         msgTypes.put("swap-msg", SwapMsg.class);
