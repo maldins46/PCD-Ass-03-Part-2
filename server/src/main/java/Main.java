@@ -7,9 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Main {
-    private static final int PUZZLE_WIDTH = 5;
-    private static final int PUZZLE_HEIGHT = 4;
-
     private static ModifiableGameState serverState;
     private static GameClient client;
 
@@ -22,7 +19,7 @@ public class Main {
         logger.info("Server started...");
 
         final String host = Hosts.LOCAL;
-        serverState = GameStates.serverGameState(PUZZLE_WIDTH, PUZZLE_HEIGHT);
+        serverState = GameStates.serverGameState();
         client = new GameClient.Builder()
                 .addHost(host)
                 .addCallback(Callbacks.newPlayerMsg(client, serverState))

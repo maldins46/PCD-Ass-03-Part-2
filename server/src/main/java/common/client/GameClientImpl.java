@@ -1,15 +1,10 @@
 package common.client;
 
 import com.google.gson.Gson;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.DeliverCallback;
-import com.rabbitmq.client.AMQP;
-
+import com.rabbitmq.client.*;
+import common.client.config.Destinations;
 import common.client.config.MessageTypes;
 import common.client.messages.Message;
-import common.client.config.Destinations;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -93,6 +88,12 @@ public final class GameClientImpl implements GameClient {
         }
     }
 
+    @Override
+    public void addCallback(CtxCallback callback) {
+        stdCtxCallbacks.add(callback);
+        activateCallback(callback.getDestination());
+    }
+
 
     /**
      * Activates a callback for the given standard destination, only if there
@@ -166,6 +167,7 @@ public final class GameClientImpl implements GameClient {
     private void subscribeTopic(final String topicName, final DeliverCallback destCallback) {
         try {
             final String queueName = channel.queueDeclare().getQueue();
+            Destinations.setCurrentTopicQueue(queueName);
             channel.exchangeDeclare(topicName, "fanout");
             channel.queueBind(queueName, topicName, "");
             channel.basicConsume(queueName, true, destCallback, consumerTag -> { });

@@ -53,6 +53,8 @@ public final class PlayerTimeouts {
 
         final CompletableFuture<Void> newTimeoutFuture = schedulePlayerTimeout(() -> {
             state.removePlayer(player);
+            Destinations.removePlayerQueue(player.getName());
+
             client.sendMessage(state.generateGameDataMsg(), Destinations.MATCH_TOPIC_NAME);
         });
 
