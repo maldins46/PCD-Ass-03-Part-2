@@ -6,8 +6,16 @@ import client.messages.Message;
 import client.messages.NewPlayerMsg;
 import model.GameData;
 
+/**
+ *
+ */
 public final class NewPlayerCallback extends GenericServerCallback {
 
+    /**
+     *
+     * @param client
+     * @param data
+     */
     public NewPlayerCallback(final GameClient client, final GameData data) {
         super(client, data);
     }

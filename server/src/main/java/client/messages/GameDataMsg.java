@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class GameDataMsg extends GenericMsg {
+public final class GameDataMsg extends GenericMsg {
     private List<Tile> puzzle;
     private Set<String> players;
 
