@@ -1,6 +1,7 @@
 package common.gameState;
 
 import common.client.messages.GameStateMsg;
+import common.model.Player;
 import common.model.Tile;
 
 /**
@@ -12,13 +13,13 @@ public interface ModifiableGameState {
      * todo
      * @param player
      */
-    void addPlayer(String player);
+    void addPlayer(Player player);
 
     /**
      * todo
      * @param player
      */
-    void removePlayer(String player);
+    void removePlayer(Player player);
 
     /**
      * todo
@@ -30,7 +31,7 @@ public interface ModifiableGameState {
      * @param tile
      * @param player
      */
-    void setTileAsSelected(Tile tile, String player);
+    void setTileAsSelected(Tile tile, Player player);
 
     /**
      * todo
@@ -38,7 +39,7 @@ public interface ModifiableGameState {
      * @param destTile
      * @param player
      */
-    void swapTiles(Tile startTile, Tile destTile, String player);
+    void swapTiles(Tile startTile, Tile destTile, Player player);
 
     /**
      * todo

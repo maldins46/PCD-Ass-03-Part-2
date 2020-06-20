@@ -8,11 +8,7 @@ public abstract class GenericMsg implements Message {
         this.sender = sender;
     }
 
-    public void setSender(final String sender) {
-        this.sender = sender;
-    }
-
-    public String getSender() {
+    public final String getSender() {
         return sender;
     }
 }

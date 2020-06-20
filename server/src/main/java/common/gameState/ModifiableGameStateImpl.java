@@ -2,6 +2,7 @@ package common.gameState;
 
 import common.client.config.Destinations;
 import common.client.messages.GameStateMsg;
+import common.model.Player;
 import common.model.Tile;
 
 import java.util.Collections;
@@ -18,9 +19,10 @@ final class ModifiableGameStateImpl extends GameState implements ModifiableGameS
      */
     ModifiableGameStateImpl(final int puzzleWidth, final int puzzleHeight) {
         super(puzzleWidth, puzzleHeight);
-        for (int i = 0; i < puzzleSize; i++) {
+
+        for (int i = 0; i < getPuzzle().getSize(); i++) {
             Tile tile = new Tile(i);
-            getPuzzle().add(tile);
+            getPuzzle().getTiles().add(tile);
         }
 
         rematch();
@@ -28,18 +30,18 @@ final class ModifiableGameStateImpl extends GameState implements ModifiableGameS
 
 
     @Override
-    public void addPlayer(final String player) {
+    public void addPlayer(final Player player) {
         getPlayers().add(player);
     }
 
 
     @Override
-    public void removePlayer(final String player) {
+    public void removePlayer(final Player player) {
         getPlayers().remove(player);
 
-        for (Tile tile : getPuzzle()) {
-            if (tile.getSelectorPlayer().equals(player)) {
-                tile.setSelectorPlayer(null);
+        for (Tile tile : getPuzzle().getTiles()) {
+            if (tile.getSelector().equals(player)) {
+                tile.setSelector(Player.generateEmpty());
             }
         }
     }
@@ -57,40 +59,39 @@ final class ModifiableGameStateImpl extends GameState implements ModifiableGameS
      * todo
      */
     private void shufflePuzzle() {
-        Collections.shuffle(getPuzzle());
+        Collections.shuffle(getPuzzle().getTiles());
 
-        for (int i = 0; i < puzzleSize; i++) {
-            getPuzzle().get(i).setCurrentPosition(i);
+        for (int i = 0; i < getPuzzle().getSize(); i++) {
+            getPuzzle().getTiles().get(i).setCurrentPosition(i);
         }
 
-        getPuzzle().sort((o1, o2) -> Integer.compare(o1.getOriginalPosition(), o2.getCurrentPosition()));
-
+        getPuzzle().getTiles().sort((o1, o2) -> Integer.compare(o1.getOriginalPosition(), o2.getCurrentPosition()));
         setWin(false);
     }
 
 
     @Override
-    public void setTileAsSelected(final Tile tile, final String player) {
-        final Tile localTile = getPuzzle().get(tile.getOriginalPosition());
+    public void setTileAsSelected(final Tile tile, final Player player) {
+        final Tile localTile = getPuzzle().getTiles().get(tile.getOriginalPosition());
 
-        if (localTile.getSelectorPlayer() != null
+        if (localTile.getSelector() != null
                 && localTile.getCurrentPosition() == tile.getCurrentPosition()
                 && getPlayers().contains(player)) {
-            localTile.setSelectorPlayer(player);
+            localTile.setSelector(player);
         }
     }
 
 
     @Override
-    public void swapTiles(final Tile startTile, final Tile destTile, final String player) {
-        final Tile localStartTile = getPuzzle().get(startTile.getOriginalPosition());
-        final Tile localDestTile = getPuzzle().get(destTile.getOriginalPosition());
+    public void swapTiles(final Tile startTile, final Tile destTile, final Player player) {
+        final Tile localStartTile = getPuzzle().getTiles().get(startTile.getOriginalPosition());
+        final Tile localDestTile = getPuzzle().getTiles().get(destTile.getOriginalPosition());
 
         if (localStartTile.getCurrentPosition() == startTile.getCurrentPosition()
                 && localDestTile.getCurrentPosition() == destTile.getCurrentPosition()
-                && localStartTile.getSelectorPlayer().equals(player)) {
-            localStartTile.setSelectorPlayer(null);
-            localDestTile.setSelectorPlayer(null);
+                && localStartTile.getSelector().equals(player)) {
+            localStartTile.setSelector(Player.generateEmpty());
+            localDestTile.setSelector(Player.generateEmpty());
             localStartTile.setCurrentPosition(startTile.getCurrentPosition());
             localDestTile.setCurrentPosition(destTile.getCurrentPosition());
         }
@@ -102,7 +103,7 @@ final class ModifiableGameStateImpl extends GameState implements ModifiableGameS
      * todo
      */
     private void updateWin() {
-        setWin(getPuzzle().stream().allMatch(x -> x.getCurrentPosition() == x.getOriginalPosition()));
+        setWin(getPuzzle().getTiles().stream().allMatch(x -> x.getCurrentPosition() == x.getOriginalPosition()));
     }
 
 

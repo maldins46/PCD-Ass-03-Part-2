@@ -3,7 +3,7 @@ package timeouts;
 import common.client.GameClient;
 import common.client.config.Destinations;
 import common.gameState.ModifiableGameState;
-import common.model.ModifiableGameStateImpl;
+import common.model.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +30,7 @@ public final class PlayerTimeouts {
     /**
      * Structure that memorizes the active timeouts, using a CompletableFuture.
      */
-    private static final Map<String, CompletableFuture<Void>> PLAYERS_TIMEOUTS = new HashMap<>();
+    private static final Map<Player, CompletableFuture<Void>> PLAYERS_TIMEOUTS = new HashMap<>();
 
 
     private PlayerTimeouts() { }
@@ -44,7 +44,7 @@ public final class PlayerTimeouts {
      * @param state The data structure, that will be modified after timeout
      *                 expiration.
      */
-    public static void addOrUpdateTimer(final String player, final GameClient client, final ModifiableGameState state) {
+    public static void addOrUpdateTimer(final Player player, final GameClient client, final ModifiableGameState state) {
 
         if (PLAYERS_TIMEOUTS.containsKey(player)) {
             CompletableFuture<Void> oldTimeoutFuture = PLAYERS_TIMEOUTS.get(player);

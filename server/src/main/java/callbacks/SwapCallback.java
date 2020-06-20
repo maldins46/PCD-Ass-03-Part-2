@@ -4,6 +4,7 @@ import common.client.GameClient;
 import common.client.messages.Message;
 import common.client.messages.SwapMsg;
 import common.gameState.ModifiableGameState;
+import common.model.Player;
 import common.model.Tile;
 
 /**
@@ -30,7 +31,7 @@ final class SwapCallback extends GenericServerCallback {
         final SwapMsg message = (SwapMsg) rawMessage;
         final Tile startTile = message.getStartTile();
         final Tile destTile = message.getDestTile();
-        final String selectorPlayer = message.getSelectorPlayer();
-        getGameState().swapTiles(startTile, destTile, selectorPlayer);
+        final Player selector = message.getSelector();
+        getGameState().swapTiles(startTile, destTile, selector);
     }
 }

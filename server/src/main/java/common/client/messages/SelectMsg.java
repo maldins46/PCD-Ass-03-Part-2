@@ -1,16 +1,17 @@
 package common.client.messages;
 
+import common.model.Player;
 import common.model.Tile;
 
 public final class SelectMsg extends GenericMsg {
     private Tile selectedTile;
-    private String selectorPlayer;
+    private Player selector;
 
 
-    public SelectMsg(final String sender, final Tile selectedTile, final String selectorPlayer) {
+    public SelectMsg(final String sender, final Tile selectedTile, final Player selector) {
         super(sender);
         this.selectedTile = selectedTile;
-        this.selectorPlayer = selectorPlayer;
+        this.selector = selector;
     }
 
 
@@ -19,15 +20,7 @@ public final class SelectMsg extends GenericMsg {
     }
 
 
-    public void setSelectedTile(final Tile selectedTile) {
-        this.selectedTile = selectedTile;
-    }
-
-    public String getSelectorPlayer() {
-        return selectorPlayer;
-    }
-
-    public void setSelectorPlayer(String selectorPlayer) {
-        this.selectorPlayer = selectorPlayer;
+    public Player getSelector() {
+        return selector;
     }
 }

@@ -1,18 +1,16 @@
 package common.client.messages;
 
-public final class AckMsg extends GenericMsg {
-    private String ackedPlayer;
+import common.model.Player;
 
-    public AckMsg(final String sender, final String ackedPlayer) {
+public final class AckMsg extends GenericMsg {
+    private Player ackedPlayer;
+
+    public AckMsg(final String sender, final Player ackedPlayer) {
         super(sender);
         this.ackedPlayer = ackedPlayer;
     }
 
-    public String getAckedPlayer() {
+    public Player getAckedPlayer() {
         return ackedPlayer;
-    }
-
-    public void setAckedPlayer(final String ackedPlayer) {
-        this.ackedPlayer = ackedPlayer;
     }
 }

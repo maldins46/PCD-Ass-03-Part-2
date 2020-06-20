@@ -1,19 +1,17 @@
 package common.client.messages;
 
 
-public final class NewPlayerMsg extends GenericMsg {
-    private String player;
+import common.model.Player;
 
-    public NewPlayerMsg(final String sender, final String player) {
+public final class NewPlayerMsg extends GenericMsg {
+    private Player player;
+
+    public NewPlayerMsg(final String sender, final Player player) {
         super(sender);
         this.player = player;
     }
 
-    public String getPlayer() {
+    public Player getPlayer() {
         return player;
-    }
-
-    public void setPlayer(final String player) {
-        this.player = player;
     }
 }

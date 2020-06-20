@@ -21,7 +21,7 @@ public final class Tile {
      * Takes name of player that selected this element. Null if anyone have
      * selected this tile.
      */
-    private String selectorPlayer;
+    private Player selector;
 
 
     /**
@@ -32,6 +32,7 @@ public final class Tile {
     public Tile(final int originalPosition) {
         this.originalPosition = originalPosition;
         this.currentPosition = originalPosition;
+        this.selector = Player.generateEmpty();
     }
 
 
@@ -45,15 +46,6 @@ public final class Tile {
 
 
     /**
-     * Setter for the original position.
-     * @param originalPosition the right position.
-     */
-    public void setOriginalPosition(final int originalPosition) {
-        this.originalPosition = originalPosition;
-    }
-
-
-    /**
      * Getter for current position.
      * @return the current position.
      */
@@ -63,7 +55,7 @@ public final class Tile {
 
 
     /**
-     * Setter for the original position.
+     * Setter for the current position.
      * @param currentPosition the current position.
      */
     public void setCurrentPosition(final int currentPosition) {
@@ -75,16 +67,16 @@ public final class Tile {
      * Getter for selector player.
      * @return the selector player is present.
      */
-    public String getSelectorPlayer() {
-        return selectorPlayer;
+    public Player getSelector() {
+        return selector;
     }
 
 
     /**
      * Setter for the selector player.
-     * @param selectorPlayer the selector player.
+     * @param selector the selector player.
      */
-    public void setSelectorPlayer(final String selectorPlayer) {
-        this.selectorPlayer = selectorPlayer;
+    public void setSelector(final Player selector) {
+        this.selector = selector;
     }
 }

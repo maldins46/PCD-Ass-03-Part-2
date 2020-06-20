@@ -1,25 +1,14 @@
 package common.gameState;
 
+import common.model.Player;
+import common.model.Puzzle;
 import common.model.Tile;
 
 import java.util.*;
 
 public abstract class GameState {
-    protected int puzzleWidth;
-    protected int puzzleHeight;
-    protected int puzzleSize;
-
-    private List<Tile> puzzle = new ArrayList<>();
-    private Set<String> players = new HashSet<>();
-
-
-    public GameState(final int puzzleWidth, final int puzzleHeight) {
-        this.puzzleWidth = puzzleWidth;
-        this.puzzleHeight = puzzleHeight;
-        this.puzzleSize = puzzleWidth * puzzleHeight;
-    }
-
-    public GameState() { }
+    private Puzzle puzzle;
+    private Set<Player> players;
 
     /**
      * The variable is set to true when all tiles have the
@@ -27,19 +16,27 @@ public abstract class GameState {
      */
     private boolean win = true;
 
-    protected final void setPuzzle(final List<Tile> puzzle) {
+
+    public GameState(final int puzzleWidth, final int puzzleHeight) {
+        this.puzzle = new Puzzle(puzzleWidth, puzzleHeight);
+        this.players = new HashSet<>();
+    }
+
+    public GameState() { }
+
+    protected final void setPuzzle(final Puzzle puzzle) {
         this.puzzle = puzzle;
     }
 
-    protected final List<Tile> getPuzzle() {
+    protected final Puzzle getPuzzle() {
         return puzzle;
     }
 
-    protected final void setPlayers(final Set<String> players) {
+    protected final void setPlayers(final Set<Player> players) {
         this.players = players;
     }
 
-    protected final Set<String> getPlayers() {
+    protected final Set<Player> getPlayers() {
         return players;
     }
 
@@ -49,22 +46,5 @@ public abstract class GameState {
 
     protected final void setWin(final boolean win) {
         this.win = win;
-    }
-
-    protected void setPuzzleWidth(final int puzzleWidth) {
-        this.puzzleWidth = puzzleWidth;
-    }
-
-
-    protected int getPuzzleWidth() {
-        return puzzleWidth;
-    }
-
-    protected void setPuzzleHeight(final int puzzleHeight) {
-        this.puzzleHeight = puzzleHeight;
-    }
-
-    protected int getPuzzleHeight() {
-        return puzzleHeight;
     }
 }

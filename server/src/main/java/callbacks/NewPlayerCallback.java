@@ -5,6 +5,7 @@ import common.client.config.Destinations;
 import common.client.messages.Message;
 import common.client.messages.NewPlayerMsg;
 import common.gameState.ModifiableGameState;
+import common.model.Player;
 
 /**
  * The callback used when a new player notifies the will to join the game.
@@ -30,7 +31,7 @@ final class NewPlayerCallback extends GenericServerCallback {
     @Override
     public void executeBody(final Message rawMessage) {
         final NewPlayerMsg message = (NewPlayerMsg) rawMessage;
-        getGameState().addPlayer(message.getSender());
+        getGameState().addPlayer(Player.of(message.getSender()));
         Destinations.addPlayerQueue(message.getSender());
         getClient().sendMessage(getGameState().generateGameDataMsg(), Destinations.MATCH_TOPIC_NAME);
     }

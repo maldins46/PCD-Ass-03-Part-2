@@ -22,7 +22,7 @@ repositories {
 
 dependencies {
     // https://mvnrepository.com/artifact/com.rabbitmq/amqp-client
-    implementation group: 'com.rabbitmq', name: 'amqp-model.client', version: '5.9.0'
+    compile group: 'com.rabbitmq', name: 'amqp-client', version: '5.9.0'
 
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'

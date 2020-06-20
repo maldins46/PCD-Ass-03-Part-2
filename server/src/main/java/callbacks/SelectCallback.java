@@ -4,6 +4,7 @@ import common.client.GameClient;
 import common.client.messages.Message;
 import common.client.messages.SelectMsg;
 import common.gameState.ModifiableGameState;
+import common.model.Player;
 import common.model.Tile;
 
 /**
@@ -29,7 +30,7 @@ final class SelectCallback extends GenericServerCallback {
     public void executeBody(final Message rawMessage) {
         final SelectMsg message = (SelectMsg) rawMessage;
         final Tile tile = message.getSelectedTile();
-        final String selector = message.getSelectorPlayer();
+        final Player selector = message.getSelector();
         getGameState().setTileAsSelected(tile, selector);
     }
 }

@@ -6,6 +6,7 @@ import common.client.config.Destinations;
 import common.client.messages.Message;
 import common.client.messages.AckMsg;
 import common.gameState.ModifiableGameState;
+import common.model.Player;
 import timeouts.PlayerTimeouts;
 
 /**
@@ -55,11 +56,11 @@ abstract class GenericServerCallback implements CtxCallback {
      * @param message The received message.
      */
     private void terminate(final Message message) {
-        PlayerTimeouts.addOrUpdateTimer(message.getSender(), client, gameState);
+        PlayerTimeouts.addOrUpdateTimer(Player.of(message.getSender()), client, gameState);
 
         client.sendMessage(gameState.generateGameDataMsg(), Destinations.MATCH_TOPIC_NAME);
 
-        final AckMsg ack = new AckMsg(Destinations.SERVER_QUEUE_NAME, message.getSender());
+        final AckMsg ack = new AckMsg(Destinations.SERVER_QUEUE_NAME, Player.of(message.getSender()));
         client.sendMessage(ack, message.getSender());
     }
 

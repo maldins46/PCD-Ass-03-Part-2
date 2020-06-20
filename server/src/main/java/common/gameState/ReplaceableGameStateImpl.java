@@ -19,7 +19,5 @@ final class ReplaceableGameStateImpl extends GameState implements ReplaceableGam
         setWin(updatedData.getGameState().getWin());
         setPuzzle(updatedData.getGameState().getPuzzle());
         setPlayers(updatedData.getGameState().getPlayers());
-        setPuzzleWidth(updatedData.getGameState().getPuzzleWidth());
-        setPuzzleHeight(updatedData.getGameState().getPuzzleHeight());
     }
 }
