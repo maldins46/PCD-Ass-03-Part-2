@@ -19,10 +19,9 @@ public interface GameClient {
      */
     void connect();
 
-    /**
-     * It closes the connection gracefully.
-     */
-    void disconnect();
+    void addCallback(CtxCallback callback);
+
+    void listen();
 
     /**
      * It sends a message against a given destination. The fact that
@@ -32,37 +31,13 @@ public interface GameClient {
      */
     void sendMessage(Message message, String destination);
 
-    void addCallback(CtxCallback callback);
-
-
     /**
-     * Builder used to initialize the communicator class with the proper
-     * configuration.
+     * It closes the connection gracefully.
      */
-    class Builder {
-        private final Set<CtxCallback> stdCtxCallbacks = new HashSet<>();
-        private String host = Hosts.LOCAL;
+    void disconnect();
 
 
-        public Builder addCallback(final CtxCallback ctxCallback) {
-            if (Destinations.isKnownDestination(ctxCallback.getDestination())) {
-                stdCtxCallbacks.add(ctxCallback);
-            }
-            return this;
-        }
-
-
-        public Builder addHost(final String host) {
-            if (Hosts.isKnownHost(host)) {
-                this.host = host;
-            }
-
-            return this;
-        }
-
-
-        public GameClient build() {
-            return new GameClientImpl(host, stdCtxCallbacks);
-        }
+    static GameClient of(String host, boolean isServerModule) {
+        return new GameClientImpl(host, isServerModule);
     }
 }

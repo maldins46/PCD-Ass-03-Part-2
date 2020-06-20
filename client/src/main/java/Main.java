@@ -19,18 +19,15 @@ public class Main {
         logger.info("Client started...");
 
         final String host = Hosts.LOCAL;
+        logger.info("Connecting to the RabbitMQ Broker with host " + host + "...");
+
         gui = PuzzleGui.of();
         clientState = GameStates.clientGameState();
-        client = new GameClient.Builder()
-                .addHost(host)
-                .addCallback(Callbacks.gameStateMsg(client, clientState, gui))
-                .build();
-
-        logger.info("Connecting to the RabbitMQ Broker with host " + host + "...");
+        client = GameClient.of(host, false);
         client.connect();
-
+        client.addCallback(Callbacks.gameStateMsg(client, clientState, gui));
         client.addCallback(Callbacks.ackMsg(client, clientState, gui));
-
+        client.listen();
         logger.info("✓ Client ready, waiting for messages");
 
     }

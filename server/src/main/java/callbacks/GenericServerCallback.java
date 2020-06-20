@@ -38,7 +38,7 @@ abstract class GenericServerCallback implements CtxCallback {
 
     @Override
     public final String getDestination() {
-        return Destinations.SERVER_QUEUE_NAME;
+        return Destinations.MAIN_CLIENT_QUEUE;
     }
 
 

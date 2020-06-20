@@ -13,24 +13,21 @@ public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
 
-
     public static void main(final String[] args) {
         logger.info("Assignment 03, pt.2 - Maldini, Gorini, Angelini - MultiPlayer Puzzle Server");
         logger.info("Server started...");
 
         final String host = Hosts.LOCAL;
-        serverState = GameStates.serverGameState();
-        client = new GameClient.Builder()
-                .addHost(host)
-                .addCallback(Callbacks.newPlayerMsg(client, serverState))
-                .addCallback(Callbacks.selectMsg(client, serverState))
-                .addCallback(Callbacks.swapRequestMsg(client, serverState))
-                .addCallback(Callbacks.rematchMsg(client, serverState))
-                .build();
-
         logger.info("Connecting to the RabbitMQ Broker with host " + host + "...");
-        client.connect();
 
+        serverState = GameStates.serverGameState();
+        client = GameClient.of(host, true);
+        client.connect();
+        client.addCallback(Callbacks.newPlayerMsg(client, serverState));
+        client.addCallback(Callbacks.selectMsg(client, serverState));
+        client.addCallback(Callbacks.swapRequestMsg(client, serverState));
+        client.addCallback(Callbacks.rematchMsg(client, serverState));
+        client.listen();
         logger.info("✓ Server ready, waiting for messages");
     }
 }

@@ -20,7 +20,7 @@ public final class AckCallback extends GenericClientCallback {
 
     @Override
     public String getDestination() {
-        return Destinations.CURRENT_TOPIC_QUEUE;
+        return Destinations.MAIN_CLIENT_QUEUE;
     }
 
     @Override

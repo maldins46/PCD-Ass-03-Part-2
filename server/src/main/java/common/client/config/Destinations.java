@@ -29,7 +29,7 @@ public final class Destinations {
     /**
      * Memorizes the last broker-assigned queue, derived from a topic subscription.
      */
-    public static String CURRENT_TOPIC_QUEUE = "";
+    public static String MAIN_CLIENT_QUEUE = "";
 
 
     /**
@@ -41,7 +41,7 @@ public final class Destinations {
         return SERVER_QUEUE_NAME.equals(destination)
                 || MATCH_TOPIC_NAME.equals(destination)
                 || PLAYERS_QUEUE.contains(destination)
-                || CURRENT_TOPIC_QUEUE.equals(destination);
+                || MAIN_CLIENT_QUEUE.equals(destination);
     }
 
 
@@ -65,7 +65,7 @@ public final class Destinations {
     public static boolean isKnownQueue(final String destination) {
         return SERVER_QUEUE_NAME.equals(destination)
                 || PLAYERS_QUEUE.contains(destination)
-                || destination.equals(CURRENT_TOPIC_QUEUE);
+                || destination.equals(MAIN_CLIENT_QUEUE);
     }
 
 
@@ -86,7 +86,7 @@ public final class Destinations {
         PLAYERS_QUEUE.remove(destination);
     }
 
-    public static void setCurrentTopicQueue(String queueName) {
-        CURRENT_TOPIC_QUEUE = queueName;
+    public static void setMainClientQueue(String queueName) {
+        MAIN_CLIENT_QUEUE = queueName;
     }
 }
