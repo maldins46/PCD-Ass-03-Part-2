@@ -8,6 +8,8 @@ import java.util.Set;
  * and gives utility methods about them.
  */
 public final class Destinations {
+    private Destinations() { }
+
     /**
      * The destination used to refer to the server.
      */

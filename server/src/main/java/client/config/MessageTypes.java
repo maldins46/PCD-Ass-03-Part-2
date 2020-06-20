@@ -7,8 +7,18 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public final class MessageTypes {
+    /**
+     * todo
+     */
     private static final Map<String, Class<? extends Message>> MSG_TYPES = initializeTypes();
 
+
+    private MessageTypes() { }
+
+    /**
+     * todo
+     * @return
+     */
     private static Map<String, Class<? extends Message>> initializeTypes() {
         Map<String, Class<? extends Message>> msgTypes = new HashMap<>();
         msgTypes.put("new-player-msg", NewPlayerMsg.class);
