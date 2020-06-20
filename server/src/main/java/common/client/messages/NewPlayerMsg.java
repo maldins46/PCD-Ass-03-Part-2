@@ -1,4 +1,4 @@
-package client.messages;
+package common.client.messages;
 
 
 public final class NewPlayerMsg extends GenericMsg {

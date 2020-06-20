@@ -1,9 +1,7 @@
-package client.messages;
+package common.client.messages;
 
-import model.Tile;
+import common.model.Tile;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 

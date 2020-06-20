@@ -1,10 +1,10 @@
 package callbacks;
 
-import client.GameClient;
-import client.messages.Message;
-import client.messages.SelectMsg;
-import model.GameData;
-import model.Tile;
+import common.client.GameClient;
+import common.client.messages.Message;
+import common.client.messages.SelectMsg;
+import common.model.GameData;
+import common.model.Tile;
 
 /**
  * The callback used when a new player notifies the will to select a tile.
@@ -13,7 +13,7 @@ public final class SelectCallback extends GenericServerCallback {
 
     /**
      * Standard callback, with superclass initialization.
-     * @param client the game client.
+     * @param client the game model.client.
      * @param data the game data.
      */
     SelectCallback(final GameClient client, final GameData data) {

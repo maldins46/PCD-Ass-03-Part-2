@@ -1,8 +1,8 @@
-package client;
+package common.client;
 
-import client.config.Destinations;
-import client.config.Hosts;
-import client.messages.Message;
+import common.client.config.Destinations;
+import common.client.messages.Message;
+import common.client.config.Hosts;
 
 import java.util.HashSet;
 import java.util.Set;

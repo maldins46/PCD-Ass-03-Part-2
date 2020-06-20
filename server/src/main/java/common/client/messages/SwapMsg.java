@@ -1,6 +1,6 @@
-package client.messages;
+package common.client.messages;
 
-import model.Tile;
+import common.model.Tile;
 
 public final class SwapMsg extends GenericMsg {
     private Tile firstTile;

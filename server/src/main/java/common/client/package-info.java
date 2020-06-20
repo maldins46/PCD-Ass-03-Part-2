@@ -4,4 +4,4 @@
  * RabbitMQ communications, and giving specific communication functionalities
  * for the project.
  */
-package client;
+package common.client;

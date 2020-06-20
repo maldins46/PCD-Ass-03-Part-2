@@ -1,4 +1,4 @@
-package client.config;
+package common.client.config;
 
 public final class Hosts {
     public static final String LOCAL = "localhost";

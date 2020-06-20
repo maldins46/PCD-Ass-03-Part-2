@@ -1,6 +1,6 @@
-package client;
+package common.client;
 
-import client.messages.Message;
+import common.client.messages.Message;
 
 /**
  * An action to be executed when a message of a specific type,

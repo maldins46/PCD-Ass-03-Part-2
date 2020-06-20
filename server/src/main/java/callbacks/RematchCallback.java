@@ -1,9 +1,9 @@
 package callbacks;
 
-import client.GameClient;
-import client.messages.Message;
-import client.messages.RematchMsg;
-import model.GameData;
+import common.client.GameClient;
+import common.client.messages.Message;
+import common.client.messages.RematchMsg;
+import common.model.GameData;
 
 /**
  * The callback used when a new player notifies the will to restart the game,
@@ -13,7 +13,7 @@ public final class RematchCallback extends GenericServerCallback {
 
     /**
      * Standard callback, with superclass initialization.
-     * @param client the game client.
+     * @param client the game model.client.
      * @param data the game data.
      */
     RematchCallback(final GameClient client, final GameData data) {

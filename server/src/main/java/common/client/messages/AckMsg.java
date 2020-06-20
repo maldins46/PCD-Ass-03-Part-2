@@ -1,4 +1,4 @@
-package client.messages;
+package common.client.messages;
 
 public final class AckMsg extends GenericMsg {
     private String ackedPlayer;

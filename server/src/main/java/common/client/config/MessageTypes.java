@@ -1,6 +1,7 @@
-package client.config;
+package common.client.config;
 
-import client.messages.*;
+import common.client.messages.*;
+import model.client.messages.*;
 
 import java.util.HashMap;
 import java.util.Map;

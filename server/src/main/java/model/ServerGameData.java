@@ -1,29 +1,18 @@
 package model;
 
-import client.config.Destinations;
-import client.messages.GameDataMsg;
+import common.client.config.Destinations;
+import common.client.messages.GameDataMsg;
+import common.model.GameData;
+import common.model.Tile;
 
-import java.util.*;
+import java.util.Collections;
 
-public final class GameData {
-    public static final int PUZZLE_WIDTH = 4;
-    public static final int PUZZLE_HEIGHT = 5;
-    public static final int PUZZLE_SIZE = PUZZLE_WIDTH * PUZZLE_HEIGHT;
+public final class ServerGameData extends GameData {
 
-    private List<Tile> puzzle = new ArrayList<>();
-    private Set<String> playerNames = new HashSet<>();
-
-    /**
-     * The variable is set to true when all tiles have the
-     * right position in the puzzle.
-     */
-    private boolean win = true;
-
-
-    public GameData() {
+    public ServerGameData() {
         for (int i = 0; i < PUZZLE_SIZE; i++) {
             Tile tile = new Tile(i);
-            puzzle.add(tile);
+            getPuzzle().add(tile);
         }
 
         rematch();
@@ -31,14 +20,14 @@ public final class GameData {
 
 
     public void addPlayer(final String playerName) {
-        playerNames.add(playerName);
+        getPlayers().add(playerName);
     }
 
 
     public void removePlayer(final String playerName) {
-        playerNames.remove(playerName);
+        getPlayers().remove(playerName);
 
-        for (Tile tile : puzzle) {
+        for (Tile tile : getPuzzle()) {
             if (tile.getSelectorPlayer().equals(playerName)) {
                 tile.setSelectorPlayer(null);
             }
@@ -47,31 +36,31 @@ public final class GameData {
 
 
     public void rematch() {
-        if (win) {
+        if (getWin()) {
             shufflePuzzle();
         }
     }
 
 
     private void shufflePuzzle() {
-        Collections.shuffle(puzzle);
+        Collections.shuffle(getPuzzle());
 
         for (int i = 0; i < PUZZLE_SIZE; i++) {
-            puzzle.get(i).setCurrentPosition(i);
+            getPuzzle().get(i).setCurrentPosition(i);
         }
 
-        puzzle.sort((o1, o2) -> Integer.compare(o1.getOriginalPosition(), o2.getCurrentPosition()));
+        getPuzzle().sort((o1, o2) -> Integer.compare(o1.getOriginalPosition(), o2.getCurrentPosition()));
 
-        win = false;
+        setWin(false);
     }
 
 
     public void setTileAsSelected(final int tileOriginaPos, final int tileCurrentPos, final String player) {
-        final Tile currTile = puzzle.get(tileOriginaPos);
+        final Tile currTile = getPuzzle().get(tileOriginaPos);
 
         if (currTile.getSelectorPlayer() != null
                 && currTile.getCurrentPosition() == tileCurrentPos
-                && playerNames.contains(player)) {
+                && getPlayers().contains(player)) {
             currTile.setSelectorPlayer(player);
         }
     }
@@ -80,8 +69,8 @@ public final class GameData {
     public void swapTile(final int tile1OriginaPos, final int tile1CurrentPos,
                          final int tile2OriginaPos, final int tile2CurrentPos,
                          final String player) {
-        final Tile firstTile = puzzle.get(tile1OriginaPos);
-        final Tile secondTile = puzzle.get(tile2OriginaPos);
+        final Tile firstTile = getPuzzle().get(tile1OriginaPos);
+        final Tile secondTile = getPuzzle().get(tile2OriginaPos);
 
         if (firstTile.getCurrentPosition() == tile1CurrentPos
                 && secondTile.getCurrentPosition() == tile2CurrentPos
@@ -96,18 +85,19 @@ public final class GameData {
 
 
     private void updateWin() {
-        win = puzzle.stream().allMatch(x -> x.getCurrentPosition() == x.getOriginalPosition());
+        setWin(getPuzzle().stream().allMatch(x -> x.getCurrentPosition() == x.getOriginalPosition()));
     }
 
-
+    /* todo in ClientGameData
     public void updateData(final GameDataMsg updatedData) {
-        puzzle = updatedData.getPuzzle();
-        playerNames = updatedData.getPlayers();
-        win = updatedData.getWin();
+        setPuzzle(updatedData.getPuzzle());
+        setPlayers(updatedData.getPlayers());
+        setWin(updatedData.getWin());
     }
+    */
 
 
     public GameDataMsg generateGameDataMsg() {
-        return new GameDataMsg(Destinations.SERVER_QUEUE_NAME, puzzle, playerNames, win);
+        return new GameDataMsg(Destinations.SERVER_QUEUE_NAME, getPuzzle(), getPlayers(), getWin());
     }
 }

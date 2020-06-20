@@ -1,12 +1,12 @@
 package callbacks;
 
-import client.CtxCallback;
-import client.GameClient;
-import client.config.Destinations;
-import client.messages.Message;
-import client.messages.AckMsg;
-import model.GameData;
-import playerTimers.PlayerTimers;
+import common.client.CtxCallback;
+import common.client.GameClient;
+import common.client.config.Destinations;
+import common.client.messages.Message;
+import common.client.messages.AckMsg;
+import timeouts.PlayerTimeouts;
+import common.model.GameData;
 
 /**
  * The class is a base for callback.
@@ -48,8 +48,14 @@ public abstract class GenericServerCallback implements CtxCallback {
     }
 
 
+    /**
+     * Every callback inside the server has a final part in model.common: it has to
+     * update the player timer, send the update in the match topic and send
+     * the ack to the player. This method handles it.
+     * @param message The received message.
+     */
     private void terminate(final Message message) {
-        PlayerTimers.getInstance().addOrUpdateTimer(message.getSender());
+        PlayerTimeouts.addOrUpdateTimer(message.getSender(), client, data);
 
         client.sendMessage(data.generateGameDataMsg(), Destinations.MATCH_TOPIC_NAME);
 
@@ -58,12 +64,17 @@ public abstract class GenericServerCallback implements CtxCallback {
     }
 
 
+    /**
+     * This is the core part of the callback, different for each received
+     * message. Do not include the termination part in it.
+     * @param rawMessage The received message.
+     */
     protected abstract void executeBody(Message rawMessage);
 
 
     /**
-     * Getter for the game client instance, for child classes.
-     * @return The game client.
+     * Getter for the game model.client instance, for child classes.
+     * @return The game model.client.
      */
     protected GameClient getClient() {
         return client;

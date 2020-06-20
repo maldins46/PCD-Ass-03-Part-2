@@ -1,4 +1,4 @@
-package client.config;
+package common.client.config;
 
 import java.util.HashSet;
 import java.util.Set;

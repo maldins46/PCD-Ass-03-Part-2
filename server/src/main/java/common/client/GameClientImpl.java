@@ -1,4 +1,4 @@
-package client;
+package common.client;
 
 import com.google.gson.Gson;
 import com.rabbitmq.client.Connection;
@@ -7,9 +7,9 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 import com.rabbitmq.client.AMQP;
 
-import client.config.Destinations;
-import client.config.MessageTypes;
-import client.messages.Message;
+import common.client.config.MessageTypes;
+import common.client.messages.Message;
+import common.client.config.Destinations;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

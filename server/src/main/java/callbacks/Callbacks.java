@@ -1,8 +1,8 @@
 package callbacks;
 
-import client.CtxCallback;
-import client.GameClient;
-import model.GameData;
+import common.client.CtxCallback;
+import common.client.GameClient;
+import common.model.GameData;
 
 /**
  * Factory that returns the callbacks used inside the server.
