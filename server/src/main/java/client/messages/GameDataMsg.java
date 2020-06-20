@@ -10,12 +10,14 @@ import java.util.Set;
 public final class GameDataMsg extends GenericMsg {
     private List<Tile> puzzle;
     private Set<String> players;
+    private boolean win;
 
 
-    public GameDataMsg(final String sender, final List<Tile> puzzle, final Set<String> players) {
+    public GameDataMsg(final String sender, final List<Tile> puzzle, final Set<String> players, final boolean win) {
         super(sender);
         this.puzzle = puzzle;
         this.players = players;
+        this.win = win;
     }
 
     public List<Tile> getPuzzle() {
@@ -32,5 +34,13 @@ public final class GameDataMsg extends GenericMsg {
 
     public void setPlayers(final Set<String> players) {
         this.players = players;
+    }
+
+    public boolean getWin() {
+        return win;
+    }
+
+    public void setWin(final boolean win) {
+        this.win = win;
     }
 }

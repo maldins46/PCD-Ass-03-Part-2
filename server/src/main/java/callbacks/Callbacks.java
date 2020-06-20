@@ -5,7 +5,7 @@ import client.GameClient;
 import model.GameData;
 
 /**
- * Returns a Callback that is ...
+ * Factory that returns the callbacks used inside the server.
  */
 public final class Callbacks {
 

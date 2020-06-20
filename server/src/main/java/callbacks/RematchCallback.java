@@ -5,8 +5,18 @@ import client.messages.Message;
 import client.messages.RematchMsg;
 import model.GameData;
 
+/**
+ * The callback used when a new player notifies the will to restart the game,
+ * mixing the puzzle.
+ */
 public final class RematchCallback extends GenericServerCallback {
-    public RematchCallback(final GameClient client, final GameData data) {
+
+    /**
+     * Standard callback, with superclass initialization.
+     * @param client the game client.
+     * @param data the game data.
+     */
+    RematchCallback(final GameClient client, final GameData data) {
         super(client, data);
     }
 
@@ -16,9 +26,7 @@ public final class RematchCallback extends GenericServerCallback {
     }
 
     @Override
-    public void execute(final Message rawMessage) {
-        final RematchMsg message = (RematchMsg) rawMessage;
-        data.rematch();
-        terminate(message);
+    public void executeBody(final Message rawMessage) {
+        getData().rematch();
     }
 }

@@ -7,16 +7,16 @@ import client.messages.NewPlayerMsg;
 import model.GameData;
 
 /**
- *
+ * The callback used when a new player notifies the will to join the game.
  */
 public final class NewPlayerCallback extends GenericServerCallback {
 
     /**
-     *
-     * @param client
-     * @param data
+     * Standard callback, with superclass initialization.
+     * @param client the game client.
+     * @param data the game data.
      */
-    public NewPlayerCallback(final GameClient client, final GameData data) {
+    NewPlayerCallback(final GameClient client, final GameData data) {
         super(client, data);
     }
 
@@ -28,12 +28,10 @@ public final class NewPlayerCallback extends GenericServerCallback {
 
 
     @Override
-    public void execute(final Message rawMessage) {
+    public void executeBody(final Message rawMessage) {
         final NewPlayerMsg message = (NewPlayerMsg) rawMessage;
-        data.addPlayer(message.getSender());
+        getData().addPlayer(message.getSender());
         Destinations.addPlayerQueue(message.getSender());
-        client.sendMessage(data.generateGameDataMsg(), Destinations.MATCH_TOPIC_NAME);
-
-        terminate(message);
+        getClient().sendMessage(getData().generateGameDataMsg(), Destinations.MATCH_TOPIC_NAME);
     }
 }

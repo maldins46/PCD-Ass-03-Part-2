@@ -16,23 +16,24 @@ public abstract class GenericServerCallback implements CtxCallback {
     /**
      * Server for the callback.
      */
-    protected final GameClient client;
+    private final GameClient client;
 
     /**
      * The game data.
      */
-    protected final GameData data;
+    private final GameData data;
 
 
     /**
      * Construct a generic callback with server and data.
-     * @param client The game' server.
-     * @param data The game's data.
+     * @param client The game server.
+     * @param data The game data.
      */
     public GenericServerCallback(final GameClient client, final GameData data) {
         this.client = client;
         this.data = data;
     }
+
 
     @Override
     public final String getDestination() {
@@ -40,13 +41,40 @@ public abstract class GenericServerCallback implements CtxCallback {
     }
 
 
-    protected final void terminate(final Message message) {
+    @Override
+    public final void execute(final Message rawMessage) {
+        executeBody(rawMessage);
+        terminate(rawMessage);
+    }
+
+
+    private void terminate(final Message message) {
         PlayerTimers.getInstance().addOrUpdateTimer(message.getSender());
 
         client.sendMessage(data.generateGameDataMsg(), Destinations.MATCH_TOPIC_NAME);
 
         final AckMsg ack = new AckMsg(Destinations.SERVER_QUEUE_NAME, message.getSender());
         client.sendMessage(ack, message.getSender());
+    }
 
+
+    protected abstract void executeBody(Message rawMessage);
+
+
+    /**
+     * Getter for the game client instance, for child classes.
+     * @return The game client.
+     */
+    protected GameClient getClient() {
+        return client;
+    }
+
+
+    /**
+     * Getter for the game data instance, for child classes.
+     * @return The game data.
+     */
+    protected GameData getData() {
+        return data;
     }
 }
