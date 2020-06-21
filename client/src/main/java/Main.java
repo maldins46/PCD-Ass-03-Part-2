@@ -21,15 +21,16 @@ public class Main {
         final String host = Hosts.LOCAL;
         logger.info("Connecting to the RabbitMQ Broker with host " + host + "...");
 
-        gui = PuzzleGui.of();
-        gui.launch();
-
         clientState = GameStates.clientGameState();
         client = GameClient.of(host, false);
         client.connect();
         client.addCallback(Callbacks.gameStateMsg(client, clientState, gui));
         client.addCallback(Callbacks.ackMsg(client, clientState, gui));
         client.listen();
+
+        gui = PuzzleGui.of(client,clientState);
+        gui.launch();
+
         logger.info("✓ Client ready, waiting for messages");
 
     }
