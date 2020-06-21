@@ -26,6 +26,7 @@ public final class GameStateCallback extends GenericClientCallback {
     @Override
     public void execute(Message rawMessage) {
         final GameStateMsg message = (GameStateMsg) rawMessage;
-        getGui().rearrangeTiles(message.getGameState());
+        getGameState().updateData(message);
+        getGui().rearrangeTiles();
     }
 }

@@ -1,5 +1,6 @@
 package gui;
 
+import common.client.GameClient;
 import common.gameState.ReadableGameState;
 
 public interface PuzzleGui {
@@ -12,18 +13,14 @@ public interface PuzzleGui {
 
     /**
      * It's start the game with new data. It's used at the start of all match.
-     * @param gameState The entire tiles of the puzzle. This tiles are only
-     *                  readable because only server do the swap of two tiles.
      */
-    void startMatch(ReadableGameState gameState);
+    void startMatch();
 
 
     /**
      * It's shuffle all tiles for start a new match.
-     * @param gameState The entire tiles of the puzzle. This tiles are only
-     *                  readable because only server do the swap of two tiles.
      */
-    void rearrangeTiles(ReadableGameState gameState);
+    void rearrangeTiles();
 
 
     /**
@@ -32,20 +29,20 @@ public interface PuzzleGui {
      */
     void unlockInterface();
 
+    void lockInterface();
+
 
     /**
      * It's called when the match is finished. Terminate the game and the Gui
      * became not interactive.
-     * @param gameState The entire tiles of the puzzle. This tiles are only
-     *                  readable because only server do the swap of two tiles.
      */
-    void endMatch(ReadableGameState gameState);
+    void endMatch();
 
     /**
      * Factory for create an implementation of this interface.
      * @return The implementation of this interface.
      */
-    static PuzzleGui of() {
-        return new PuzzleGuiImpl();
+    static PuzzleGui of(GameClient client, ReadableGameState gameState) {
+        return new PuzzleGuiImpl(gameState, client);
     }
 }

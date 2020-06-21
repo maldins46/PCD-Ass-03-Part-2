@@ -1,7 +1,12 @@
 package gui;
 
 
+import common.client.GameClient;
+import common.client.config.Destinations;
+import common.client.messages.NewPlayerMsg;
+import common.client.messages.RematchMsg;
 import common.gameState.ReadableGameState;
+import common.model.Player;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -12,9 +17,7 @@ import java.awt.image.FilteredImageSource;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class PuzzleGuiImpl implements PuzzleGui {
 
@@ -25,12 +28,21 @@ public class PuzzleGuiImpl implements PuzzleGui {
 
     private final JFrame mainFrame;
     private final JButton joinButton;
+    private final JButton rematchButton;
     private final JLabel stateLabel;
+    private final List<TileButton> tileButtons = new ArrayList<>();
+    private final List<Image> tileImages = new ArrayList<>();
+
+    private final ReadableGameState gameState;
+    private final GameClient client;
 
     /**
      * Creates the graphic interface but actually is not visible.
      */
-    PuzzleGuiImpl() {
+    PuzzleGuiImpl(final ReadableGameState gameState, final GameClient client) {
+        this.gameState = gameState;
+        this.client = client;
+
         this.mainFrame = new JFrame();
         this.mainFrame.setTitle("MultiPlayer Puzzle - Client");
         this.mainFrame.setResizable(false);
@@ -42,22 +54,36 @@ public class PuzzleGuiImpl implements PuzzleGui {
 
         this.stateLabel = new JLabel("Select join to start.");
         this.joinButton = new JButton("Join match");
+        this.rematchButton = new JButton("Rematch");
+        this.rematchButton.setEnabled(false);
 
         joinButton.addActionListener((e) -> {
             SwingUtilities.invokeLater(() -> {
-               // todo
+                stateLabel.setText("Connecting to the broker...");
+                joinButton.setEnabled(false);
+                NewPlayerMsg msg = new NewPlayerMsg(Destinations.MAIN_CLIENT_QUEUE,
+                        new Player(Destinations.MAIN_CLIENT_QUEUE));
+                client.sendMessage(msg, Destinations.SERVER_QUEUE_NAME);
             });
         });
 
-        generalPanel.add(generateLinePanel(joinButton, stateLabel));
+        rematchButton.addActionListener((e) -> {
+            SwingUtilities.invokeLater(() -> {
+                stateLabel.setText("Starting new match...");
+                rematchButton.setEnabled(false);
+                RematchMsg msg = new RematchMsg(Destinations.MAIN_CLIENT_QUEUE);
+                client.sendMessage(msg, Destinations.SERVER_QUEUE_NAME);
+            });
+        });
+
+        generalPanel.add(generateLinePanel(joinButton, rematchButton, stateLabel));
 
         final JPanel boardPanel = new JPanel();
         boardPanel.setBorder(BorderFactory.createLineBorder(Color.gray));
-        boardPanel.setLayout(new GridLayout(PUZZLE_WIDTH, PUZZLE_HEIGHT, 0, 0));
-        generalPanel.add(boardPanel, BorderLayout.CENTER);
+        boardPanel.setLayout(new GridLayout(PUZZLE_HEIGHT, PUZZLE_WIDTH, 0, 0));
+        generalPanel.add(boardPanel);
 
-        //createTiles(IMAGE_PATH);
-        //paintPuzzle(boardPanel);
+        createTiles();
 
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setContentPane(generalPanel);
@@ -70,23 +96,45 @@ public class PuzzleGuiImpl implements PuzzleGui {
     }
 
     @Override
-    public void startMatch(final ReadableGameState gameState) {
-
+    public void startMatch() {
+        tileButtons.forEach(btn -> {
+            btn.update();
+            btn.setClickable(true);
+        });
+        stateLabel.setText("Match started!");
     }
 
     @Override
-    public void rearrangeTiles(final ReadableGameState gameState) {
-
+    public void rearrangeTiles() {
+        if (gameState.getPlayers().stream().noneMatch(x -> x.equals(new Player(Destinations.MAIN_CLIENT_QUEUE)))) {
+            stateLabel.setText("Timeout expired! You are out of match!");
+            joinButton.setEnabled(true);
+            tileButtons.forEach(btn -> {
+                btn.setClickable(false);
+            });
+        } else {
+            tileButtons.forEach(TileButton::update);
+        }
     }
 
     @Override
     public void unlockInterface() {
-
+        tileButtons.forEach(btn -> {
+            btn.setClickable(true);
+        });
     }
 
     @Override
-    public void endMatch(final ReadableGameState gameState) {
+    public void lockInterface() {
+        tileButtons.forEach(btn -> {
+            btn.setClickable(false);
+        });
+    }
 
+    @Override
+    public void endMatch() {
+        stateLabel.setText("Match finished!");
+        rematchButton.setEnabled(true);
     }
 
     /**
@@ -105,15 +153,14 @@ public class PuzzleGuiImpl implements PuzzleGui {
         return newPanel;
     }
 
-    /*
 
-    private void createTiles(final String imagePath) {
+    private void createTiles() {
         final BufferedImage image;
 
         try {
-            image = ImageIO.read(new File(imagePath));
+            image = ImageIO.read(new File(PuzzleGuiImpl.IMAGE_PATH));
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "Could not load image", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(mainFrame, "Could not load image", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -122,41 +169,20 @@ public class PuzzleGuiImpl implements PuzzleGui {
 
         int position = 0;
 
-        final List<Integer> randomPositions = new ArrayList<>();
-        IntStream.range(0, PUZZLE_HEIGHT * PUZZLE_WIDTH).forEach(item -> { randomPositions.add(item); });
-        //Collections.shuffle(randomPositions);
+        for (int i = 0; i < PUZZLE_HEIGHT; i++) {
+            for (int j = 0; j < PUZZLE_WIDTH; j++) {
+                final Image imagePortion =
+                        mainFrame.createImage(new FilteredImageSource(image.getSource(),
+                        new CropImageFilter(j * imageWidth / PUZZLE_WIDTH,
+                                i * imageHeight / PUZZLE_HEIGHT,
+                                (imageWidth / PUZZLE_WIDTH),
+                                imageHeight / PUZZLE_HEIGHT)));
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                final Image imagePortion = createImage(new FilteredImageSource(image.getSource(),
-                        new CropImageFilter(j * imageWidth / columns,
-                                i * imageHeight / rows,
-                                (imageWidth / columns),
-                                imageHeight / rows)));
-
-                tiles.add(new Tile(imagePortion, position, randomPositions.get(position)));
+                tileImages.add(imagePortion);
+                TileButton tileButton = new TileButton(position, imagePortion, tileImages,gameState,client, this);
+                tileButtons.add(tileButton);
                 position++;
             }
         }
     }
-
-    private void paintPuzzle(final JPanel board) {
-        board.removeAll();
-
-        Collections.sort(tiles);
-
-        tiles.forEach(tile -> {
-            final TileButton btn = new TileButton(tile);
-            board.add(btn);
-            btn.setBorder(BorderFactory.createLineBorder(Color.gray));
-            btn.addActionListener(actionListener -> {
-                selectionManager.selectTile(tile, () -> {
-                    paintPuzzle(board);
-                    checkSolution();
-                });
-            });
-        });
-    }
-
-     */
 }

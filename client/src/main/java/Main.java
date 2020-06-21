@@ -22,6 +22,8 @@ public class Main {
         logger.info("Connecting to the RabbitMQ Broker with host " + host + "...");
 
         gui = PuzzleGui.of();
+        gui.launch();
+
         clientState = GameStates.clientGameState();
         client = GameClient.of(host, false);
         client.connect();
