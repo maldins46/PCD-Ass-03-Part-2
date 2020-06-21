@@ -3,12 +3,14 @@ package common.gameState;
 import common.client.messages.GameStateMsg;
 
 /**
- * todo
+ * This is the game state that client can do.
  */
 public interface ReplaceableGameState extends ReadableGameState {
+
+
     /**
-     * todo
-     * @param updatedData
+     * Update information of the game.
+     * @param updatedData The updated's data.
      */
     void updateData(GameStateMsg updatedData);
 }

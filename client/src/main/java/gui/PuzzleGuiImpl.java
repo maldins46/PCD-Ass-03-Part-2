@@ -27,7 +27,10 @@ public class PuzzleGuiImpl implements PuzzleGui {
     private final JButton joinButton;
     private final JLabel stateLabel;
 
-    public PuzzleGuiImpl() {
+    /**
+     * Creates the graphic interface but actually is not visible.
+     */
+    PuzzleGuiImpl() {
         this.mainFrame = new JFrame();
         this.mainFrame.setTitle("MultiPlayer Puzzle - Client");
         this.mainFrame.setResizable(false);
@@ -61,18 +64,18 @@ public class PuzzleGuiImpl implements PuzzleGui {
         mainFrame.pack();
     }
 
-
+    @Override
     public void launch() {
         mainFrame.setVisible(true);
     }
 
     @Override
-    public void startMatch(ReadableGameState gameState) {
+    public void startMatch(final ReadableGameState gameState) {
 
     }
 
     @Override
-    public void rearrangeTiles(ReadableGameState gameState) {
+    public void rearrangeTiles(final ReadableGameState gameState) {
 
     }
 
@@ -82,7 +85,7 @@ public class PuzzleGuiImpl implements PuzzleGui {
     }
 
     @Override
-    public void endMatch(ReadableGameState gameState) {
+    public void endMatch(final ReadableGameState gameState) {
 
     }
 
