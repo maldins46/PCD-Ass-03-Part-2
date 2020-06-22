@@ -2,14 +2,18 @@ package gui;
 
 import common.client.GameClient;
 import common.gameState.ReadableGameState;
-import common.model.Tile;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JButton;
+import javax.swing.SwingUtilities;
+
+import java.awt.Image;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-public class TileButton extends JButton {
+/**
+ * Class that enclose concept of Tile with the funzionalities of JButton.
+ */
+public final class TileButton extends JButton {
     private final Image originalImage;
     private int originalPosition;
     private boolean clickable = false;
@@ -19,7 +23,10 @@ public class TileButton extends JButton {
     private final List<Image> images;
     private final PuzzleGui gui;
 
-    public TileButton(int originalPosition, Image originalImage, List<Image> images, ReadableGameState gameState, GameClient client, PuzzleGui gui) {
+    public TileButton(final int originalPosition, final Image originalImage,
+                      final List<Image> images,
+                      final ReadableGameState gameState,
+                      final GameClient client, final PuzzleGui gui) {
         this.originalImage = originalImage;
         this.originalPosition = originalPosition;
         this.gameState = gameState;
@@ -40,7 +47,7 @@ public class TileButton extends JButton {
     }
 
     @Override
-    public void addActionListener(ActionListener l) {
+    public void addActionListener(final ActionListener l) {
         SwingUtilities.invokeLater(() -> {
             // todo
             // send msg
