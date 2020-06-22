@@ -41,6 +41,9 @@ public final class GameClientImpl implements GameClient {
      */
     private Channel channel;
 
+    /**
+     * Check if is a client or server.
+     */
     private final boolean isServerModule;
 
 

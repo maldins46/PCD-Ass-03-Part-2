@@ -4,12 +4,12 @@ import common.model.Player;
 import common.model.Tile;
 
 public final class SwapMsg extends GenericMsg {
-    private Tile startTile;
-    private Tile destTile;
-    private Player selector;
+    private final Tile startTile;
+    private final Tile destTile;
+    private final Player selector;
 
 
-    public SwapMsg(final String sender, final Tile startTile, final Tile destTile, final Player selector) {
+    SwapMsg(final String sender, final Tile startTile, final Tile destTile, final Player selector) {
         super(sender);
         this.startTile = startTile;
         this.destTile = destTile;

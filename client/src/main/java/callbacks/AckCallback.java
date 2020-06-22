@@ -10,7 +10,7 @@ import gui.PuzzleGui;
 /**
  * Create a callback for the AckMsg. This msg confirms an action of the player.
  */
-public final class AckCallback extends GenericClientCallback {
+final class AckCallback extends GenericClientCallback {
 
     /**
      * Create an AckCallback.
@@ -18,7 +18,7 @@ public final class AckCallback extends GenericClientCallback {
      * @param gameState The state of the game.
      * @param gui The graphic interface.
      */
-    public AckCallback(final GameClient client,
+    AckCallback(final GameClient client,
                        final ReplaceableGameState gameState,
                        final PuzzleGui gui) {
         super(client, gameState, gui);

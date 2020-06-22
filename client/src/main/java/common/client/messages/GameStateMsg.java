@@ -1,18 +1,17 @@
 package common.client.messages;
 
-import common.gameState.GameState;
 import common.model.Player;
 import common.model.Puzzle;
 
 import java.util.Set;
 
 public final class GameStateMsg extends GenericMsg {
-    private Puzzle puzzle;
-    private Set<Player> players;
-    private boolean win;
+    private final Puzzle puzzle;
+    private final Set<Player> players;
+    private final boolean win;
 
 
-    public GameStateMsg(String sender, Puzzle puzzle, Set<Player> players, boolean win) {
+    GameStateMsg(final String sender, final Puzzle puzzle, final Set<Player> players, final boolean win) {
         super(sender);
         this.puzzle = puzzle;
         this.players = players;

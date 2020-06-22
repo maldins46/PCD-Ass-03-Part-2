@@ -3,12 +3,13 @@ package common.gameState;
 import common.client.messages.GameStateMsg;
 
 /**
- * todo
+ * Client instance that can play to the game. Clients can only clicks to the
+ * tiles but only server do the swap.
  */
 final class ClientGameState extends GameState implements ReplaceableGameState, ReadableGameState {
 
     /**
-     * todo
+     * Constructor for the class.
      */
     ClientGameState() {
         super();

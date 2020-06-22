@@ -5,45 +5,46 @@ import common.model.Player;
 import common.model.Tile;
 
 /**
- * todo
+ * GameState used for server. The server is the only component that can swap
+ * effectively the tiles and he is the one that check if clients have win.
  */
 public interface ModifiableGameState extends ReadableGameState {
 
     /**
-     * todo
-     * @param player
+     * Add a player to the match.
+     * @param player The player that have to be added.
      */
     void addPlayer(Player player);
 
     /**
-     * todo
-     * @param player
+     * Remove a player to the match.
+     * @param player The player that have to be removed.
      */
     void removePlayer(Player player);
 
     /**
-     * todo
+     * Init a new instance of the game.
      */
     void rematch();
 
     /**
-     * todo
-     * @param tile
-     * @param player
+     * Set a tile as selected and assign to this the player.
+     * @param tile The tile selected.
+     * @param player The player that have selected this tile.
      */
     void setTileAsSelected(Tile tile, Player player);
 
     /**
-     * todo
-     * @param startTile
-     * @param destTile
-     * @param player
+     * Switch two tiles.
+     * @param startTile The first tile.
+     * @param destTile The second tile.
+     * @param player The player that do the swap.
      */
     void swapTiles(Tile startTile, Tile destTile, Player player);
 
     /**
-     * todo
-     * @return
+     * Create a gameMsg with the updated data.
+     * @return The game msg.
      */
     GameStateMsg generateGameDataMsg();
 }

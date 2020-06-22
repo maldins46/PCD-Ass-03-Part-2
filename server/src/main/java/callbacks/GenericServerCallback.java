@@ -6,6 +6,7 @@ import common.client.config.Destinations;
 import common.client.config.MessageTypes;
 import common.client.messages.Message;
 import common.client.messages.AckMsg;
+import common.client.messages.Messages;
 import common.gameState.ModifiableGameState;
 import common.model.Player;
 import org.slf4j.Logger;
@@ -67,7 +68,7 @@ abstract class GenericServerCallback implements CtxCallback {
 
         client.sendMessage(gameState.generateGameDataMsg(), Destinations.MATCH_TOPIC_NAME);
 
-        final AckMsg ack = new AckMsg(Destinations.SERVER_QUEUE_NAME, Player.of(message.getSender()));
+        final AckMsg ack = Messages.createAckMsg(Destinations.SERVER_QUEUE_NAME, Player.of(message.getSender()));
         client.sendMessage(ack, message.getSender());
 
 

@@ -3,6 +3,7 @@ package gui;
 
 import common.client.GameClient;
 import common.client.config.Destinations;
+import common.client.messages.Messages;
 import common.client.messages.NewPlayerMsg;
 import common.client.messages.RematchMsg;
 import common.gameState.ReadableGameState;
@@ -19,7 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PuzzleGuiImpl implements PuzzleGui {
+public final class PuzzleGuiImpl implements PuzzleGui {
 
     private static final int PUZZLE_WIDTH = 5;
     private static final int PUZZLE_HEIGHT = 3;
@@ -62,8 +63,8 @@ public class PuzzleGuiImpl implements PuzzleGui {
             SwingUtilities.invokeLater(() -> {
                 stateLabel.setText("Connecting to the broker...");
                 joinButton.setEnabled(false);
-                NewPlayerMsg msg = new NewPlayerMsg(Destinations.MAIN_CLIENT_QUEUE,
-                        new Player(Destinations.MAIN_CLIENT_QUEUE));
+                NewPlayerMsg msg = Messages.createNewPlayerMsg(Destinations.MAIN_CLIENT_QUEUE,
+                        Player.of(Destinations.MAIN_CLIENT_QUEUE));
                 client.sendMessage(msg, Destinations.SERVER_QUEUE_NAME);
             });
         });
@@ -72,7 +73,7 @@ public class PuzzleGuiImpl implements PuzzleGui {
             SwingUtilities.invokeLater(() -> {
                 stateLabel.setText("Starting new match...");
                 rematchButton.setEnabled(false);
-                RematchMsg msg = new RematchMsg(Destinations.MAIN_CLIENT_QUEUE);
+                RematchMsg msg = Messages.createRematchMsg(Destinations.MAIN_CLIENT_QUEUE);
                 client.sendMessage(msg, Destinations.SERVER_QUEUE_NAME);
             });
         });
@@ -99,7 +100,7 @@ public class PuzzleGuiImpl implements PuzzleGui {
 
     @Override
     public void rearrangeTiles() {
-        this.currPlayer = new Player(Destinations.MAIN_CLIENT_QUEUE);
+        this.currPlayer = Player.of(Destinations.MAIN_CLIENT_QUEUE);
         if (gameState.getPlayers().stream().noneMatch(x -> x.equals(currPlayer))) {
             stateLabel.setText("Timeout expired! You are out of match!");
             joinButton.setEnabled(true);

@@ -3,13 +3,8 @@ package common.gameState;
 /**
  * Game state factory.
  */
-public final class GameStates {
+public interface GameStates {
 
-    /**
-     * Private constructor beacause it's not necesssary to instantiate this
-     * class.
-     */
-    private GameStates() { }
 
     /**
      * Create an instance of GameState used from server so this can modify the

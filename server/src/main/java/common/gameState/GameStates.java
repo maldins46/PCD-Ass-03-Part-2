@@ -3,20 +3,15 @@ package common.gameState;
 /**
  * Game state factory.
  */
-public final class GameStates {
+public interface GameStates {
 
-    /**
-     * Private constructor beacause it's not necesssary to instantiate this
-     * class.
-     */
-    private GameStates() { }
 
     /**
      * Create an instance of GameState used from server so this can modify the
      * positions of tiles in the puzzle.
      * @return The instance of ModifiableGameState.
      */
-    public static ModifiableGameState serverGameState() {
+    static ModifiableGameState serverGameState() {
         return new ServerGameState();
     }
 
@@ -27,7 +22,7 @@ public final class GameStates {
      * the tiles and server makes the movements.
      * @return The instance of ReadableGameState.
      */
-    public static ReplaceableGameState clientGameState() {
+    static ReplaceableGameState clientGameState() {
         return new ClientGameState();
     }
 }

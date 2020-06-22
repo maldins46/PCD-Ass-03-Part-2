@@ -43,15 +43,26 @@ public abstract class GenericClientCallback implements CtxCallback {
      */
     protected abstract void executeBody(Message rawMessage);
 
-
+    /**
+     * Return the host.
+     * @return The host.
+     */
     protected final GameClient getClient() {
         return client;
     }
 
+    /**
+     * Getter for the instance of client associated.
+     * @return The client's instance.
+     */
     protected final ReplaceableGameState getGameState() {
         return gameState;
     }
 
+    /**
+     * Getter for the graphic interface.
+     * @return The graphic interface.
+     */
     protected final PuzzleGui getGui() {
         return gui;
     }

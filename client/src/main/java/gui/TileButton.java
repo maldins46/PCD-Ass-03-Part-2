@@ -2,6 +2,7 @@ package gui;
 
 import common.client.GameClient;
 import common.client.config.Destinations;
+import common.client.messages.Messages;
 import common.client.messages.SelectMsg;
 import common.client.messages.SwapMsg;
 import common.gameState.ReadableGameState;
@@ -11,9 +12,9 @@ import common.model.Tile;
 import javax.swing.*;
 
 import java.awt.*;
-import java.awt.event.*;
 import java.util.List;
-import java.util.stream.Stream;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 /**
  * Class that enclose concept of Tile with the funzionalities of JButton.
@@ -69,7 +70,7 @@ public final class TileButton extends JButton implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(final ActionEvent e) {
         SwingUtilities.invokeLater(() -> {
             // send msg
             if (clickable) {
@@ -78,7 +79,7 @@ public final class TileButton extends JButton implements ActionListener {
                 // current player did not selected anything, and current tile is not selected by anyone
                 if (tiles.stream().noneMatch(x -> x.getSelector().equals(currPlayer))
                         && currTile.getSelector().equals(Player.generateEmpty())) {
-                    final SelectMsg msg = new SelectMsg(Destinations.MAIN_CLIENT_QUEUE, currTile, currPlayer);
+                    final SelectMsg msg = Messages.createSelectMsg(Destinations.MAIN_CLIENT_QUEUE, currTile, currPlayer);
                     client.sendMessage(msg, Destinations.SERVER_QUEUE_NAME);
                     gui.lockInterface();
                 }
@@ -86,8 +87,9 @@ public final class TileButton extends JButton implements ActionListener {
                 // current player selected something previously (not me)
                 else if (tiles.stream().anyMatch(x -> x.getSelector().equals(currPlayer))
                         && !currTile.getSelector().equals(Player.generateEmpty())) {
+                    // Always present a player in the tile
                     final Tile startTile = tiles.stream().filter(x -> x.getSelector().equals(currPlayer)).findFirst().get();
-                    final SwapMsg msg = new SwapMsg(Destinations.MAIN_CLIENT_QUEUE, startTile,currTile, currPlayer);
+                    final SwapMsg msg = Messages.createSwapMsg(Destinations.MAIN_CLIENT_QUEUE, startTile,currTile, currPlayer);
                     client.sendMessage(msg, Destinations.SERVER_QUEUE_NAME);
                     gui.lockInterface();
                 }

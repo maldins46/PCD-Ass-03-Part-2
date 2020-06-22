@@ -9,7 +9,7 @@ public final class Tile {
     /**
      * The right position of the tile.
      */
-    private int originalPosition;
+    private final int originalPosition;
 
 
     /**

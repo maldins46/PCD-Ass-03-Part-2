@@ -2,18 +2,19 @@ package common.gameState;
 
 import common.client.config.Destinations;
 import common.client.messages.GameStateMsg;
+import common.client.messages.Messages;
 import common.model.Player;
 import common.model.Tile;
 
 import java.util.Collections;
 
 /**
- * todo
+ * Server of the game. This class has the privilege to modify the tiles sort.
  */
 final class ServerGameState extends GameState implements ModifiableGameState {
 
     /**
-     * todo
+     * Instantiates a ServerGameState. It's create and shuflle the puzzle.
      */
     ServerGameState() {
         super();
@@ -54,7 +55,8 @@ final class ServerGameState extends GameState implements ModifiableGameState {
 
 
     /**
-     * todo
+     * Sort in casual order the tiles in the puzzle. Thanks to this method
+     * client can't see in the game the real order.
      */
     private void shufflePuzzle() {
         Collections.shuffle(getPuzzle().getTiles());
@@ -98,7 +100,7 @@ final class ServerGameState extends GameState implements ModifiableGameState {
 
 
     /**
-     * todo
+     * Check if the puzzle have all tiles in the original positions.
      */
     private void updateWin() {
         setWin(getPuzzle().getTiles().stream().allMatch(x -> x.getCurrentPosition() == x.getOriginalPosition()));
@@ -107,6 +109,6 @@ final class ServerGameState extends GameState implements ModifiableGameState {
 
     @Override
     public GameStateMsg generateGameDataMsg() {
-        return new GameStateMsg(Destinations.SERVER_QUEUE_NAME, getPuzzle(), getPlayers(), getWin());
+        return Messages.createGameStateMsg(Destinations.SERVER_QUEUE_NAME, getPuzzle(), getPlayers(), getWin());
     }
 }

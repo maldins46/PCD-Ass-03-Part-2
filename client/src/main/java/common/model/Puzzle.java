@@ -32,7 +32,7 @@ public final class Puzzle {
     /**
      * Constructor that initialize the dimensions of the puzzle.
      */
-    public Puzzle() {
+    private Puzzle() {
         this.width = PUZZLE_WIDTH;
         this.height = PUZZLE_HEIGHT;
         this.size = width * height;
@@ -73,5 +73,9 @@ public final class Puzzle {
      */
     public List<Tile> getTiles() {
         return tiles;
+    }
+
+    public static Puzzle of() {
+        return new Puzzle();
     }
 }

@@ -8,10 +8,7 @@ import gui.PuzzleGui;
 /**
  * Factory for callbacks.
  */
-public final class Callbacks {
-
-    private Callbacks() { }
-
+public interface Callbacks {
 
     /**
      * Create a GameState Callback. This callback handle a Msg that define the
@@ -21,7 +18,7 @@ public final class Callbacks {
      * @param gui The graphic interface.
      * @return The GameStateCallbacks.
      */
-    public static CtxCallback gameStateMsg(final GameClient client, final ReplaceableGameState state, final PuzzleGui gui) {
+    static CtxCallback gameStateMsg(final GameClient client, final ReplaceableGameState state, final PuzzleGui gui) {
         return new GameStateCallback(client, state, gui);
     }
 
@@ -34,7 +31,7 @@ public final class Callbacks {
      * @param gui The graphic interface.
      * @return The AckCallback.
      */
-    public static CtxCallback ackMsg(final GameClient client, final ReplaceableGameState state, final PuzzleGui gui) {
+    static CtxCallback ackMsg(final GameClient client, final ReplaceableGameState state, final PuzzleGui gui) {
         return new AckCallback(client, state, gui);
     }
 

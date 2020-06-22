@@ -37,6 +37,12 @@ public interface GameClient {
     void disconnect();
 
 
+    /**
+     * Create an instance of an host.
+     * @param host The address of the host.
+     * @param isServerModule True if is server, false for client.
+     * @return The instance of the host.
+     */
     static GameClient of(String host, boolean isServerModule) {
         return new GameClientImpl(host, isServerModule);
     }

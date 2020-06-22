@@ -4,16 +4,15 @@ import common.client.GameClient;
 import common.client.config.Destinations;
 import common.client.messages.GameStateMsg;
 import common.client.messages.Message;
-import common.client.messages.NewPlayerMsg;
 import common.gameState.ReplaceableGameState;
 import common.model.Tile;
 import gui.PuzzleGui;
 
-import java.util.Collections;
 import java.util.Comparator;
 
-public final class GameStateCallback extends GenericClientCallback {
-    public GameStateCallback(GameClient client, ReplaceableGameState gameState, PuzzleGui gui) {
+final class GameStateCallback extends GenericClientCallback {
+
+    GameStateCallback(GameClient client, ReplaceableGameState gameState, PuzzleGui gui) {
         super(client, gameState, gui);
     }
 

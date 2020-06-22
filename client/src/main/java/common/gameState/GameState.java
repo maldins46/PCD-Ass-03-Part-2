@@ -18,7 +18,7 @@ public abstract class GameState implements ReadableGameState {
 
 
     public GameState() {
-        this.puzzle = new Puzzle();
+        this.puzzle = Puzzle.of();
         this.players = new HashSet<>();
     }
 

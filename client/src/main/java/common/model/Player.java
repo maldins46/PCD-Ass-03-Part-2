@@ -2,10 +2,17 @@ package common.model;
 
 import java.util.Objects;
 
+/**
+ * Class for players in the game.
+ */
 public final class Player {
-    private String name;
 
-    public Player(final String name) {
+    /**
+     * The player's name.
+     */
+    private final String name;
+
+    private Player(final String name) {
         this.name = name;
     }
 

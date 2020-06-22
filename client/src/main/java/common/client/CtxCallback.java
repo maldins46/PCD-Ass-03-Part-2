@@ -7,6 +7,8 @@ import common.client.messages.Message;
  * from a specific destination, is received.
  */
 public interface CtxCallback {
+
+
     /**
      * The type of the received message.
      */
@@ -22,5 +24,5 @@ public interface CtxCallback {
      * @param message The received message. Generally, it can be casted
      *                to the specific message type without problems.
      */
-    void execute(Message message);
+    void execute(final Message message);
 }

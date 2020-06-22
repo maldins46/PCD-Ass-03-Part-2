@@ -2,7 +2,7 @@ package common.client.messages;
 
 
 public abstract class GenericMsg implements Message {
-    private String sender;
+    private final String sender;
 
     public GenericMsg(final String sender) {
         this.sender = sender;
