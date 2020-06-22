@@ -7,10 +7,26 @@ public final class Puzzle {
     public static final int PUZZLE_WIDTH = 5;
     public static final int PUZZLE_HEIGHT = 3;
 
-    private int width;
-    private int height;
-    private int size;
-    private List<Tile> tiles;
+
+    /**
+     * The number of tiles in width in the puzzle.
+     */
+    private final int width;
+
+    /**
+     * The number of tiles in height in the puzzle.
+     */
+    private final int height;
+
+    /**
+     * The number of tiles. It's find with height * width.
+     */
+    private final int size;
+
+    /**
+     * The list of tiles.
+     */
+    private final List<Tile> tiles;
 
     public Puzzle() {
         this.width = PUZZLE_WIDTH;
