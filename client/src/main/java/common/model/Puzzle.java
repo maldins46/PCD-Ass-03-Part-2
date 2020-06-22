@@ -28,6 +28,10 @@ public final class Puzzle {
      */
     private final List<Tile> tiles;
 
+
+    /**
+     * Constructor that initialize the dimensions of the puzzle.
+     */
     public Puzzle() {
         this.width = PUZZLE_WIDTH;
         this.height = PUZZLE_HEIGHT;
@@ -35,18 +39,38 @@ public final class Puzzle {
         this.tiles = new ArrayList<>();
     }
 
+
+    /**
+     * Getter for width. Unused except for marshalling.
+     * @return The puzzle's width.
+     */
     public int getWidth() {
         return width;
     }
 
+
+    /**
+     * Getter for height. Unused except for marshalling.
+     * @return The puzzle's height.
+     */
     public int getHeight() {
         return height;
     }
 
+
+    /**
+     * Getter for size.
+     * @return The puzzle's size.
+     */
     public int getSize() {
         return size;
     }
 
+
+    /**
+     * Getter for all the puzzle's tiles.
+     * @return The puzzle tiles.
+     */
     public List<Tile> getTiles() {
         return tiles;
     }
