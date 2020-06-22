@@ -107,6 +107,6 @@ final class ServerGameState extends GameState implements ModifiableGameState {
 
     @Override
     public GameStateMsg generateGameDataMsg() {
-        return new GameStateMsg(Destinations.SERVER_QUEUE_NAME, this);
+        return new GameStateMsg(Destinations.SERVER_QUEUE_NAME, getPuzzle(), getPlayers(), getWin());
     }
 }

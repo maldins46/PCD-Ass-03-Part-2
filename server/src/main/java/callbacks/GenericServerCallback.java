@@ -3,16 +3,22 @@ package callbacks;
 import common.client.CtxCallback;
 import common.client.GameClient;
 import common.client.config.Destinations;
+import common.client.config.MessageTypes;
 import common.client.messages.Message;
 import common.client.messages.AckMsg;
 import common.gameState.ModifiableGameState;
 import common.model.Player;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import timeouts.PlayerTimeouts;
 
 /**
  * The class is a base for callback.
  */
 abstract class GenericServerCallback implements CtxCallback {
+
+    protected static final Logger logger = LoggerFactory.getLogger(GenericServerCallback.class);
+
 
     /**
      * Server for the callback.
@@ -44,6 +50,7 @@ abstract class GenericServerCallback implements CtxCallback {
 
     @Override
     public final void execute(final Message rawMessage) {
+        logger.info("Received " + MessageTypes.getTypeFromMessage(rawMessage) + " from " + rawMessage.getSender());
         executeBody(rawMessage);
         terminate(rawMessage);
     }
@@ -62,6 +69,8 @@ abstract class GenericServerCallback implements CtxCallback {
 
         final AckMsg ack = new AckMsg(Destinations.SERVER_QUEUE_NAME, Player.of(message.getSender()));
         client.sendMessage(ack, message.getSender());
+
+
     }
 
 

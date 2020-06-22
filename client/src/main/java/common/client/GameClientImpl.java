@@ -9,7 +9,9 @@ import common.client.messages.Message;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
@@ -96,7 +98,7 @@ public final class GameClientImpl implements GameClient {
             sendMessageInTopic(destination, message);
 
         } else if (Destinations.isKnownQueue(destination)) {
-           sendMessageInQueue(destination, message);
+            sendMessageInQueue(destination, message);
         }
     }
 
@@ -148,7 +150,7 @@ public final class GameClientImpl implements GameClient {
             final Gson gson = new Gson();
 
             final String stringifiedMsg = new String(rawMsg.getBody(), StandardCharsets.UTF_8);
-            final String typeHeader = (String) rawMsg.getProperties().getHeaders().get("type");
+            final String typeHeader = rawMsg.getProperties().getHeaders().get("type").toString();
 
             final Class<? extends Message> messageClass = MessageTypes.getClassFromType(typeHeader);
             final Message message = gson.fromJson(stringifiedMsg, messageClass);
@@ -232,7 +234,6 @@ public final class GameClientImpl implements GameClient {
             final AMQP.BasicProperties customProps = generateCustomHeaderType(message);
             final byte[] serializedMsg = serializeMessage(message);
 
-            channel.queueDeclare(queueName, false, false, false, null);
             channel.basicPublish("", queueName, customProps, serializedMsg);
 
         } catch (IOException e) {
@@ -249,9 +250,11 @@ public final class GameClientImpl implements GameClient {
      */
     private AMQP.BasicProperties generateCustomHeaderType(final Message message) {
         String msgType = MessageTypes.getTypeFromMessage(message);
-        AMQP.BasicProperties msgProperties = new AMQP.BasicProperties();
-        msgProperties.getHeaders().put("type", msgType);
-        return msgProperties;
+
+        Map<String, Object> headers = new HashMap<>();
+        headers.put("type",  msgType);
+
+        return new AMQP.BasicProperties.Builder().headers(headers).build();
     }
 
 

@@ -35,6 +35,7 @@ public class PuzzleGuiImpl implements PuzzleGui {
 
     private final ReadableGameState gameState;
     private final GameClient client;
+    private Player currPlayer;
 
     /**
      * Creates the graphic interface but actually is not visible.
@@ -81,9 +82,10 @@ public class PuzzleGuiImpl implements PuzzleGui {
         final JPanel boardPanel = new JPanel();
         boardPanel.setBorder(BorderFactory.createLineBorder(Color.gray));
         boardPanel.setLayout(new GridLayout(PUZZLE_HEIGHT, PUZZLE_WIDTH, 0, 0));
-        generalPanel.add(boardPanel);
 
-        createTiles();
+        createTiles(boardPanel);
+
+        generalPanel.add(boardPanel);
 
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setContentPane(generalPanel);
@@ -96,24 +98,20 @@ public class PuzzleGuiImpl implements PuzzleGui {
     }
 
     @Override
-    public void startMatch() {
-        tileButtons.forEach(btn -> {
-            btn.update();
-            btn.setClickable(true);
-        });
-        stateLabel.setText("Match started!");
-    }
-
-    @Override
     public void rearrangeTiles() {
-        if (gameState.getPlayers().stream().noneMatch(x -> x.equals(new Player(Destinations.MAIN_CLIENT_QUEUE)))) {
+        this.currPlayer = new Player(Destinations.MAIN_CLIENT_QUEUE);
+        if (gameState.getPlayers().stream().noneMatch(x -> x.equals(currPlayer))) {
             stateLabel.setText("Timeout expired! You are out of match!");
             joinButton.setEnabled(true);
             tileButtons.forEach(btn -> {
                 btn.setClickable(false);
             });
         } else {
-            tileButtons.forEach(TileButton::update);
+            stateLabel.setText("Match started!");
+            tileButtons.forEach(btn -> {
+                btn.setClickable(true);
+                btn.update();
+            });
         }
     }
 
@@ -154,7 +152,7 @@ public class PuzzleGuiImpl implements PuzzleGui {
     }
 
 
-    private void createTiles() {
+    private void createTiles(JPanel boardPanel) {
         final BufferedImage image;
 
         try {
@@ -167,7 +165,6 @@ public class PuzzleGuiImpl implements PuzzleGui {
         final int imageWidth = image.getWidth(null);
         final int imageHeight = image.getHeight(null);
 
-        int position = 0;
 
         for (int i = 0; i < PUZZLE_HEIGHT; i++) {
             for (int j = 0; j < PUZZLE_WIDTH; j++) {
@@ -179,10 +176,14 @@ public class PuzzleGuiImpl implements PuzzleGui {
                                 imageHeight / PUZZLE_HEIGHT)));
 
                 tileImages.add(imagePortion);
-                TileButton tileButton = new TileButton(position, imagePortion, tileImages,gameState,client, this);
-                tileButtons.add(tileButton);
-                position++;
             }
+        }
+
+        for (int i = 0; i < tileImages.size(); i++) {
+            TileButton tileButton = new TileButton(i, tileImages.get(i), tileImages, gameState, client, this, currPlayer);
+            tileButtons.add(tileButton);
+            boardPanel.add(tileButton);
+            tileButton.setClickable(false);
         }
     }
 }

@@ -35,7 +35,7 @@ public final class AckCallback extends GenericClientCallback {
     }
 
     @Override
-    public void execute(final Message rawMessage) {
+    public void executeBody(final Message rawMessage) {
         getGui().unlockInterface();
     }
 }

@@ -53,7 +53,7 @@ public final class MessageTypes {
      */
     public static String getTypeFromMessage(final Message message) {
         for (Entry<String, Class<? extends Message>> entry : MSG_TYPES.entrySet()) {
-            if (message.getClass().isInstance(entry.getValue())) {
+            if (message.getClass().equals(entry.getValue())) {
                 return entry.getKey();
             }
         }

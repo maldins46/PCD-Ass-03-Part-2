@@ -23,14 +23,14 @@ public class Main {
 
         clientState = GameStates.clientGameState();
         client = GameClient.of(host, false);
+        gui = PuzzleGui.of(client, clientState);
+
         client.connect();
         client.addCallback(Callbacks.gameStateMsg(client, clientState, gui));
         client.addCallback(Callbacks.ackMsg(client, clientState, gui));
+
         client.listen();
-
-        gui = PuzzleGui.of(client,clientState);
         gui.launch();
-
         logger.info("✓ Client ready, waiting for messages");
 
     }

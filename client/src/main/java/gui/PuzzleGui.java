@@ -12,12 +12,6 @@ public interface PuzzleGui {
 
 
     /**
-     * It's start the game with new data. It's used at the start of all match.
-     */
-    void startMatch();
-
-
-    /**
      * It's shuffle all tiles for start a new match.
      */
     void rearrangeTiles();
