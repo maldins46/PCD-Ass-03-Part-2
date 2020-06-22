@@ -29,7 +29,7 @@ public final class GameClientImpl implements GameClient {
      * Standard callbacks, i.e. of which anyone is related to the server queue
      * or the match topic, and that is related to a specific message type.
      */
-    private Set<CtxCallback> ctxCallbacks = new HashSet<>();
+    private final Set<CtxCallback> ctxCallbacks = new HashSet<>();
 
     /**
      * The connection AMQP instance, used to open channels.
@@ -41,7 +41,7 @@ public final class GameClientImpl implements GameClient {
      */
     private Channel channel;
 
-    private boolean isServerModule;
+    private final boolean isServerModule;
 
 
     /**
