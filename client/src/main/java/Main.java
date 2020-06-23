@@ -19,8 +19,6 @@ public class Main {
         logger.info("Client started...");
 
         final String host = Hosts.LOCAL;
-        logger.info("Connecting to the RabbitMQ Broker with host " + host + "...");
-
         clientState = GameStates.clientGameState();
         client = GameClient.of(host, false);
         gui = PuzzleGui.of(client, clientState);

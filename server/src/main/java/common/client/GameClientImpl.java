@@ -6,6 +6,7 @@ import common.client.config.Destinations;
 import common.client.config.Hosts;
 import common.client.config.MessageTypes;
 import common.client.messages.Message;
+import common.model.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +17,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
 
 public final class GameClientImpl implements GameClient {
 
@@ -33,9 +33,7 @@ public final class GameClientImpl implements GameClient {
      * Standard callbacks, i.e. of which anyone is related to the server queue
      * or the match topic, and that is related to a specific message type.
      */
-    private final Set<CtxCallback> persQueueCallbacks = new HashSet<>();
-    private final Set<CtxCallback> matchTopicCallbacks = new HashSet<>();
-
+    private final Set<CtxCallback> ctxCallbacks = new HashSet<>();
 
     /**
      * The connection AMQP instance, used to open channels.
@@ -74,16 +72,20 @@ public final class GameClientImpl implements GameClient {
         try {
             connection = factory.newConnection();
             channel = connection.createChannel();
+            logger.info("Connected to the broker, with host " + host);
 
-            final String mainClientQueue;
             if (isServerModule) {
-                mainClientQueue = channel.queueDeclare(Destinations.SERVER_QUEUE_NAME,
-                        false, false, false, null)
-                        .getQueue();
+                final String queueName = channel.queueDeclare(Destinations.SERVER_QUEUE_NAME,
+                        false, false, false, null).getQueue();
+                Destinations.setPersonalQueue(queueName);
+
             } else {
-                mainClientQueue = channel.queueDeclare().getQueue();
+                final String queueName = channel.queueDeclare().getQueue();
+                channel.exchangeDeclare(Destinations.MATCH_TOPIC_NAME, "fanout");
+                channel.queueBind(queueName, Destinations.MATCH_TOPIC_NAME, "");
+                Destinations.setPersonalQueue(queueName);
             }
-            Destinations.setMainClientQueue(mainClientQueue);
+            logger.info("Personal queue subscribed");
 
         } catch (IOException | TimeoutException e) {
             e.printStackTrace();
@@ -102,78 +104,51 @@ public final class GameClientImpl implements GameClient {
 
 
     @Override
-    public void sendMessage(final Message message, final String destination) {
-        if (Destinations.isKnownTopic(destination)) {
-            sendMessageInTopic(destination, message);
-            logger.info("Send message "+ MessageTypes.getTypeFromMessage(message) +" into topic " + destination);
-
-
-        } else if (Destinations.isKnownQueue(destination)) {
-            sendMessageInQueue(destination, message);
-            logger.info("Send message "+ MessageTypes.getTypeFromMessage(message) +" to queue " + destination);
-
-        }
-    }
-
-    @Override
     public void addCallback(final CtxCallback callback) {
-        if (Destinations.MAIN_CLIENT_QUEUE.equals(callback.getDestination())) {
-            persQueueCallbacks.add(callback);
-        } else if (Destinations.MATCH_TOPIC_NAME.equals(callback.getDestination())) {
-            matchTopicCallbacks.add(callback);
-        }
+        ctxCallbacks.add(callback);
     }
 
 
     @Override
     public void listen() {
-        if (!persQueueCallbacks.isEmpty()) {
-            subscribeQueue(Destinations.MAIN_CLIENT_QUEUE,
-                    (consumerTag, rawMsg) -> {
-                        final Gson gson = new Gson();
+        try {
+            channel.basicConsume(Destinations.PERSONAL_QUEUE, true,
+                    generateAmqpCallback(), consumerTag -> { });
+            logger.info("Listening in personal queue");
 
-                        final String stringifiedMsg = new String(rawMsg.getBody(), StandardCharsets.UTF_8);
-                        final String typeHeader = rawMsg.getProperties().getHeaders().get("type").toString();
-
-                        final Class<? extends Message> messageClass = MessageTypes.getClassFromType(typeHeader);
-                        final Message message = gson.fromJson(stringifiedMsg, messageClass);
-
-                        persQueueCallbacks.stream()
-                                .filter(ctxCallback -> ctxCallback.getMessageType().equals(messageClass))
-                                .forEach(ctxCallback -> ctxCallback.execute(message));
-
-                    }
-            );
-        }
-
-        if (!matchTopicCallbacks.isEmpty()) {
-            subscribeTopic(Destinations.MATCH_TOPIC_NAME,
-                    (consumerTag, rawMsg) -> {
-                        final Gson gson = new Gson();
-
-                        final String stringifiedMsg = new String(rawMsg.getBody(), StandardCharsets.UTF_8);
-                        final String typeHeader = rawMsg.getProperties().getHeaders().get("type").toString();
-
-                        final Class<? extends Message> messageClass = MessageTypes.getClassFromType(typeHeader);
-                        final Message message = gson.fromJson(stringifiedMsg, messageClass);
-
-                        matchTopicCallbacks.stream()
-                                .filter(ctxCallback -> ctxCallback.getMessageType().equals(messageClass))
-                                .forEach(ctxCallback -> ctxCallback.execute(message));
-
-                    });
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
+    @Override
+    public void sendMessageToServer(final Message message) {
+        sendMessageInQueue(Destinations.SERVER_QUEUE_NAME, message);
+        logger.info("Sent message "+ MessageTypes.getTypeFromMessage(message) + " to the server");
+    }
+
+    @Override
+    public void sendMessageToPlayer(final Player player, final Message message) {
+        if (Destinations.isPlayerQueue(player.getName())) {
+            sendMessageInQueue(player.getName(), message);
+            logger.info("Sent message "+ MessageTypes.getTypeFromMessage(message) +" to player " + player.getName());
+        }
+    }
+
+
+    @Override
+    public void sendMessageToMatch(final Message message) {
+        sendMessageInTopic(Destinations.MATCH_TOPIC_NAME, message);
+        logger.info("Sent message "+ MessageTypes.getTypeFromMessage(message) +" to the match topic");
+    }
 
 
     /**
      * Generates a callback as specified by the AmqpClient library, composing it
      * with the given stdCallbacks.
-     * @param destination The destination to subscribe.
      * @return The generated callback.
      */
-    private DeliverCallback generateAmqpCallback(final String destination) {
+    private DeliverCallback generateAmqpCallback() {
         return (consumerTag, rawMsg) -> {
             final Gson gson = new Gson();
 
@@ -183,49 +158,12 @@ public final class GameClientImpl implements GameClient {
             final Class<? extends Message> messageClass = MessageTypes.getClassFromType(typeHeader);
             final Message message = gson.fromJson(stringifiedMsg, messageClass);
 
-            if(destination.equals(Destinations.MATCH_TOPIC_NAME)) {
-                matchTopicCallbacks.stream()
-                        .filter(ctxCallback -> ctxCallback.getMessageType().equals(messageClass))
-                        .forEach(ctxCallback -> ctxCallback.execute(message));
-            } else if (destination.equals(Destinations.MAIN_CLIENT_QUEUE)) {
-                persQueueCallbacks.stream()
-                        .filter(ctxCallback -> ctxCallback.getMessageType().equals(messageClass))
-                        .forEach(ctxCallback -> ctxCallback.execute(message));
-            }
+            logger.info("Received " + MessageTypes.getTypeFromMessage(message) + " into personal queue");
+
+            ctxCallbacks.stream()
+                    .filter(ctxCallback -> ctxCallback.getMessageType().equals(messageClass))
+                    .forEach(ctxCallback -> ctxCallback.execute(message));
         };
-    }
-
-
-    /**
-     * Create a queue with a specified name, if not present. A queue without a binding
-     * is associated to the deafult exchange. Than subscribe it.
-     * @param queueName The name of the queue.
-     * @param destCallback What to execute when a message arrives in the queue.
-     */
-    private void subscribeQueue(final String queueName, final DeliverCallback destCallback) {
-        try {
-            channel.basicConsume(queueName, true, destCallback, consumerTag -> { });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    /**
-     * Creates a random queue, a dedicated fanout exchange (if not present), and does the
-     * binding. That will simulate a topic pub-sub mechanism.
-     * @param topicName The name of the topic.
-     * @param destCallback What to execute when a message arrives in the topic.
-     */
-    private void subscribeTopic(final String topicName, final DeliverCallback destCallback) {
-        try {
-            channel.exchangeDeclare(topicName, "fanout");
-            channel.queueBind(Destinations.MAIN_CLIENT_QUEUE, topicName, "");
-            channel.basicConsume(Destinations.MAIN_CLIENT_QUEUE, true, destCallback, consumerTag -> { });
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
 
@@ -235,7 +173,6 @@ public final class GameClientImpl implements GameClient {
      * exchange-queue mechanism. Given a message, it creates a custom header
      * that indicates the message type; Then it creates a dedicated fanout
      * exchange, if not present. Then, it sends the message in it.
-     * @param topicName The name of the topic.
      * @param message The message to be sent, as an instance of the message
      *                interface.
      */
@@ -266,7 +203,6 @@ public final class GameClientImpl implements GameClient {
         try {
             final AMQP.BasicProperties customProps = generateCustomHeaderType(message);
             final byte[] serializedMsg = serializeMessage(message);
-
             channel.basicPublish("", queueName, customProps, serializedMsg);
 
         } catch (IOException e) {

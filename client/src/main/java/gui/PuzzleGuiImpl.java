@@ -63,9 +63,9 @@ public final class PuzzleGuiImpl implements PuzzleGui {
             SwingUtilities.invokeLater(() -> {
                 stateLabel.setText("Connecting to the broker...");
                 joinButton.setEnabled(false);
-                NewPlayerMsg msg = Messages.createNewPlayerMsg(Destinations.MAIN_CLIENT_QUEUE,
-                        Player.of(Destinations.MAIN_CLIENT_QUEUE));
-                client.sendMessage(msg, Destinations.SERVER_QUEUE_NAME);
+                NewPlayerMsg msg = Messages.createNewPlayerMsg(Destinations.PERSONAL_QUEUE,
+                        Player.of(Destinations.PERSONAL_QUEUE));
+                client.sendMessageToServer(msg);
             });
         });
 
@@ -73,8 +73,8 @@ public final class PuzzleGuiImpl implements PuzzleGui {
             SwingUtilities.invokeLater(() -> {
                 stateLabel.setText("Starting new match...");
                 rematchButton.setEnabled(false);
-                RematchMsg msg = Messages.createRematchMsg(Destinations.MAIN_CLIENT_QUEUE);
-                client.sendMessage(msg, Destinations.SERVER_QUEUE_NAME);
+                RematchMsg msg = Messages.createRematchMsg(Destinations.PERSONAL_QUEUE);
+                client.sendMessageToServer(msg);
             });
         });
 
@@ -100,7 +100,7 @@ public final class PuzzleGuiImpl implements PuzzleGui {
 
     @Override
     public void rearrangeTiles() {
-        this.currPlayer = Player.of(Destinations.MAIN_CLIENT_QUEUE);
+        this.currPlayer = Player.of(Destinations.PERSONAL_QUEUE);
         if (gameState.getPlayers().stream().noneMatch(x -> x.equals(currPlayer))) {
             stateLabel.setText("Timeout expired! You are out of match!");
             joinButton.setEnabled(true);

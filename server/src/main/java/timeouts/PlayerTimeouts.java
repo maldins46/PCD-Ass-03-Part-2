@@ -55,7 +55,7 @@ public final class PlayerTimeouts {
             state.removePlayer(player);
             Destinations.removePlayerQueue(player.getName());
 
-            client.sendMessage(state.generateGameDataMsg(), Destinations.MATCH_TOPIC_NAME);
+            client.sendMessageToMatch(state.generateGameDataMsg());
         });
 
         PLAYERS_TIMEOUTS.put(player, newTimeoutFuture);

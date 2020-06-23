@@ -1,6 +1,7 @@
 package common.client;
 
 import common.client.messages.Message;
+import common.model.Player;
 
 
 /**
@@ -18,13 +19,12 @@ public interface GameClient {
 
     void listen();
 
-    /**
-     * It sends a message against a given destination. The fact that
-     * the destination is a topic or a queue is transparent to the user.
-     * @param message The message to be sent.
-     * @param destination The destination against which send the message.
-     */
-    void sendMessage(Message message, String destination);
+    void sendMessageToServer(Message message);
+
+    void sendMessageToPlayer(Player player, Message message);
+
+    void sendMessageToMatch(Message message);
+
 
     /**
      * It closes the connection gracefully.

@@ -21,10 +21,6 @@ final class GameStateCallback extends GenericClientCallback {
         return GameStateMsg.class;
     }
 
-    @Override
-    public String getDestination() {
-        return Destinations.MATCH_TOPIC_NAME;
-    }
 
     @Override
     public void executeBody(final Message rawMessage) {

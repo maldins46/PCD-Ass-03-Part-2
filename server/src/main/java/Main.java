@@ -18,8 +18,6 @@ public class Main {
         logger.info("Server started...");
 
         final String host = Hosts.LOCAL;
-        logger.info("Connecting to the RabbitMQ Broker with host " + host + "...");
-
         serverState = GameStates.serverGameState();
         client = GameClient.of(host, true);
         client.connect();

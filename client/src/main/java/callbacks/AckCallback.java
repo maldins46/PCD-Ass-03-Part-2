@@ -29,10 +29,6 @@ final class AckCallback extends GenericClientCallback {
         return AckMsg.class;
     }
 
-    @Override
-    public String getDestination() {
-        return Destinations.MAIN_CLIENT_QUEUE;
-    }
 
     @Override
     public void executeBody(final Message rawMessage) {

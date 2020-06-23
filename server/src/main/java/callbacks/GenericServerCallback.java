@@ -44,12 +44,6 @@ abstract class GenericServerCallback implements CtxCallback {
 
 
     @Override
-    public final String getDestination() {
-        return Destinations.MAIN_CLIENT_QUEUE;
-    }
-
-
-    @Override
     public final void execute(final Message rawMessage) {
         logger.info("Received " + MessageTypes.getTypeFromMessage(rawMessage) + " from " + rawMessage.getSender());
         executeBody(rawMessage);
@@ -66,10 +60,10 @@ abstract class GenericServerCallback implements CtxCallback {
     private void terminate(final Message message) {
         PlayerTimeouts.addOrUpdateTimer(Player.of(message.getSender()), client, gameState);
 
-        client.sendMessage(gameState.generateGameDataMsg(), Destinations.MATCH_TOPIC_NAME);
+        client.sendMessageToMatch(gameState.generateGameDataMsg());
 
         final AckMsg ack = Messages.createAckMsg(Destinations.SERVER_QUEUE_NAME, Player.of(message.getSender()));
-        client.sendMessage(ack, message.getSender());
+        client.sendMessageToPlayer(Player.of(message.getSender()), ack);
     }
 
 

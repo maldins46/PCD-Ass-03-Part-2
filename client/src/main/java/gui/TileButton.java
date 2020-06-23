@@ -50,7 +50,7 @@ public final class TileButton extends JButton implements ActionListener {
 
     public void update() {
         this.currTile = gameState.getPuzzle().getTiles().get(originalPosition);
-        this.currPlayer = Player.of(Destinations.MAIN_CLIENT_QUEUE);
+        this.currPlayer = Player.of(Destinations.PERSONAL_QUEUE);
 
 
         if (currTile.getSelector().equals(currPlayer)) {
@@ -84,8 +84,8 @@ public final class TileButton extends JButton implements ActionListener {
                 // current player did not selected anything, and current tile is not selected by anyone
                 if (tiles.stream().noneMatch(x -> x.getSelector().equals(currPlayer))
                         && currTile.getSelector().equals(Player.generateEmpty())) {
-                    final SelectMsg msg = Messages.createSelectMsg(Destinations.MAIN_CLIENT_QUEUE, currTile, currPlayer);
-                    client.sendMessage(msg, Destinations.SERVER_QUEUE_NAME);
+                    final SelectMsg msg = Messages.createSelectMsg(Destinations.PERSONAL_QUEUE, currTile, currPlayer);
+                    client.sendMessageToServer(msg);
                     gui.lockInterface();
                 }
 
@@ -94,8 +94,8 @@ public final class TileButton extends JButton implements ActionListener {
                         && currTile.getSelector().equals(Player.generateEmpty())) {
                     // Always present a player in the tile
                     final Tile startTile = tiles.stream().filter(x -> x.getSelector().equals(currPlayer)).findFirst().get();
-                    final SwapMsg msg = Messages.createSwapMsg(Destinations.MAIN_CLIENT_QUEUE, startTile,currTile, currPlayer);
-                    client.sendMessage(msg, Destinations.SERVER_QUEUE_NAME);
+                    final SwapMsg msg = Messages.createSwapMsg(Destinations.PERSONAL_QUEUE, startTile,currTile, currPlayer);
+                    client.sendMessageToServer(msg);
                     gui.lockInterface();
                 }
             }

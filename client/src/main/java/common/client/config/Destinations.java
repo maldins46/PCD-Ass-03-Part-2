@@ -29,7 +29,7 @@ public final class Destinations {
     /**
      * Memorizes the last broker-assigned queue, derived from a topic subscription.
      */
-    public static String MAIN_CLIENT_QUEUE = "";
+    public static String PERSONAL_QUEUE = "";
 
 
     /**
@@ -41,31 +41,12 @@ public final class Destinations {
         return SERVER_QUEUE_NAME.equals(destination)
                 || MATCH_TOPIC_NAME.equals(destination)
                 || PLAYERS_QUEUE.contains(destination)
-                || MAIN_CLIENT_QUEUE.equals(destination);
+                || PERSONAL_QUEUE.equals(destination);
     }
 
 
-    /**
-     * Returns true if the destination is known, and if it is a topic.
-     * @param destination The given destination.
-     * @return True if the destination is known, and if it is a topic;
-     *         false otherwise.
-     */
-    public static boolean isKnownTopic(final String destination) {
-        return destination.equals(MATCH_TOPIC_NAME);
-    }
-
-
-    /**
-     * Returns true if the destination is known, and if it is a queue.
-     * @param destination The given destination.
-     * @return True if the destination is known, and if it is a queue;
-     *         false otherwise.
-     */
-    public static boolean isKnownQueue(final String destination) {
-        return SERVER_QUEUE_NAME.equals(destination)
-                || PLAYERS_QUEUE.contains(destination)
-                || destination.equals(MAIN_CLIENT_QUEUE);
+    public static boolean isPlayerQueue(final String destination) {
+        return PLAYERS_QUEUE.contains(destination)  ;
     }
 
 
@@ -86,7 +67,7 @@ public final class Destinations {
         PLAYERS_QUEUE.remove(destination);
     }
 
-    public static void setMainClientQueue(String queueName) {
-        MAIN_CLIENT_QUEUE = queueName;
+    public static void setPersonalQueue(final String queueName) {
+        PERSONAL_QUEUE = queueName;
     }
 }

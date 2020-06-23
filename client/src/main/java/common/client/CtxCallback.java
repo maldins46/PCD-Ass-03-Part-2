@@ -13,11 +13,6 @@ public interface CtxCallback {
     Class<? extends Message> getMessageType();
 
     /**
-     * The destination from which the message has been received.
-     */
-    String getDestination();
-
-    /**
      * The action to be executed when message arrives.
      * @param message The received message. Generally, it can be casted
      *                to the specific message type without problems.
