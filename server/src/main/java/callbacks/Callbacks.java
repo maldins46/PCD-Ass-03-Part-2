@@ -7,7 +7,9 @@ import common.gameState.ModifiableGameState;
 /**
  * Factory that returns the callbacks used inside the server.
  */
-public interface Callbacks {
+public final class Callbacks {
+
+    private Callbacks() { }
 
     /**
      * Create a callback for the newPlayerMsg.

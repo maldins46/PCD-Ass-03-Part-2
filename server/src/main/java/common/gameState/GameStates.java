@@ -3,8 +3,9 @@ package common.gameState;
 /**
  * Game state factory.
  */
-public interface GameStates {
+public final class GameStates {
 
+    private GameStates() { }
 
     /**
      * Create an instance of GameState used from server so this can modify the
