@@ -5,7 +5,6 @@ package common.gameState;
  */
 public final class GameStates {
 
-
     private GameStates() { }
 
     /**

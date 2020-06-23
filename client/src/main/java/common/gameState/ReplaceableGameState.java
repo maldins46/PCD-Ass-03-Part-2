@@ -3,16 +3,14 @@ package common.gameState;
 import common.client.messages.GameStateMsg;
 
 /**
- * Client instance can only clicks to the puzzle without effectively changes
- * the puzzle. The component that swap tiles is ModifiableGameState that is
- * the server of the game.
+ * This is the game state that client can do.
  */
 public interface ReplaceableGameState extends ReadableGameState {
 
 
     /**
-     * Update the information of the client.
-     * @param updatedData The information updated.
+     * Update information of the game.
+     * @param updatedData The updated's data.
      */
     void updateData(GameStateMsg updatedData);
 }

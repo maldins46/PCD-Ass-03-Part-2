@@ -1,11 +1,6 @@
 package common.client;
 
-import common.client.config.Destinations;
-import common.client.config.Hosts;
 import common.client.messages.Message;
-
-import java.util.HashSet;
-import java.util.Set;
 
 
 /**
@@ -14,25 +9,14 @@ import java.util.Set;
  * AMQP and RabbitMQ, and made to measure of the puzzle project.
  */
 public interface GameClient {
-
-
     /**
      * It starts the connections, and initializes possible given callbacks.
      */
     void connect();
 
-    /**
-     * Add a callback to this host.
-     * @param callback The callback.
-     */
-    void addCallback(final CtxCallback callback);
+    void addCallback(CtxCallback callback);
 
-
-    /**
-     * Listen from a queue or from a topic.
-     */
     void listen();
-
 
     /**
      * It sends a message against a given destination. The fact that
@@ -41,7 +25,6 @@ public interface GameClient {
      * @param destination The destination against which send the message.
      */
     void sendMessage(Message message, String destination);
-
 
     /**
      * It closes the connection gracefully.

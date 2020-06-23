@@ -2,6 +2,7 @@ package common.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public final class Puzzle {
     public static final int PUZZLE_WIDTH = 5;
@@ -73,6 +74,11 @@ public final class Puzzle {
      */
     public List<Tile> getTiles() {
         return tiles;
+    }
+
+
+    public Optional<Tile> getTileFromOriginalPos(final int originalPos) {
+        return tiles.stream().filter(x -> x.getOriginalPosition() == originalPos).findFirst();
     }
 
     public static Puzzle of() {

@@ -26,9 +26,10 @@ public final class TileButton extends JButton implements ActionListener {
     private final ReadableGameState gameState;
     private final List<Image> images;
     private final PuzzleGui gui;
-    private final Player currPlayer;
+    private Player currPlayer;
 
     private Tile currTile;
+    private Image currImage;
     private boolean clickable = false;
 
 
@@ -38,17 +39,19 @@ public final class TileButton extends JButton implements ActionListener {
                       final GameClient client, final PuzzleGui gui, final Player currPlayer) {
         super(new ImageIcon(originalImage));
 
+        this.currImage = originalImage;
         this.originalPosition = originalPosition;
         this.gameState = gameState;
         this.client = client;
         this.images = images;
         this.gui = gui;
-        this.currPlayer = currPlayer;
         addActionListener(this);
     }
 
     public void update() {
         this.currTile = gameState.getPuzzle().getTiles().get(originalPosition);
+        this.currPlayer = Player.of(Destinations.MAIN_CLIENT_QUEUE);
+
 
         if (currTile.getSelector().equals(currPlayer)) {
             setBorder(BorderFactory.createLineBorder(Color.green));
@@ -58,7 +61,9 @@ public final class TileButton extends JButton implements ActionListener {
            setBorder(BorderFactory.createLineBorder(Color.gray));
         }
 
-        setIcon(new ImageIcon(images.get(currTile.getCurrentPosition())));
+        Image newImage = images.get(currTile.getCurrentPosition());
+        if (!currImage.equals(newImage))
+        setIcon(new ImageIcon(newImage));
 
         addActionListener(this);
 
@@ -86,7 +91,7 @@ public final class TileButton extends JButton implements ActionListener {
 
                 // current player selected something previously (not me)
                 else if (tiles.stream().anyMatch(x -> x.getSelector().equals(currPlayer))
-                        && !currTile.getSelector().equals(Player.generateEmpty())) {
+                        && currTile.getSelector().equals(Player.generateEmpty())) {
                     // Always present a player in the tile
                     final Tile startTile = tiles.stream().filter(x -> x.getSelector().equals(currPlayer)).findFirst().get();
                     final SwapMsg msg = Messages.createSwapMsg(Destinations.MAIN_CLIENT_QUEUE, startTile,currTile, currPlayer);

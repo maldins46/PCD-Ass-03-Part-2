@@ -53,6 +53,10 @@ public abstract class GameState implements ReadableGameState {
         return players;
     }
 
+    public boolean containsPlayer(final Player player) {
+        return players.stream().anyMatch(x -> x.equals(player));
+    }
+
     @Override
     public final boolean getWin() {
         return win;

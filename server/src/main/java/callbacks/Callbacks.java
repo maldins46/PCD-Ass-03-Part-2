@@ -17,7 +17,7 @@ public final class Callbacks {
      * @param state The entire puzzle as is.
      * @return the callback.
      */
-    static CtxCallback newPlayerMsg(final GameClient client, final ModifiableGameState state) {
+    public static CtxCallback newPlayerMsg(final GameClient client, final ModifiableGameState state) {
         return new NewPlayerCallback(client, state);
     }
 
@@ -28,7 +28,7 @@ public final class Callbacks {
      * @param state The entire puzzle as is.
      * @return the callback.
      */
-    static CtxCallback selectMsg(final GameClient client, final ModifiableGameState state) {
+    public static CtxCallback selectMsg(final GameClient client, final ModifiableGameState state) {
         return new SelectCallback(client, state);
     }
 
@@ -39,7 +39,7 @@ public final class Callbacks {
      * @param state The entire puzzle as is.
      * @return the callback.
      */
-    static CtxCallback swapRequestMsg(final GameClient client, final ModifiableGameState state) {
+    public static CtxCallback swapRequestMsg(final GameClient client, final ModifiableGameState state) {
         return new SwapCallback(client, state);
     }
 
@@ -50,7 +50,7 @@ public final class Callbacks {
      * @param state The entire puzzle as is.
      * @return the callback.
      */
-    static CtxCallback rematchMsg(final GameClient client, final ModifiableGameState state) {
+    public static CtxCallback rematchMsg(final GameClient client, final ModifiableGameState state) {
         return new RematchCallback(client, state);
     }
 }

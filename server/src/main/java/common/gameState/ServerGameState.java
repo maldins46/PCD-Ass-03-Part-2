@@ -7,6 +7,7 @@ import common.model.Player;
 import common.model.Tile;
 
 import java.util.Collections;
+import java.util.Optional;
 
 /**
  * Server of the game. This class has the privilege to modify the tiles sort.
@@ -31,7 +32,7 @@ final class ServerGameState extends GameState implements ModifiableGameState {
     @Override
     public void addPlayer(final Player player) {
         getPlayers().add(player);
-    }
+        }
 
 
     @Override
@@ -72,28 +73,30 @@ final class ServerGameState extends GameState implements ModifiableGameState {
 
     @Override
     public void setTileAsSelected(final Tile tile, final Player player) {
-        final Tile localTile = getPuzzle().getTiles().get(tile.getOriginalPosition());
+        final Optional<Tile> locTileOpt = getPuzzle().getTileFromOriginalPos(tile.getOriginalPosition());
 
-        if (localTile.getSelector() != null
-                && localTile.getCurrentPosition() == tile.getCurrentPosition()
-                && getPlayers().contains(player)) {
-            localTile.setSelector(player);
+        if (locTileOpt.isPresent()) {
+            final Tile locTile = locTileOpt.get();
+            locTile.setSelector(player);
         }
     }
 
 
     @Override
     public void swapTiles(final Tile startTile, final Tile destTile, final Player player) {
-        final Tile localStartTile = getPuzzle().getTiles().get(startTile.getOriginalPosition());
-        final Tile localDestTile = getPuzzle().getTiles().get(destTile.getOriginalPosition());
+        final Optional<Tile> locStartTileOpt = getPuzzle().getTileFromOriginalPos(startTile.getOriginalPosition());
+        final Optional<Tile> locDestTileOpt = getPuzzle().getTileFromOriginalPos(destTile.getOriginalPosition());
 
-        if (localStartTile.getCurrentPosition() == startTile.getCurrentPosition()
-                && localDestTile.getCurrentPosition() == destTile.getCurrentPosition()
-                && localStartTile.getSelector().equals(player)) {
-            localStartTile.setSelector(Player.generateEmpty());
-            localDestTile.setSelector(Player.generateEmpty());
-            localStartTile.setCurrentPosition(startTile.getCurrentPosition());
-            localDestTile.setCurrentPosition(destTile.getCurrentPosition());
+        if (locDestTileOpt.isPresent()
+                && locStartTileOpt.isPresent()
+                && startTile.getSelector().equals(player)) {
+            final Tile locStartTile = locStartTileOpt.get();
+            final Tile locDestTile = locDestTileOpt.get();
+
+            locStartTile.setSelector(Player.generateEmpty());
+            locDestTile.setSelector(Player.generateEmpty());
+            locStartTile.setCurrentPosition(destTile.getCurrentPosition());
+            locDestTile.setCurrentPosition(startTile.getCurrentPosition());
         }
         updateWin();
     }

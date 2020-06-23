@@ -6,8 +6,21 @@ import common.model.Puzzle;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * This class is an abstraction in common between ModifiableGameState and
+ * ReadableGameState.
+ */
 public abstract class GameState implements ReadableGameState {
+
+    /**
+     * The entire tiles.
+     */
     private Puzzle puzzle;
+
+
+    /**
+     * All players.
+     */
     private Set<Player> players;
 
     /**
@@ -17,7 +30,7 @@ public abstract class GameState implements ReadableGameState {
     private boolean win = true;
 
 
-    public GameState() {
+    GameState() {
         this.puzzle = Puzzle.of();
         this.players = new HashSet<>();
     }
@@ -38,6 +51,10 @@ public abstract class GameState implements ReadableGameState {
     @Override
     public final Set<Player> getPlayers() {
         return players;
+    }
+
+    public boolean containsPlayer(final Player player) {
+        return players.stream().anyMatch(x -> x.equals(player));
     }
 
     @Override

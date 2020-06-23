@@ -11,7 +11,7 @@ public final class GameStateMsg extends GenericMsg {
     private final boolean win;
 
 
-    GameStateMsg(final String sender, final Puzzle puzzle, final Set<Player> players, final boolean win) {
+    GameStateMsg(String sender, Puzzle puzzle, Set<Player> players, boolean win) {
         super(sender);
         this.puzzle = puzzle;
         this.players = players;
