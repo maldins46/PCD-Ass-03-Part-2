@@ -1,6 +1,8 @@
 package common.model;
 
 
+import java.util.Objects;
+
 /**
  * Tile of the puzzle.
  */
@@ -9,13 +11,13 @@ public final class Tile {
     /**
      * The right position of the tile.
      */
-    private final int originalPosition;
+    private final int originalPos;
 
 
     /**
      * Current position.
      */
-    private int currentPosition;
+    private int currentPos;
 
     /**
      * Takes name of player that selected this element. Null if anyone have
@@ -27,12 +29,12 @@ public final class Tile {
     /**
      * Create a tile and set original and current positions to the original
      * position.
-     * @param originalPosition The original position.
+     * @param originalPos The original position.
      */
-    public Tile(final int originalPosition) {
-        this.originalPosition = originalPosition;
-        this.currentPosition = originalPosition;
-        this.selector = Player.generateEmpty();
+    public Tile(final int originalPos) {
+        this.originalPos = originalPos;
+        this.currentPos = originalPos;
+        this.selector = Player.empty();
     }
 
 
@@ -40,8 +42,8 @@ public final class Tile {
      * Getter for original position.
      * @return the original position.
      */
-    public int getOriginalPosition() {
-        return originalPosition;
+    public int getOriginalPos() {
+        return originalPos;
     }
 
 
@@ -49,17 +51,17 @@ public final class Tile {
      * Getter for current position.
      * @return the current position.
      */
-    public int getCurrentPosition() {
-        return currentPosition;
+    public int getCurrentPos() {
+        return currentPos;
     }
 
 
     /**
      * Setter for the current position.
-     * @param currentPosition the current position.
+     * @param currentPos the current position.
      */
-    public void setCurrentPosition(final int currentPosition) {
-        this.currentPosition = currentPosition;
+    public void setCurrentPos(final int currentPos) {
+        this.currentPos = currentPos;
     }
 
 
@@ -78,5 +80,28 @@ public final class Tile {
      */
     public void setSelector(final Player selector) {
         this.selector = selector;
+    }
+
+    public boolean positionEquals(final Tile tile) {
+        return this.currentPos == tile.currentPos && this.originalPos == tile.originalPos;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final Tile tile = (Tile) o;
+        return originalPos == tile.originalPos
+                && currentPos == tile.currentPos
+                && Objects.equals(selector, tile.selector);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(originalPos, currentPos, selector);
     }
 }

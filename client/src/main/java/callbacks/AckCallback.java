@@ -1,10 +1,9 @@
 package callbacks;
 
 import common.client.GameClient;
-import common.client.config.Destinations;
 import common.client.messages.AckMsg;
 import common.client.messages.Message;
-import common.gameState.ReplaceableGameState;
+import common.gameState.ClientGameState;
 import gui.PuzzleGui;
 
 /**
@@ -19,7 +18,7 @@ final class AckCallback extends GenericClientCallback {
      * @param gui The graphic interface.
      */
     AckCallback(final GameClient client,
-                       final ReplaceableGameState gameState,
+                       final ClientGameState gameState,
                        final PuzzleGui gui) {
         super(client, gameState, gui);
     }

@@ -2,7 +2,7 @@ package callbacks;
 
 import common.client.CtxCallback;
 import common.client.GameClient;
-import common.gameState.ReplaceableGameState;
+import common.gameState.ClientGameState;
 import gui.PuzzleGui;
 
 /**
@@ -21,7 +21,7 @@ public final class  Callbacks {
      * @param gui The graphic interface.
      * @return The GameStateCallbacks.
      */
-    public static CtxCallback gameStateMsg(final GameClient client, final ReplaceableGameState state, final PuzzleGui gui) {
+    public static CtxCallback gameStateMsg(final GameClient client, final ClientGameState state, final PuzzleGui gui) {
         return new GameStateCallback(client, state, gui);
     }
 
@@ -34,7 +34,7 @@ public final class  Callbacks {
      * @param gui The graphic interface.
      * @return The AckCallback.
      */
-    public static CtxCallback ackMsg(final GameClient client, final ReplaceableGameState state, final PuzzleGui gui) {
+    public static CtxCallback ackMsg(final GameClient client, final ClientGameState state, final PuzzleGui gui) {
         return new AckCallback(client, state, gui);
     }
 

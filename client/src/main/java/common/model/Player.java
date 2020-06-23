@@ -20,7 +20,7 @@ public final class Player {
         return name;
     }
 
-    public static Player generateEmpty() {
+    public static Player empty() {
         return new Player("");
     }
 

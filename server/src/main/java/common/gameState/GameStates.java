@@ -12,8 +12,8 @@ public final class GameStates {
      * positions of tiles in the puzzle.
      * @return The instance of ModifiableGameState.
      */
-    public static ModifiableGameState serverGameState() {
-        return new ServerGameState();
+    public static ServerGameState serverGameState() {
+        return new ServerGameStateImpl();
     }
 
 
@@ -23,7 +23,7 @@ public final class GameStates {
      * the tiles and server makes the movements.
      * @return The instance of ReadableGameState.
      */
-    public static ReplaceableGameState clientGameState() {
-        return new ClientGameState();
+    public static ClientGameState clientGameState() {
+        return new ClientGameStateImpl();
     }
 }

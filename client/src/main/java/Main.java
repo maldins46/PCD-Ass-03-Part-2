@@ -1,14 +1,14 @@
 import callbacks.Callbacks;
 import common.client.GameClient;
 import common.client.config.Hosts;
+import common.gameState.ClientGameState;
 import common.gameState.GameStates;
-import common.gameState.ReplaceableGameState;
 import gui.PuzzleGui;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Main {
-    private static ReplaceableGameState clientState;
+    private static ClientGameState clientState;
     private static GameClient client;
     private static PuzzleGui gui;
     private static final Logger logger = LoggerFactory.getLogger(Main.class);

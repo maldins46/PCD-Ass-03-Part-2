@@ -3,7 +3,7 @@ package callbacks;
 import common.client.GameClient;
 import common.client.messages.Message;
 import common.client.messages.SelectMsg;
-import common.gameState.ModifiableGameState;
+import common.gameState.ServerGameState;
 import common.model.Player;
 import common.model.Tile;
 
@@ -17,7 +17,7 @@ final class SelectCallback extends GenericServerCallback {
      * @param client the game model.client.
      * @param state the game data.
      */
-    SelectCallback(final GameClient client, final ModifiableGameState state) {
+    SelectCallback(final GameClient client, final ServerGameState state) {
         super(client, state);
     }
 

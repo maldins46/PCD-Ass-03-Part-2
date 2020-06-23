@@ -2,12 +2,10 @@ package callbacks;
 
 import common.client.CtxCallback;
 import common.client.GameClient;
-import common.client.config.Destinations;
 import common.client.config.MessageTypes;
-import common.client.messages.AckMsg;
 import common.client.messages.Message;
-import common.gameState.ReplaceableGameState;
-import common.model.Player;
+import common.gameState.ClientGameState;
+
 import gui.PuzzleGui;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,14 +13,14 @@ import org.slf4j.LoggerFactory;
 public abstract class GenericClientCallback implements CtxCallback {
     private final GameClient client;
 
-    private final ReplaceableGameState gameState;
+    private final ClientGameState gameState;
 
     private final PuzzleGui gui;
 
     protected static final Logger logger = LoggerFactory.getLogger(GenericClientCallback.class);
 
 
-    public GenericClientCallback(final GameClient client, final ReplaceableGameState gameState, final PuzzleGui gui) {
+    public GenericClientCallback(final GameClient client, final ClientGameState gameState, final PuzzleGui gui) {
         this.client = client;
         this.gameState = gameState;
         this.gui = gui;
@@ -55,7 +53,7 @@ public abstract class GenericClientCallback implements CtxCallback {
      * Getter for the instance of client associated.
      * @return The client's instance.
      */
-    protected final ReplaceableGameState getGameState() {
+    protected final ClientGameState getGameState() {
         return gameState;
     }
 

@@ -3,66 +3,29 @@ package common.gameState;
 import common.model.Player;
 import common.model.Puzzle;
 
-import java.util.HashSet;
 import java.util.Set;
 
 /**
- * This class is an abstraction in common between ModifiableGameState and
- * ReadableGameState.
+ * Common methods between client and server.
  */
-public abstract class GameState implements ReadableGameState {
+public interface GameState {
 
     /**
-     * The entire tiles.
+     * Getter for puzzle.
+     * @return The puzzle.
      */
-    private Puzzle puzzle;
+    Puzzle getPuzzle();
 
 
     /**
-     * All players.
+     * Getter for players.
+     * @return All players.
      */
-    private Set<Player> players;
+    Set<Player> getPlayers();
 
     /**
-     * The variable is set to true when all tiles have the
-     * right position in the puzzle.
+     * Getter hat checks if a match is finished.
+     * @return True if a match is finished, false otherwise.
      */
-    private boolean win = true;
-
-
-    GameState() {
-        this.puzzle = Puzzle.of();
-        this.players = new HashSet<>();
-    }
-
-    protected final void setPuzzle(final Puzzle puzzle) {
-        this.puzzle = puzzle;
-    }
-
-    @Override
-    public final Puzzle getPuzzle() {
-        return puzzle;
-    }
-
-    protected final void setPlayers(final Set<Player> players) {
-        this.players = players;
-    }
-
-    @Override
-    public final Set<Player> getPlayers() {
-        return players;
-    }
-
-    public boolean containsPlayer(final Player player) {
-        return players.stream().anyMatch(x -> x.equals(player));
-    }
-
-    @Override
-    public final boolean getWin() {
-        return win;
-    }
-
-    protected final void setWin(final boolean win) {
-        this.win = win;
-    }
+    boolean getWin();
 }

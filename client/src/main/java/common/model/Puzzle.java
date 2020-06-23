@@ -5,24 +5,10 @@ import java.util.List;
 import java.util.Optional;
 
 public final class Puzzle {
-    public static final int PUZZLE_WIDTH = 5;
-    public static final int PUZZLE_HEIGHT = 3;
+    public static final int WIDTH = 5;
+    public static final int HEIGHT = 3;
+    public static final int SIZE = HEIGHT * WIDTH;
 
-
-    /**
-     * The number of tiles in width in the puzzle.
-     */
-    private final int width;
-
-    /**
-     * The number of tiles in height in the puzzle.
-     */
-    private final int height;
-
-    /**
-     * The number of tiles. It's find with height * width.
-     */
-    private final int size;
 
     /**
      * The list of tiles.
@@ -32,39 +18,17 @@ public final class Puzzle {
 
     /**
      * Constructor that initialize the dimensions of the puzzle.
+     * @param initializeTiles todo
      */
-    private Puzzle() {
-        this.width = PUZZLE_WIDTH;
-        this.height = PUZZLE_HEIGHT;
-        this.size = width * height;
+    private Puzzle(final boolean initializeTiles) {
         this.tiles = new ArrayList<>();
-    }
 
-
-    /**
-     * Getter for width. Unused except for marshalling.
-     * @return The puzzle's width.
-     */
-    public int getWidth() {
-        return width;
-    }
-
-
-    /**
-     * Getter for height. Unused except for marshalling.
-     * @return The puzzle's height.
-     */
-    public int getHeight() {
-        return height;
-    }
-
-
-    /**
-     * Getter for size.
-     * @return The puzzle's size.
-     */
-    public int getSize() {
-        return size;
+        if (initializeTiles) {
+            for (int i = 0; i < Puzzle.SIZE; i++) {
+                final Tile tile = new Tile(i);
+                this.tiles.add(tile);
+            }
+        }
     }
 
 
@@ -77,11 +41,15 @@ public final class Puzzle {
     }
 
 
-    public Optional<Tile> getTileFromOriginalPos(final int originalPos) {
-        return tiles.stream().filter(x -> x.getOriginalPosition() == originalPos).findFirst();
+    public Optional<Tile> getTileFromPos(final int originalPos) {
+        return tiles.stream().filter(x -> x.getOriginalPos() == originalPos).findFirst();
+    }
+
+    public static Puzzle of(final boolean initialize) {
+        return new Puzzle(initialize);
     }
 
     public static Puzzle of() {
-        return new Puzzle();
+        return new Puzzle(false);
     }
 }

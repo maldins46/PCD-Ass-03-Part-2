@@ -3,23 +3,18 @@ package callbacks;
 import common.client.CtxCallback;
 import common.client.GameClient;
 import common.client.config.Destinations;
-import common.client.config.MessageTypes;
+
 import common.client.messages.Message;
 import common.client.messages.AckMsg;
 import common.client.messages.Messages;
-import common.gameState.ModifiableGameState;
+import common.gameState.ServerGameState;
 import common.model.Player;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import timeouts.PlayerTimeouts;
 
 /**
  * The class is a base for callback.
  */
 abstract class GenericServerCallback implements CtxCallback {
-
-    protected static final Logger logger = LoggerFactory.getLogger(GenericServerCallback.class);
-
 
     /**
      * Server for the callback.
@@ -29,7 +24,7 @@ abstract class GenericServerCallback implements CtxCallback {
     /**
      * The game data.
      */
-    private final ModifiableGameState gameState;
+    private final ServerGameState gameState;
 
 
     /**
@@ -37,7 +32,7 @@ abstract class GenericServerCallback implements CtxCallback {
      * @param client The game server.
      * @param gameState The game data.
      */
-    public GenericServerCallback(final GameClient client, final ModifiableGameState gameState) {
+    GenericServerCallback(final GameClient client, final ServerGameState gameState) {
         this.client = client;
         this.gameState = gameState;
     }
@@ -45,7 +40,6 @@ abstract class GenericServerCallback implements CtxCallback {
 
     @Override
     public final void execute(final Message rawMessage) {
-        logger.info("Received " + MessageTypes.getTypeFromMessage(rawMessage) + " from " + rawMessage.getSender());
         executeBody(rawMessage);
         terminate(rawMessage);
     }
@@ -58,11 +52,11 @@ abstract class GenericServerCallback implements CtxCallback {
      * @param message The received message.
      */
     private void terminate(final Message message) {
-        PlayerTimeouts.addOrUpdateTimer(Player.of(message.getSender()), client, gameState);
+        final Player senderPlayer = Player.of(message.getSender());
 
+        PlayerTimeouts.addOrUpdateTimer(senderPlayer, client, gameState);
+        final AckMsg ack = Messages.createAckMsg(senderPlayer);
         client.sendMessageToMatch(gameState.generateGameDataMsg());
-
-        final AckMsg ack = Messages.createAckMsg(Destinations.SERVER_QUEUE_NAME, Player.of(message.getSender()));
         client.sendMessageToPlayer(Player.of(message.getSender()), ack);
     }
 
@@ -76,19 +70,10 @@ abstract class GenericServerCallback implements CtxCallback {
 
 
     /**
-     * Getter for the game model.client instance, for child classes.
-     * @return The game model.client.
-     */
-    protected GameClient getClient() {
-        return client;
-    }
-
-
-    /**
      * Getter for the game data instance, for child classes.
      * @return The game data.
      */
-    protected ModifiableGameState getGameState() {
+    protected ServerGameState getGameState() {
         return gameState;
     }
 }

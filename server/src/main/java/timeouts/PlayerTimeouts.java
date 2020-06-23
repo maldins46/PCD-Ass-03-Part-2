@@ -2,7 +2,7 @@ package timeouts;
 
 import common.client.GameClient;
 import common.client.config.Destinations;
-import common.gameState.ModifiableGameState;
+import common.gameState.ServerGameState;
 import common.model.Player;
 
 import java.util.HashMap;
@@ -20,7 +20,7 @@ public final class PlayerTimeouts {
     /**
      * Constant to specify the standard player timeout duration.
      */
-    private static final int TIMEOUT_DURATION_IN_SECONDS = 30;
+    private static final int TIMEOUT_DURATION_IN_SECONDS = 60;
 
     /**
      * Service used to schedule timeouts.
@@ -44,7 +44,7 @@ public final class PlayerTimeouts {
      * @param state The data structure, that will be modified after timeout
      *                 expiration.
      */
-    public static void addOrUpdateTimer(final Player player, final GameClient client, final ModifiableGameState state) {
+    public static void addOrUpdateTimer(final Player player, final GameClient client, final ServerGameState state) {
 
         if (PLAYERS_TIMEOUTS.containsKey(player)) {
             CompletableFuture<Void> oldTimeoutFuture = PLAYERS_TIMEOUTS.get(player);

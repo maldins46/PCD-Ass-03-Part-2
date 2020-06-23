@@ -50,9 +50,13 @@ public final class GameClientImpl implements GameClient {
      */
     private final boolean isServerModule;
 
+    private boolean connected;
+    private boolean listening;
+
 
     /**
      * The standard constructor, that configures host and callbacks.
+     *
      * @param host The broker host.
      */
     GameClientImpl(final String host, final boolean isServerModule) {
@@ -70,24 +74,29 @@ public final class GameClientImpl implements GameClient {
         factory.setHost(host);
 
         try {
+            if (connected) {
+                throw new InvalidClientStateException();
+            }
+
             connection = factory.newConnection();
             channel = connection.createChannel();
             logger.info("Connected to the broker, with host " + host);
 
             if (isServerModule) {
-                final String queueName = channel.queueDeclare(Destinations.SERVER_QUEUE_NAME,
+                channel.queueDeclare(Destinations.SERVER_QUEUE_NAME,
                         false, false, false, null).getQueue();
-                Destinations.setPersonalQueue(queueName);
+                Destinations.setPersonalQueue(Destinations.SERVER_QUEUE_NAME);
 
             } else {
-                final String queueName = channel.queueDeclare().getQueue();
+                final String playerQueue = channel.queueDeclare().getQueue();
                 channel.exchangeDeclare(Destinations.MATCH_TOPIC_NAME, "fanout");
-                channel.queueBind(queueName, Destinations.MATCH_TOPIC_NAME, "");
-                Destinations.setPersonalQueue(queueName);
+                channel.queueBind(playerQueue, Destinations.MATCH_TOPIC_NAME, "");
+                Destinations.setPersonalQueue(playerQueue);
             }
+            connected = true;
             logger.info("Personal queue subscribed");
 
-        } catch (IOException | TimeoutException e) {
+        } catch (IOException | TimeoutException | InvalidClientStateException e) {
             e.printStackTrace();
         }
     }
@@ -96,8 +105,13 @@ public final class GameClientImpl implements GameClient {
     @Override
     public void disconnect() {
         try {
+            if (!connected) {
+                throw new InvalidClientStateException();
+            }
             connection.close();
-        } catch (IOException e) {
+            connected = false;
+            listening = false;
+        } catch (IOException | InvalidClientStateException e) {
             e.printStackTrace();
         }
     }
@@ -105,47 +119,85 @@ public final class GameClientImpl implements GameClient {
 
     @Override
     public void addCallback(final CtxCallback callback) {
-        ctxCallbacks.add(callback);
+        try {
+            if (!connected || listening) {
+                throw new InvalidClientStateException();
+            }
+            ctxCallbacks.add(callback);
+        } catch (InvalidClientStateException e) {
+            e.printStackTrace();
+        }
     }
 
 
     @Override
     public void listen() {
         try {
+            if (!connected || listening) {
+                throw new InvalidClientStateException();
+            }
             channel.basicConsume(Destinations.PERSONAL_QUEUE, true,
-                    generateAmqpCallback(), consumerTag -> { });
+                    generateAmqpCallback(), consumerTag -> {
+                    });
+            listening = true;
             logger.info("Listening in personal queue");
 
-        } catch (IOException e) {
+        } catch (IOException | InvalidClientStateException e) {
             e.printStackTrace();
         }
     }
 
     @Override
     public void sendMessageToServer(final Message message) {
-        sendMessageInQueue(Destinations.SERVER_QUEUE_NAME, message);
-        logger.info("Sent message "+ MessageTypes.getTypeFromMessage(message) + " to the server");
+        try {
+            if (!connected) {
+                throw new InvalidClientStateException();
+            }
+
+            sendMessageInQueue(Destinations.SERVER_QUEUE_NAME, message);
+            logger.info("Sent message " + MessageTypes.getTypeFromMessage(message) + " to the server");
+
+        } catch (InvalidClientStateException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void sendMessageToPlayer(final Player player, final Message message) {
-        if (Destinations.isPlayerQueue(player.getName())) {
-            sendMessageInQueue(player.getName(), message);
-            logger.info("Sent message "+ MessageTypes.getTypeFromMessage(message) +" to player " + player.getName());
+        try {
+            if (!connected) {
+                throw new InvalidClientStateException();
+            }
+
+            if (Destinations.isPlayerQueue(player.getName())) {
+                sendMessageInQueue(player.getName(), message);
+                logger.info("Sent message " + MessageTypes.getTypeFromMessage(message) + " to player " + player.getName());
+            }
+        } catch (InvalidClientStateException e) {
+            e.printStackTrace();
         }
     }
 
 
     @Override
     public void sendMessageToMatch(final Message message) {
-        sendMessageInTopic(Destinations.MATCH_TOPIC_NAME, message);
-        logger.info("Sent message "+ MessageTypes.getTypeFromMessage(message) +" to the match topic");
+        try {
+            if (!connected) {
+                throw new InvalidClientStateException();
+            }
+
+            sendMessageInTopic(Destinations.MATCH_TOPIC_NAME, message);
+            logger.info("Sent message " + MessageTypes.getTypeFromMessage(message) + " to the match topic");
+        } catch (InvalidClientStateException e) {
+            e.printStackTrace();
+        }
     }
 
 
     /**
      * Generates a callback as specified by the AmqpClient library, composing it
      * with the given stdCallbacks.
+     *
      * @return The generated callback.
      */
     private DeliverCallback generateAmqpCallback() {
@@ -173,6 +225,7 @@ public final class GameClientImpl implements GameClient {
      * exchange-queue mechanism. Given a message, it creates a custom header
      * that indicates the message type; Then it creates a dedicated fanout
      * exchange, if not present. Then, it sends the message in it.
+     *
      * @param message The message to be sent, as an instance of the message
      *                interface.
      */
@@ -195,9 +248,10 @@ public final class GameClientImpl implements GameClient {
      * mechanism. Given a message, it creates a custom header that indicates
      * the message type; declares the queue if not present, and sends the
      * message to the standard exchange (with the queue as the routing key).
+     *
      * @param queueName The name of the topic.
-     * @param message The message to be sent, as an instance of the message
-     *                interface.
+     * @param message   The message to be sent, as an instance of the message
+     *                  interface.
      */
     private void sendMessageInQueue(final String queueName, final Message message) {
         try {
@@ -214,6 +268,7 @@ public final class GameClientImpl implements GameClient {
     /**
      * It creates a custom header for the AMQP message, including the
      * message type, inferring it from the message.
+     *
      * @param message The message, as a Message instance.
      * @return The custom properties of the message.
      */
@@ -221,7 +276,7 @@ public final class GameClientImpl implements GameClient {
         String msgType = MessageTypes.getTypeFromMessage(message);
 
         Map<String, Object> headers = new HashMap<>();
-        headers.put("type",  msgType);
+        headers.put("type", msgType);
 
         return new AMQP.BasicProperties.Builder().headers(headers).build();
     }
@@ -230,6 +285,7 @@ public final class GameClientImpl implements GameClient {
     /**
      * It trasforms the message in an array of of bytes, to be send
      * to the broker.
+     *
      * @param message The message, as a Message instance.
      * @return The message, as an array of bytes.
      */

@@ -1,117 +1,50 @@
 package common.gameState;
 
-import common.client.config.Destinations;
 import common.client.messages.GameStateMsg;
-import common.client.messages.Messages;
 import common.model.Player;
 import common.model.Tile;
 
-import java.util.Collections;
-import java.util.Optional;
-
 /**
- * Server of the game. This class has the privilege to modify the tiles sort.
+ * GameState used for server. The server is the only component that can swap
+ * effectively the tiles and he is the one that check if clients have win.
  */
-final class ServerGameState extends GameState implements ModifiableGameState {
+public interface ServerGameState extends GameState {
 
     /**
-     * Instantiates a ServerGameState. It's create and shuflle the puzzle.
+     * Add a player to the match.
+     * @param player The player that have to be added.
      */
-    ServerGameState() {
-        super();
-
-        for (int i = 0; i < getPuzzle().getSize(); i++) {
-            Tile tile = new Tile(i);
-            getPuzzle().getTiles().add(tile);
-        }
-
-        rematch();
-    }
-
-
-    @Override
-    public void addPlayer(final Player player) {
-        getPlayers().add(player);
-        }
-
-
-    @Override
-    public void removePlayer(final Player player) {
-        getPlayers().remove(player);
-
-        for (Tile tile : getPuzzle().getTiles()) {
-            if (tile.getSelector().equals(player)) {
-                tile.setSelector(Player.generateEmpty());
-            }
-        }
-    }
-
-
-    @Override
-    public void rematch() {
-        if (getWin()) {
-            shufflePuzzle();
-        }
-    }
-
+    void addPlayer(Player player);
 
     /**
-     * Sort in casual order the tiles in the puzzle. Thanks to this method
-     * client can't see in the game the real order.
+     * Remove a player to the match.
+     * @param player The player that have to be removed.
      */
-    private void shufflePuzzle() {
-        Collections.shuffle(getPuzzle().getTiles());
-
-        for (int i = 0; i < getPuzzle().getSize(); i++) {
-            getPuzzle().getTiles().get(i).setCurrentPosition(i);
-        }
-
-        getPuzzle().getTiles().sort((o1, o2) -> Integer.compare(o1.getOriginalPosition(), o2.getCurrentPosition()));
-        setWin(false);
-    }
-
-
-    @Override
-    public void setTileAsSelected(final Tile tile, final Player player) {
-        final Optional<Tile> locTileOpt = getPuzzle().getTileFromOriginalPos(tile.getOriginalPosition());
-
-        if (locTileOpt.isPresent()) {
-            final Tile locTile = locTileOpt.get();
-            locTile.setSelector(player);
-        }
-    }
-
-
-    @Override
-    public void swapTiles(final Tile startTile, final Tile destTile, final Player player) {
-        final Optional<Tile> locStartTileOpt = getPuzzle().getTileFromOriginalPos(startTile.getOriginalPosition());
-        final Optional<Tile> locDestTileOpt = getPuzzle().getTileFromOriginalPos(destTile.getOriginalPosition());
-
-        if (locDestTileOpt.isPresent()
-                && locStartTileOpt.isPresent()
-                && startTile.getSelector().equals(player)) {
-            final Tile locStartTile = locStartTileOpt.get();
-            final Tile locDestTile = locDestTileOpt.get();
-
-            locStartTile.setSelector(Player.generateEmpty());
-            locDestTile.setSelector(Player.generateEmpty());
-            locStartTile.setCurrentPosition(destTile.getCurrentPosition());
-            locDestTile.setCurrentPosition(startTile.getCurrentPosition());
-        }
-        updateWin();
-    }
-
+    void removePlayer(Player player);
 
     /**
-     * Check if the puzzle have all tiles in the original positions.
+     * Init a new instance of the game.
      */
-    private void updateWin() {
-        setWin(getPuzzle().getTiles().stream().allMatch(x -> x.getCurrentPosition() == x.getOriginalPosition()));
-    }
+    void rematch();
 
+    /**
+     * Set a tile as selected and assign to this the player.
+     * @param tile The tile selected.
+     * @param player The player that have selected this tile.
+     */
+    void setTileAsSelected(Tile tile, Player player);
 
-    @Override
-    public GameStateMsg generateGameDataMsg() {
-        return Messages.createGameStateMsg(Destinations.SERVER_QUEUE_NAME, getPuzzle(), getPlayers(), getWin());
-    }
+    /**
+     * Switch two tiles.
+     * @param startTile The first tile.
+     * @param destTile The second tile.
+     * @param player The player that do the swap.
+     */
+    void swapTiles(Tile startTile, Tile destTile, Player player);
+
+    /**
+     * Create a gameMsg with the updated data.
+     * @return The game msg.
+     */
+    GameStateMsg generateGameDataMsg();
 }

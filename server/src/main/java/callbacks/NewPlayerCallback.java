@@ -4,8 +4,7 @@ import common.client.GameClient;
 import common.client.config.Destinations;
 import common.client.messages.Message;
 import common.client.messages.NewPlayerMsg;
-import common.gameState.ModifiableGameState;
-import common.model.Player;
+import common.gameState.ServerGameState;
 
 /**
  * The callback used when a new player notifies the will to join the game.
@@ -17,7 +16,7 @@ final class NewPlayerCallback extends GenericServerCallback {
      * @param client the game model.client.
      * @param data the game data.
      */
-    NewPlayerCallback(final GameClient client, final ModifiableGameState data) {
+    NewPlayerCallback(final GameClient client, final ServerGameState data) {
         super(client, data);
     }
 

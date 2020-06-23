@@ -1,7 +1,7 @@
 package gui;
 
 import common.client.GameClient;
-import common.gameState.ReadableGameState;
+import common.gameState.ClientGameState;
 
 public interface PuzzleGui {
 
@@ -27,16 +27,10 @@ public interface PuzzleGui {
 
 
     /**
-     * It's called when the match is finished. Terminate the game and the Gui
-     * became not interactive.
-     */
-    void endMatch();
-
-    /**
      * Factory for create an implementation of this interface.
      * @return The implementation of this interface.
      */
-    static PuzzleGui of(GameClient client, ReadableGameState gameState) {
+    static PuzzleGui of(GameClient client, ClientGameState gameState) {
         return new PuzzleGuiImpl(gameState, client);
     }
 }
