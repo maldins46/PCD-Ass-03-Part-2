@@ -18,7 +18,11 @@ final class ClientGameState extends GameState implements ReplaceableGameState, R
     @Override
     public void updateData(final GameStateMsg updatedData) {
         setWin(updatedData.isWin());
-        setPuzzle(updatedData.getPuzzle());
-        setPlayers(updatedData.getPlayers());
+
+        getPuzzle().getTiles().clear();
+        getPuzzle().getTiles().addAll(updatedData.getPuzzle().getTiles());
+
+        getPlayers().clear();
+        getPlayers().addAll(updatedData.getPlayers());
     }
 }

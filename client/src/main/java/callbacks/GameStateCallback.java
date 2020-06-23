@@ -30,9 +30,6 @@ final class GameStateCallback extends GenericClientCallback {
     public void executeBody(final Message rawMessage) {
         final GameStateMsg message = (GameStateMsg) rawMessage;
         getGameState().updateData(message);
-        getGameState().getPuzzle().getTiles()
-                .sort(Comparator.comparingInt(Tile::getOriginalPosition));
-
         getGui().rearrangeTiles();
     }
 }

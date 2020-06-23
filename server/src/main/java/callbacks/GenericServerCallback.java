@@ -70,8 +70,6 @@ abstract class GenericServerCallback implements CtxCallback {
 
         final AckMsg ack = Messages.createAckMsg(Destinations.SERVER_QUEUE_NAME, Player.of(message.getSender()));
         client.sendMessage(ack, message.getSender());
-
-
     }
 
 

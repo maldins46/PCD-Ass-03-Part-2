@@ -6,6 +6,8 @@ import common.client.config.Destinations;
 import common.client.config.Hosts;
 import common.client.config.MessageTypes;
 import common.client.messages.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -18,6 +20,8 @@ import java.util.stream.Collectors;
 
 public final class GameClientImpl implements GameClient {
 
+    private static final Logger logger = LoggerFactory.getLogger(GameClientImpl.class);
+
     /**
      * The broker host. "Localhost" is the standard used for tests, meanwhile
      * "rabbit" is the DNS name for the RabbitMQ container in the local server
@@ -29,7 +33,9 @@ public final class GameClientImpl implements GameClient {
      * Standard callbacks, i.e. of which anyone is related to the server queue
      * or the match topic, and that is related to a specific message type.
      */
-    private final Set<CtxCallback> ctxCallbacks = new HashSet<>();
+    private final Set<CtxCallback> persQueueCallbacks = new HashSet<>();
+    private final Set<CtxCallback> matchTopicCallbacks = new HashSet<>();
+
 
     /**
      * The connection AMQP instance, used to open channels.
@@ -99,47 +105,66 @@ public final class GameClientImpl implements GameClient {
     public void sendMessage(final Message message, final String destination) {
         if (Destinations.isKnownTopic(destination)) {
             sendMessageInTopic(destination, message);
+            logger.info("Send message "+ MessageTypes.getTypeFromMessage(message) +" into topic " + destination);
+
 
         } else if (Destinations.isKnownQueue(destination)) {
             sendMessageInQueue(destination, message);
+            logger.info("Send message "+ MessageTypes.getTypeFromMessage(message) +" to queue " + destination);
+
         }
     }
 
     @Override
     public void addCallback(final CtxCallback callback) {
-        ctxCallbacks.add(callback);
-        activateCallback(callback.getDestination());
+        if (Destinations.MAIN_CLIENT_QUEUE.equals(callback.getDestination())) {
+            persQueueCallbacks.add(callback);
+        } else if (Destinations.MATCH_TOPIC_NAME.equals(callback.getDestination())) {
+            matchTopicCallbacks.add(callback);
+        }
     }
 
 
     @Override
     public void listen() {
-        activateCallback(Destinations.MAIN_CLIENT_QUEUE);
-        activateCallback(Destinations.MATCH_TOPIC_NAME);
-    }
+        if (!persQueueCallbacks.isEmpty()) {
+            subscribeQueue(Destinations.MAIN_CLIENT_QUEUE,
+                    (consumerTag, rawMsg) -> {
+                        final Gson gson = new Gson();
 
+                        final String stringifiedMsg = new String(rawMsg.getBody(), StandardCharsets.UTF_8);
+                        final String typeHeader = rawMsg.getProperties().getHeaders().get("type").toString();
 
-    /**
-     * Activates a callback for the given standard destination, only if there
-     * are ctxCallbacks relative to it, and automatically recognizes whether a
-     * destination is a known queue or topic. If it is not known, the callback
-     * is ignored and not created.
-     * @param destination The destination to subscribe.
-     */
-    private void activateCallback(final String destination) {
-        final Set<CtxCallback> destCtxCallbacks = ctxCallbacks.stream()
-                .filter(ctxCallback -> ctxCallback.getDestination().equals(destination))
-                .collect(Collectors.toSet());
+                        final Class<? extends Message> messageClass = MessageTypes.getClassFromType(typeHeader);
+                        final Message message = gson.fromJson(stringifiedMsg, messageClass);
 
-        if (!destCtxCallbacks.isEmpty()) {
-            if (Destinations.isKnownQueue(destination)) {
-                subscribeQueue(destination, generateAmqpCallback(destination));
+                        persQueueCallbacks.stream()
+                                .filter(ctxCallback -> ctxCallback.getMessageType().equals(messageClass))
+                                .forEach(ctxCallback -> ctxCallback.execute(message));
 
-            } else if (destination.equals(Destinations.MATCH_TOPIC_NAME)) {
-                subscribeTopic(destination, generateAmqpCallback(destination));
-            }
+                    }
+            );
+        }
+
+        if (!matchTopicCallbacks.isEmpty()) {
+            subscribeTopic(Destinations.MATCH_TOPIC_NAME,
+                    (consumerTag, rawMsg) -> {
+                        final Gson gson = new Gson();
+
+                        final String stringifiedMsg = new String(rawMsg.getBody(), StandardCharsets.UTF_8);
+                        final String typeHeader = rawMsg.getProperties().getHeaders().get("type").toString();
+
+                        final Class<? extends Message> messageClass = MessageTypes.getClassFromType(typeHeader);
+                        final Message message = gson.fromJson(stringifiedMsg, messageClass);
+
+                        matchTopicCallbacks.stream()
+                                .filter(ctxCallback -> ctxCallback.getMessageType().equals(messageClass))
+                                .forEach(ctxCallback -> ctxCallback.execute(message));
+
+                    });
         }
     }
+
 
 
     /**
@@ -158,10 +183,15 @@ public final class GameClientImpl implements GameClient {
             final Class<? extends Message> messageClass = MessageTypes.getClassFromType(typeHeader);
             final Message message = gson.fromJson(stringifiedMsg, messageClass);
 
-            ctxCallbacks.stream()
-                    .filter(ctxCallback -> ctxCallback.getDestination().equals(destination))
-                    .filter(ctxCallback -> ctxCallback.getMessageType().equals(messageClass))
-                    .forEach(ctxCallback -> ctxCallback.execute(message));
+            if(destination.equals(Destinations.MATCH_TOPIC_NAME)) {
+                matchTopicCallbacks.stream()
+                        .filter(ctxCallback -> ctxCallback.getMessageType().equals(messageClass))
+                        .forEach(ctxCallback -> ctxCallback.execute(message));
+            } else if (destination.equals(Destinations.MAIN_CLIENT_QUEUE)) {
+                persQueueCallbacks.stream()
+                        .filter(ctxCallback -> ctxCallback.getMessageType().equals(messageClass))
+                        .forEach(ctxCallback -> ctxCallback.execute(message));
+            }
         };
     }
 

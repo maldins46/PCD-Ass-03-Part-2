@@ -110,7 +110,6 @@ public final class PuzzleGuiImpl implements PuzzleGui {
         } else {
             stateLabel.setText("Match started!");
             tileButtons.forEach(btn -> {
-                btn.setClickable(true);
                 btn.update();
             });
         }

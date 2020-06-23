@@ -33,6 +33,5 @@ final class NewPlayerCallback extends GenericServerCallback {
         final NewPlayerMsg message = (NewPlayerMsg) rawMessage;
         getGameState().addPlayer(message.getPlayer());
         Destinations.addPlayerQueue(message.getSender());
-        getClient().sendMessage(getGameState().generateGameDataMsg(), Destinations.MATCH_TOPIC_NAME);
     }
 }
