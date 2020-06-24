@@ -82,6 +82,11 @@ public final class Tile {
         this.selector = selector;
     }
 
+    /**
+     * Check if a tile is this.tile.
+     * @param tile The tile to check.
+     * @return True if the tile parameter have the same parameter of this.
+     */
     public boolean positionEquals(final Tile tile) {
         return this.currentPos == tile.currentPos && this.originalPos == tile.originalPos;
     }

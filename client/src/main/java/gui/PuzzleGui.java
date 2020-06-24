@@ -23,11 +23,16 @@ public interface PuzzleGui {
      */
     void unlockInterface();
 
+    /**
+     * This method lock interface. It's used when a player do something on it.
+     */
     void lockInterface();
 
 
     /**
      * Factory for create an implementation of this interface.
+     * @param client The GameClient in the game.
+     * @param gameState The GameState of the game.
      * @return The implementation of this interface.
      */
     static PuzzleGui of(GameClient client, ClientGameState gameState) {

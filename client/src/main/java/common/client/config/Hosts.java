@@ -4,7 +4,14 @@ package common.client.config;
  * Server host name.
  */
 public final class Hosts {
+    /**
+     * The localhost.
+     */
     public static final String LOCAL = "localhost";
+
+    /**
+     * The rabbit's host.
+     */
     public static final String INTERNAL_RABBIT = "rabbit";
 
     private Hosts() { }

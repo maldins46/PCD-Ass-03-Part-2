@@ -16,21 +16,34 @@ public final class Player {
         this.name = name;
     }
 
+    /**
+     * Getter for the name.
+     * @return The name.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Create an empty player.
+     * @return The new empty player.
+     */
     public static Player empty() {
         return new Player("");
     }
 
+    /**
+     * Factory for the player.
+     * @param name The player name.
+     * @return The player.
+     */
     public static Player of(final String name) {
         return new Player(name);
     }
 
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Player player = (Player) o;

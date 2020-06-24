@@ -20,6 +20,9 @@ import java.util.concurrent.TimeoutException;
 
 public final class GameClientImpl implements GameClient {
 
+    /**
+     * The logger.
+     */
     private static final Logger logger = LoggerFactory.getLogger(GameClientImpl.class);
 
     /**
@@ -50,7 +53,14 @@ public final class GameClientImpl implements GameClient {
      */
     private final boolean isServerModule;
 
+    /**
+     * Check if is connected.
+     */
     private boolean connected;
+
+    /**
+     * Check if is listening.
+     */
     private boolean listening;
 
 
@@ -225,7 +235,7 @@ public final class GameClientImpl implements GameClient {
      * exchange-queue mechanism. Given a message, it creates a custom header
      * that indicates the message type; Then it creates a dedicated fanout
      * exchange, if not present. Then, it sends the message in it.
-     *
+     * @param topicName The name of topic.
      * @param message The message to be sent, as an instance of the message
      *                interface.
      */
@@ -283,7 +293,7 @@ public final class GameClientImpl implements GameClient {
 
 
     /**
-     * It trasforms the message in an array of of bytes, to be send
+     * It transforms the message in an array of of bytes, to be send
      * to the broker.
      *
      * @param message The message, as a Message instance.

@@ -2,6 +2,9 @@ package common.client.messages;
 
 import common.model.Player;
 
+/**
+ * Message for Ack a change to the puzzle.
+ */
 public final class AckMsg extends GenericMsg {
     /**
      * Player that receives Ack.
@@ -13,6 +16,10 @@ public final class AckMsg extends GenericMsg {
         this.ackedPlayer = ackedPlayer;
     }
 
+    /**
+     * Get's the acked player.
+     * @return The acked's player.
+     */
     public Player getAckedPlayer() {
         return ackedPlayer;
     }

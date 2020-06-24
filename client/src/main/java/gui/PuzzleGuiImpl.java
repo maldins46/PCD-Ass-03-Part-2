@@ -23,22 +23,44 @@ import java.util.List;
 
 public final class PuzzleGuiImpl implements PuzzleGui {
 
+    /**
+     * The image path.
+     */
     private static final String IMAGE_PATH = "src/main/resources/bletchley-park-mansion.jpg";
 
 
     private final JFrame mainFrame;
+
+    /**
+     * It's used for play in the match.
+     */
     private final JButton joinButton;
+
+    /**
+     * It's used for start a new match.
+     */
     private final JButton rematchButton;
+
+
     private final JLabel stateLabel;
     private final List<TileButton> tileButtons = new ArrayList<>();
     private final List<Image> tileImages = new ArrayList<>();
 
+    /**
+     * The gameClientState.
+     */
     private final ClientGameState state;
     private final GameClient client;
+
+    /**
+     * The player that play at this interface instance.
+     */
     private Player currPlayer;
 
     /**
      * Creates the graphic interface but actually is not visible.
+     * @param state The clientGameState that update the puzzle data.
+     * @param client The AMQP client that do the network work.
      */
     PuzzleGuiImpl(final ClientGameState state, final GameClient client) {
         this.state = state;

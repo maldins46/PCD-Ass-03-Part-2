@@ -15,14 +15,34 @@ public interface GameClient {
      */
     void connect();
 
+    /**
+     * Add a callback to the client.
+     * @param callback The callback that have to be added.
+     */
     void addCallback(CtxCallback callback);
 
+    /**
+     * Activate listen.
+     */
     void listen();
 
+    /**
+     * Send a message to the server.
+     * @param message The message that we want to send.
+     */
     void sendMessageToServer(Message message);
 
+    /**
+     * Send a message to a specific player.
+     * @param player The player that we want to send a message.
+     * @param message The message that we want to the send.
+     */
     void sendMessageToPlayer(Player player, Message message);
 
+    /**
+     * Send a message to the player or to the server.
+     * @param message The message that we want to the send.
+     */
     void sendMessageToMatch(Message message);
 
 

@@ -2,7 +2,6 @@ package callbacks;
 
 import common.client.CtxCallback;
 import common.client.GameClient;
-import common.client.config.Destinations;
 
 import common.client.messages.Message;
 import common.client.messages.AckMsg;

@@ -17,22 +17,58 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 /**
- * Class that enclose concept of Tile with the funzionalities of JButton.
+ * Class that enclose concept of Tile with the functionalities of JButton.
  */
 public final class TileButton extends JButton implements ActionListener {
+    /**
+     * The tile original position.
+     */
     private final int originalPos;
 
+    /**
+     * The GameClient used for connecting.
+     */
     private final GameClient client;
+    /**
+     * The clientGameState used for updates.
+     */
     private final ClientGameState state;
+    /**
+     * The images in all tiles.
+     */
     private final List<Image> images;
+    /**
+     * The graphic interface.
+     */
     private final PuzzleGui gui;
+    /**
+     * The player that have checked this tile button.
+     */
     private Player currPlayer;
 
+    /**
+     * Actually tile in this tile button.
+     */
     private Tile currTile;
+    /**
+     * Actually image in this tile button.
+     */
     private Image currImage;
+    /**
+     * True if the tile button is clickable, false otherwise.
+     */
     private boolean clickable = false;
 
 
+    /**
+     * Create a tile button instance.
+     * @param originalPos The original position of tile.
+     * @param originalImage The original image of tile button.
+     * @param images The images in all tiles.
+     * @param state The clientGameState used for updates.
+     * @param client The GameClient used for connecting.
+     * @param gui The graphic interface.
+     */
     public TileButton(final int originalPos, final Image originalImage,
                       final List<Image> images, final ClientGameState state,
                       final GameClient client, final PuzzleGui gui) {
@@ -49,6 +85,9 @@ public final class TileButton extends JButton implements ActionListener {
 
     }
 
+    /**
+     * Update the tile button parameter.
+     */
     public void update() {
         this.currTile = state.getPuzzle().getTileFromPos(originalPos).get();
         this.currPlayer = Player.of(Destinations.PERSONAL_QUEUE);
@@ -70,6 +109,10 @@ public final class TileButton extends JButton implements ActionListener {
         currImage = newImage;
     }
 
+    /**
+     * Set clickable or not a button.
+     * @param clickable True if clickable, false otherwise.
+     */
     public void setClickable(final boolean clickable) {
         this.clickable = clickable;
     }
@@ -88,13 +131,12 @@ public final class TileButton extends JButton implements ActionListener {
                     client.sendMessageToServer(msg);
                     gui.lockInterface();
                 }
-
                 // current player selected something previously (not me)
                 else if (tiles.stream().anyMatch(x -> x.getSelector().equals(currPlayer))
                          && !currTile.getSelector().equals(currPlayer)) {
                     // Always present a player in the tile
                     final Tile startTile = tiles.stream().filter(x -> x.getSelector().equals(currPlayer)).findFirst().get();
-                    final SwapMsg msg = Messages.createSwapMsg(startTile,currTile, currPlayer);
+                    final SwapMsg msg = Messages.createSwapMsg(startTile, currTile, currPlayer);
                     client.sendMessageToServer(msg);
                     gui.lockInterface();
                 }

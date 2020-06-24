@@ -41,14 +41,28 @@ public final class Puzzle {
     }
 
 
+    /**
+     * Getter for tile that take the tile from his original position.
+     * @param originalPos The original position of the tile.
+     * @return The Optional of tile if present, Optional.empty otherwise.
+     */
     public Optional<Tile> getTileFromPos(final int originalPos) {
         return tiles.stream().filter(x -> x.getOriginalPos() == originalPos).findFirst();
     }
 
+    /**
+     * Factory for the class.
+     * @param initialize True if is initialized yes, false otherwise.
+     * @return The new Puzzle.
+     */
     public static Puzzle of(final boolean initialize) {
         return new Puzzle(initialize);
     }
 
+    /**
+     * Factory for the class with initialize false.
+     * @return The new Puzzle.
+     */
     public static Puzzle of() {
         return new Puzzle(false);
     }
