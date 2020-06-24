@@ -11,7 +11,7 @@ import gui.PuzzleGui;
 public final class  Callbacks {
 
 
-    private Callbacks () { }
+    private Callbacks() { }
 
     /**
      * Create a GameState Callback. This callback handle a Msg that define the

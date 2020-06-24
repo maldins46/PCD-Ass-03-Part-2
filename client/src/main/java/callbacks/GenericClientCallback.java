@@ -11,16 +11,37 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class GenericClientCallback implements CtxCallback {
+
+    /**
+     * The client that have this callback.
+     */
     private final GameClient client;
 
+    /**
+     * The GameState of the client.
+     */
     private final ClientGameState gameState;
 
+    /**
+     * The graphic interface.
+     */
     private final PuzzleGui gui;
 
+    /**
+     * The logger.
+     */
     protected static final Logger logger = LoggerFactory.getLogger(GenericClientCallback.class);
 
 
-    public GenericClientCallback(final GameClient client, final ClientGameState gameState, final PuzzleGui gui) {
+    /**
+     * Create a generic client callback.
+     * @param client The client that want to receive the callback.
+     * @param gameState The game state of game.
+     * @param gui The graphic interface.
+     */
+    public GenericClientCallback(final GameClient client,
+                                 final ClientGameState gameState,
+                                 final PuzzleGui gui) {
         this.client = client;
         this.gameState = gameState;
         this.gui = gui;

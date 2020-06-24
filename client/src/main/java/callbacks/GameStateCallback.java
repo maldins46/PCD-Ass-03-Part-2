@@ -6,11 +6,10 @@ import common.client.messages.Message;
 import common.gameState.ClientGameState;
 import gui.PuzzleGui;
 
-import java.util.Comparator;
-
 final class GameStateCallback extends GenericClientCallback {
 
-    GameStateCallback(GameClient client, ClientGameState gameState, PuzzleGui gui) {
+    GameStateCallback(final GameClient client, final ClientGameState gameState,
+                      final PuzzleGui gui) {
         super(client, gameState, gui);
     }
 

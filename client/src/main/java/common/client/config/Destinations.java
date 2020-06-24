@@ -24,10 +24,11 @@ public final class Destinations {
     /**
      * The queue used by specific players. useful for ack sending.
      */
-    public static final Set<String> PLAYERS_QUEUE = new HashSet<>();
+    private static final Set<String> PLAYERS_QUEUE = new HashSet<>();
 
     /**
-     * Memorizes the last broker-assigned queue, derived from a topic subscription.
+     * Memorizes the last broker-assigned queue, derived from a topic
+     * subscription.
      */
     public static String PERSONAL_QUEUE = "";
 
@@ -45,8 +46,13 @@ public final class Destinations {
     }
 
 
+    /**
+     * This method checks if destination is present in player queue.
+     * @param destination The possible destination.
+     * @return True if present, false otherwise.
+     */
     public static boolean isPlayerQueue(final String destination) {
-        return PLAYERS_QUEUE.contains(destination)  ;
+        return PLAYERS_QUEUE.contains(destination);
     }
 
 
@@ -67,6 +73,10 @@ public final class Destinations {
         PLAYERS_QUEUE.remove(destination);
     }
 
+    /**
+     * Set the personal queue of a player.
+     * @param queueName The name of personal queue.
+     */
     public static void setPersonalQueue(final String queueName) {
         PERSONAL_QUEUE = queueName;
     }
