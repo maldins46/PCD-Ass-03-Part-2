@@ -14,88 +14,110 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 /**
- * Class that enclose concept of Tile with the functionalities of JButton.
+ * Represents a single tile of the puzzle, shown as a clickable button
+ * to the user.
  */
 final class TileButton extends JButton {
 
     /**
-     * Actually tile in this tile button.
+     * Actual tile associated to the button.
      */
     private Tile tile;
 
     /**
-     *
+     * A tile is locked if a message is sent from the player, and
+     * the player is waiting for the ack. A locked tile can be clicked,
+     * but the click won't take effect.
      */
     private boolean locked;
 
     /**
-     * Actually image in this tile button.
+     * Image currently displayed over this tile.
      */
     private Image currImage;
 
     /**
-     * The GameClient used for connecting.
+     * A refer to the player client, used to send messages.
      */
     private final PlayerClient client;
 
     /**
-     * The clientGameState used for updates.
+     * A refer to the game state, to access some useful game information.
      */
-    private final PlayerGameState state;
+    private final PlayerGameState gameState;
 
+    /**
+     * A refer to the panel that generated the tile.
+     */
     private final PuzzlePanel puzzlePanel;
 
 
     /**
-     * Create a tile button instance.
-     * @param originalImage The original image of tile button.
-     * @param state The clientGameState used for updates.
-     * @param client The GameClient used for connecting.
+     * Default constructor with field population.
+     * @param tile Actual tile associated to the button.
+     * @param originalImage Image firstly displayed over this tile.
+     * @param gameState A refer to the game state, to access some useful game information.
+     * @param client A refer to the player client, used to send messages.
+     * @param puzzlePanel A refer to the panel that generated the tile.
      */
-    TileButton(final Tile tile, final Image originalImage,
-                      final PlayerGameState state,
-                      final PlayerClient client,
-                      final PuzzlePanel puzzlePanel) {
+    TileButton(final Tile tile, final Image originalImage, final PlayerGameState gameState,
+               final PlayerClient client, final PuzzlePanel puzzlePanel) {
         super(new ImageIcon(originalImage));
+        setBorder(BorderFactory.createLineBorder(Color.gray));
+        setEnabled(false);
 
         this.currImage = originalImage;
         this.tile = tile;
-        this.state = state;
+        this.gameState = gameState;
         this.client = client;
         this.puzzlePanel = puzzlePanel;
-
-        setBorder(BorderFactory.createLineBorder(Color.gray));
-        setEnabled(false);
     }
 
 
-    public void setSwappable(final Tile tile, final Image newImage) {
-        this.tile = tile;
-        updateAppearance(tile.getSelector(), newImage);
+    /**
+     * Makes the tile swappable, as described in the GUI
+     * interface.
+     */
+    public void setSwappable() {
         removeActionListener(selectableActionListener());
         addActionListener(swappableActionListener());
     }
 
 
-    public void setSelectable(final Tile tile, final Image newImage) {
-        this.tile = tile;
-        updateAppearance(tile.getSelector(), newImage);
+    /**
+     * Makes the tile selectable, as described in the GUI
+     * interface.
+     */
+    public void setSelectable() {
         removeActionListener(swappableActionListener());
         addActionListener(selectableActionListener());
     }
 
 
-    private void updateAppearance(final Player selector, final Image newImage) {
+    /**
+     * Makes the tile locked, as described in the GUI
+     * interface.
+     */
+    public void setLocked(final boolean locked) {
+        this.locked = locked;
+    }
+
+
+    /**
+     * Updates how the tile is shown, including images and select borders.
+     */
+    public void updateAppearance(final Tile tile, final Image newImage) {
+        this.tile = tile;
         if (!currImage.equals(newImage)) {
             setIcon(new ImageIcon(newImage));
         }
 
         currImage = newImage;
 
-        if (selector.equals(state.getCurrentPlayer())) {
+        if (tile.getSelector().equals(gameState.getCurrentPlayer())) {
             setBorder(BorderFactory.createLineBorder(Color.green));
 
-        } else if (!selector.equals(Player.empty())) {
+        } else if (!tile.getSelector().equals(Player.empty())) {
             setBorder(BorderFactory.createLineBorder(Color.red));
 
         } else {
@@ -104,11 +126,15 @@ final class TileButton extends JButton {
     }
 
 
+    /**
+     * Action listener associated to the swap behavior.
+     * @return The associated listener.
+     */
     private ActionListener swappableActionListener() {
         return e -> SwingUtilities.invokeLater(() -> {
-            if (!locked && !tile.getSelector().equals(state.getCurrentPlayer())) {
-                final Tile startTile = state.getSelectedTile();
-                final SwapMsg msg = Messages.createSwapMsg(startTile, tile, state.getCurrentPlayer());
+            if (!locked && !tile.getSelector().equals(gameState.getCurrentPlayer())) {
+                final Tile startTile = gameState.getSelectedTile();
+                final SwapMsg msg = Messages.createSwapMsg(startTile, tile);
                 client.sendMessageToPuzzleService(msg);
                 puzzlePanel.lockPuzzle();
             }
@@ -116,25 +142,17 @@ final class TileButton extends JButton {
     }
 
 
+    /**
+     * Action listener associated to the select behavior.
+     * @return The associated listener.
+     */
     private ActionListener selectableActionListener() {
         return e -> SwingUtilities.invokeLater(() -> {
             if (!locked && tile.getSelector().equals(Player.empty())) {
-                final SelectMsg msg = Messages.createSelectMsg(tile, state.getCurrentPlayer());
+                final SelectMsg msg = Messages.createSelectMsg(tile);
                 client.sendMessageToPuzzleService(msg);
                 puzzlePanel.lockPuzzle();
             }
         });
-    }
-
-
-    public void setEnabled(boolean enabled, final Tile tile, final Image newImage) {
-        this.tile = tile;
-        updateAppearance(tile.getSelector(), newImage);
-        super.setEnabled(enabled);
-    }
-
-
-    public void setLocked(final boolean locked) {
-        this.locked = locked;
     }
 }

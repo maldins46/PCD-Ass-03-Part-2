@@ -48,7 +48,7 @@ public final class Player {
 
 
     /**
-     * Create an empty player.
+     * Creates an empty player.
      * @return The new empty player.
      */
     public static Player empty() {
@@ -57,7 +57,7 @@ public final class Player {
 
 
     /**
-     * Factory for a generic player.
+     * Creates generic player with a passed name.
      * @param name The player name.
      * @return The player.
      */

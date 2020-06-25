@@ -2,7 +2,6 @@ package callbacks;
 
 
 import common.amqp.client.PuzzleServiceClient;
-import common.amqp.messages.Message;
 import common.amqp.messages.PlayerMsg;
 import common.amqp.messages.RematchMsg;
 import common.gameState.PuzzleServiceGameState;
@@ -16,10 +15,10 @@ final class RematchCallback extends GenericPuzzleServiceCallback {
     /**
      * Standard callback, with superclass initialization.
      * @param client the game model.client.
-     * @param state the game data.
+     * @param gameState the game data.
      */
-    RematchCallback(final PuzzleServiceClient client, final PuzzleServiceGameState state) {
-        super(client, state);
+    RematchCallback(final PuzzleServiceClient client, final PuzzleServiceGameState gameState) {
+        super(client, gameState);
     }
 
 
@@ -30,7 +29,7 @@ final class RematchCallback extends GenericPuzzleServiceCallback {
 
 
     @Override
-    public void executeBody(final Message rawMessage) {
-        getState().rematch();
+    public void executeBody(final PlayerMsg rawMessage) {
+        getGameState().rematch();
     }
 }

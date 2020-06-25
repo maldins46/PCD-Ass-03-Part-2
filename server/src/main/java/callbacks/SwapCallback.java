@@ -1,7 +1,6 @@
 package callbacks;
 
 import common.amqp.client.PuzzleServiceClient;
-import common.amqp.messages.Message;
 import common.amqp.messages.PlayerMsg;
 import common.amqp.messages.SwapMsg;
 import common.gameState.PuzzleServiceGameState;
@@ -16,23 +15,25 @@ final class SwapCallback extends GenericPuzzleServiceCallback {
     /**
      * Standard callback, with superclass initialization.
      * @param client the game model.client.
-     * @param state the game data.
+     * @param gameState the game data.
      */
-    SwapCallback(final PuzzleServiceClient client, final PuzzleServiceGameState state) {
-        super(client, state);
+    SwapCallback(final PuzzleServiceClient client, final PuzzleServiceGameState gameState) {
+        super(client, gameState);
     }
+
 
     @Override
     public Class<? extends PlayerMsg> getMessageType() {
         return SwapMsg.class;
     }
 
+
     @Override
-    public void executeBody(final Message rawMessage) {
+    public void executeBody(final PlayerMsg rawMessage) {
         final SwapMsg message = (SwapMsg) rawMessage;
         final Tile startTile = message.getStartTile();
         final Tile destTile = message.getDestTile();
         final Player selector = message.getSelector();
-        getState().swapTiles(startTile, destTile, selector);
+        getGameState().swapTiles(startTile, destTile, selector);
     }
 }

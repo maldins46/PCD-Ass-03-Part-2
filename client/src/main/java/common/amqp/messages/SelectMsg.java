@@ -4,30 +4,29 @@ import common.model.Player;
 import common.model.Tile;
 
 /**
- * It's used when a player select the first tile.
+ * Message used to indicate to the puzzle service that the player selected
+ * a tile.
  */
 public final class SelectMsg extends GenericPlayerMsg {
 
     /**
-     * The tile selected.
+     * The selected tile.
      */
     private final Tile selectedTile;
 
+
     /**
-     * The player selected.
+     * Default constructor with field population.
+     * @param selectedTile The selected tile.
      */
-    private final Player selector;
-
-
-    SelectMsg(final Tile selectedTile, final Player selector) {
+    SelectMsg(final Tile selectedTile) {
         this.selectedTile = selectedTile;
-        this.selector = selector;
     }
 
 
     /**
      * Getter for the selected tile.
-     * @return The tile selected.
+     * @return The selected tile.
      */
     public Tile getSelectedTile() {
         return selectedTile;
@@ -35,10 +34,10 @@ public final class SelectMsg extends GenericPlayerMsg {
 
 
     /**
-     * Getter for the player that selected the tile.
-     * @return The player.
+     * The player that selected the tile corresponds to the sender field.
+     * @return The player that selected the tile.
      */
     public Player getSelector() {
-        return selector;
+        return getSenderPlayer();
     }
 }

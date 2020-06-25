@@ -6,26 +6,29 @@ import common.model.Puzzle;
 import java.util.Set;
 
 /**
- * Common methods between client and server.
+ * Interface that represents the state of the game, defining its model
+ * objects in a given moment, and giving the possibility to read them.
  */
 public interface GameState {
 
     /**
-     * Getter for puzzle.
-     * @return The puzzle.
+     * Returns the puzzle instance of the game.
+     * @return The puzzle instance.
      */
     Puzzle getPuzzle();
 
 
     /**
-     * Getter for players.
-     * @return All players.
+     * Returns the set of players connected to the game.
+     * @return The set of players connected to the game.
      */
     Set<Player> getPlayers();
 
+
     /**
-     * Getter hat checks if a match is finished.
-     * @return True if a match is finished, false otherwise.
+     * Checks whether the current match is finished, checking the position of
+     * the tiles.
+     * @return True if the match is finished, false otherwise.
      */
     boolean isFinished();
 }

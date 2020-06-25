@@ -3,6 +3,7 @@ package callbacks;
 import common.amqp.client.PlayerClient;
 import common.amqp.messages.GameStateMsg;
 import common.amqp.messages.Message;
+import common.amqp.messages.PlayerMsg;
 import common.amqp.messages.PuzzleServiceMsg;
 import common.gameState.PlayerGameState;
 import gui.PlayerGui;
@@ -14,6 +15,12 @@ import gui.PlayerGui;
  */
 final class GameStateCallback extends GenericPlayerCallback {
 
+    /**
+     * Default constructor with field population in the superclass.
+     * @param client The client instance.
+     * @param gameState The game state instance.
+     * @param gui The GUI accessor instance.
+     */
     GameStateCallback(final PlayerClient client, final PlayerGameState gameState, final PlayerGui gui) {
         super(client, gameState, gui);
     }
@@ -26,7 +33,7 @@ final class GameStateCallback extends GenericPlayerCallback {
 
 
     @Override
-    public void executeBody(final Message rawMessage) {
+    public void executeBody(final PuzzleServiceMsg rawMessage) {
         final GameStateMsg message = (GameStateMsg) rawMessage;
         getGameState().updateData(message);
 

@@ -2,6 +2,7 @@ package common.amqp.callback;
 
 import common.amqp.messages.Message;
 import common.amqp.messages.PlayerMsg;
+import common.amqp.messages.PuzzleServiceMsg;
 
 /**
  * An action to be executed when a message of a specific type,

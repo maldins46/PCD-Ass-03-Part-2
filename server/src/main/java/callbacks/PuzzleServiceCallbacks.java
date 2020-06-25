@@ -48,10 +48,10 @@ public final class PuzzleServiceCallbacks {
     /**
      * Create a callback from a rematchMsg callback.
      * @param client The receiver of the callback.
-     * @param state The entire puzzle as is.
+     * @param gameState The entire puzzle as is.
      * @return the callback.
      */
-    public static PuzzleServiceCallback rematchMsg(final PuzzleServiceClient client, final PuzzleServiceGameState state) {
-        return new RematchCallback(client, state);
+    public static PuzzleServiceCallback rematchMsg(final PuzzleServiceClient client, final PuzzleServiceGameState gameState) {
+        return new RematchCallback(client, gameState);
     }
 }

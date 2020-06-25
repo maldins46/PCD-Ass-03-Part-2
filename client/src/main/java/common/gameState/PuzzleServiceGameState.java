@@ -5,46 +5,52 @@ import common.model.Player;
 import common.model.Tile;
 
 /**
- * GameState used for server. The server is the only component that can swap
- * effectively the tiles and he is the one that check if clients have win.
+ * The representation of the game state used by the puzzle service. The service
+ * must have the possibility to do precise modifications to the structure.
  */
 public interface PuzzleServiceGameState extends GameState {
 
     /**
-     * Add a player to the match.
+     * Adds a player to the game.
      * @param player The player that have to be added.
      */
     void addPlayer(Player player);
 
+
     /**
-     * Remove a player to the match.
+     * Removes a player to the game.
      * @param player The player that have to be removed.
      */
     void removePlayer(Player player);
 
+
     /**
-     * Init a new instance of the game.
+     * Initializes a new match inside the game. It basically shuffle current
+     * positions of the tiles of the puzzle.
      */
     void rematch();
 
+
     /**
-     * Set a tile as selected and assign to this the player.
-     * @param tile The tile selected.
-     * @param player The player that have selected this tile.
+     * Sets a tile as selected from a player.
+     * @param tile The selected tile.
+     * @param player The player that selected the tile.
      */
     void setTileAsSelected(Tile tile, Player player);
 
+
     /**
-     * Switch two tiles.
+     * Switches two tiles current position.
      * @param startTile The first tile.
      * @param destTile The second tile.
      * @param player The player that do the swap.
      */
     void swapTiles(Tile startTile, Tile destTile, Player player);
 
+
     /**
-     * Create a gameMsg with the updated data.
-     * @return The game msg.
+     * Creates a game state message, with the updated data.
+     * @return The game state message.
      */
     GameStateMsg generateGameDataMsg();
 }

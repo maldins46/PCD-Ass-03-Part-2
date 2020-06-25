@@ -15,7 +15,7 @@ public final class Player {
 
     /**
      * A player can be build using a player name, as it is identified
-     * unically by that.
+     * only by that.
      * @param name The player's name.
      */
     private Player(final String name) {
@@ -48,7 +48,7 @@ public final class Player {
 
 
     /**
-     * Create an empty player.
+     * Creates an empty player.
      * @return The new empty player.
      */
     public static Player empty() {
@@ -57,7 +57,7 @@ public final class Player {
 
 
     /**
-     * Factory for a generic player.
+     * Creates generic player with a passed name.
      * @param name The player name.
      * @return The player.
      */

@@ -1,7 +1,6 @@
 package callbacks;
 
 import common.amqp.client.PuzzleServiceClient;
-import common.amqp.messages.Message;
 import common.amqp.messages.PlayerMsg;
 import common.amqp.messages.SelectMsg;
 import common.gameState.PuzzleServiceGameState;
@@ -16,22 +15,24 @@ final class SelectCallback extends GenericPuzzleServiceCallback {
     /**
      * Standard callback, with superclass initialization.
      * @param client the game model.client.
-     * @param state the game data.
+     * @param gameState the game data.
      */
-    SelectCallback(final PuzzleServiceClient client, final PuzzleServiceGameState state) {
-        super(client, state);
+    SelectCallback(final PuzzleServiceClient client, final PuzzleServiceGameState gameState) {
+        super(client, gameState);
     }
+
 
     @Override
     public Class<? extends PlayerMsg> getMessageType() {
         return SelectMsg.class;
     }
 
+
     @Override
-    public void executeBody(final Message rawMessage) {
+    public void executeBody(final PlayerMsg rawMessage) {
         final SelectMsg message = (SelectMsg) rawMessage;
         final Tile tile = message.getSelectedTile();
         final Player selector = message.getSelector();
-        getState().setTileAsSelected(tile, selector);
+        getGameState().setTileAsSelected(tile, selector);
     }
 }

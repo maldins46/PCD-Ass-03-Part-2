@@ -2,7 +2,6 @@ package callbacks;
 
 
 import common.amqp.client.PuzzleServiceClient;
-import common.amqp.messages.Message;
 import common.amqp.messages.NewPlayerMsg;
 import common.amqp.messages.PlayerMsg;
 import common.gameState.PuzzleServiceGameState;
@@ -15,10 +14,10 @@ final class NewPlayerCallback extends GenericPuzzleServiceCallback {
     /**
      * Standard callback, with superclass initialization.
      * @param client the game model.client.
-     * @param state the game data.
+     * @param gameState the game data.
      */
-    NewPlayerCallback(final PuzzleServiceClient client, final PuzzleServiceGameState state) {
-        super(client, state);
+    NewPlayerCallback(final PuzzleServiceClient client, final PuzzleServiceGameState gameState) {
+        super(client, gameState);
     }
 
 
@@ -29,8 +28,8 @@ final class NewPlayerCallback extends GenericPuzzleServiceCallback {
 
 
     @Override
-    public void executeBody(final Message rawMessage) {
+    public void executeBody(final PlayerMsg rawMessage) {
         final NewPlayerMsg message = (NewPlayerMsg) rawMessage;
-        getState().addPlayer(message.getPlayer());
+        getGameState().addPlayer(message.getPlayer());
     }
 }

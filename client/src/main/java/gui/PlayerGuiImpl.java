@@ -10,38 +10,53 @@ import common.gameState.PlayerGameState;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Implementation of the access point of modification for the GUI.
+ */
 final class PlayerGuiImpl implements PlayerGui {
 
+    /**
+     * The frame shown to the user.
+     */
     private final JFrame mainFrame;
 
     /**
-     * It's used for play in the match.
+     * Used to send to the puzzle service the initial game join request.
      */
     private final JButton joinButton;
 
     /**
-     * It's used for start a new match.
+     * Used to send to the puzzle service a request to start a new game.
      */
     private final JButton rematchButton;
 
-
+    /**
+     * A label that shows some information about game state.
+     */
     private final JLabel stateLabel;
 
+    /**
+     * The panel that shows all the tiles of the puzzle.
+     */
     private final PuzzlePanel puzzlePanel;
+
+    /**
+     * A refer to the game state, to access some useful game information.
+     */
+    private final PlayerGameState gameState;
 
 
     /**
-     * Creates the graphic interface but actually is not visible.
-     * @param state The clientGameState that update the puzzle data.
-     * @param client The AMQP client that do the network work.
+     * Creates the GUI, keeping it not visible until the launch.
+     * @param state The game state instance.
+     * @param client The client instance.
      */
     PlayerGuiImpl(final PlayerGameState state, final PlayerClient client) {
-
         this.mainFrame = new JFrame();
         this.mainFrame.setTitle("MultiPlayer Puzzle - Client");
         this.mainFrame.setResizable(false);
         this.mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        this.gameState = state;
 
         final JPanel generalPanel = new JPanel();
         generalPanel.setLayout(new BoxLayout(generalPanel, BoxLayout.PAGE_AXIS));
@@ -53,9 +68,9 @@ final class PlayerGuiImpl implements PlayerGui {
 
         joinButton.addActionListener((e) -> {
             SwingUtilities.invokeLater(() -> {
-                stateLabel.setText("Connecting to the broker...");
+                stateLabel.setText("Connecting to the game...");
                 joinButton.setEnabled(false);
-                final NewPlayerMsg msg = Messages.createNewPlayerMsg(state.getCurrentPlayer());
+                final NewPlayerMsg msg = Messages.createNewPlayerMsg();
                 client.sendMessageToPuzzleService(msg);
             });
         });
@@ -79,6 +94,7 @@ final class PlayerGuiImpl implements PlayerGui {
         mainFrame.pack();
     }
 
+
     @Override
     public void launch() {
         mainFrame.setVisible(true);
@@ -87,8 +103,8 @@ final class PlayerGuiImpl implements PlayerGui {
 
     @Override
     public void finishMatch() {
+        puzzlePanel.updateAppearance();
         puzzlePanel.disablePuzzle();
-
         stateLabel.setText("Match finished!");
         joinButton.setEnabled(false);
         rematchButton.setEnabled(true);
@@ -98,7 +114,6 @@ final class PlayerGuiImpl implements PlayerGui {
     @Override
     public void leaveGame() {
         puzzlePanel.disablePuzzle();
-
         stateLabel.setText("You are out! Select join to start.");
         joinButton.setEnabled(true);
         rematchButton.setEnabled(false);
@@ -107,10 +122,10 @@ final class PlayerGuiImpl implements PlayerGui {
 
     @Override
     public void setPuzzleSwappable() {
+        puzzlePanel.updateAppearance();
         puzzlePanel.enablePuzzle();
         puzzlePanel.setSwappable();
-
-        stateLabel.setText("Playing match...");
+        stateLabel.setText("Playing match, " + gameState.getPlayers().size() + " players connected");
         joinButton.setEnabled(false);
         rematchButton.setEnabled(false);
     }
@@ -118,10 +133,11 @@ final class PlayerGuiImpl implements PlayerGui {
 
     @Override
     public void setPuzzleSelectable() {
+        puzzlePanel.updateAppearance();
         puzzlePanel.enablePuzzle();
         puzzlePanel.setSelectable();
 
-        stateLabel.setText("Playing match...");
+        stateLabel.setText("Playing match, " + gameState.getPlayers().size() + " players connected");
         joinButton.setEnabled(false);
         rematchButton.setEnabled(false);
     }

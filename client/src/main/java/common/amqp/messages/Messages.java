@@ -1,7 +1,5 @@
 package common.amqp.messages;
 
-
-import common.amqp.config.Destinations;
 import common.model.Player;
 import common.model.Puzzle;
 import common.model.Tile;
@@ -9,72 +7,69 @@ import common.model.Tile;
 import java.util.Set;
 
 /**
- * Factory for create messages.
+ * Factory used to create messages.
  */
 public final class Messages {
 
+
     private Messages() { }
+
 
     /**
      * Create an AckMsg.
-     * @param ackedPlayer The receiver of the message.
-     * @return The AckMsg.
+     * @return A fresh AckMsg.
      */
-    public static AckMsg createAckMsg(final Player ackedPlayer) {
-        return new AckMsg(ackedPlayer);
+    public static AckMsg createAckMsg() {
+        return new AckMsg();
     }
+
 
     /**
      * Create a GameStateMsg.
-     * @param puzzle The puzzle updated.
-     * @param players The participants players.
-     * @return The GameStateMsg.
+     * @param puzzle The puzzle instance.
+     * @param players The player set.
+     * @return A fresh GameStateMsg.
      */
-    public static GameStateMsg createGameStateMsg(final Puzzle puzzle,
-                                                  final Set<Player> players) {
+    public static GameStateMsg createGameStateMsg(final Puzzle puzzle, final Set<Player> players) {
         return new GameStateMsg(puzzle, players);
     }
 
+
     /**
      * Create a NewPlayerMsg.
-     * @param player The participant player.
-     * @return The NewPlayerMsg.
+     * @return A fresh NewPlayerMsg.
      */
-    public static NewPlayerMsg createNewPlayerMsg(final Player player) {
-        return new NewPlayerMsg(player);
+    public static NewPlayerMsg createNewPlayerMsg() {
+        return new NewPlayerMsg();
     }
+
 
     /**
      * Create a RematchMsg.
-     * @return The RematchMsg.
+     * @return A fresh RematchMsg.
      */
     public static RematchMsg createRematchMsg() {
         return new RematchMsg();
     }
 
+
     /**
      * Create a SelectMsg.
-     * @param selectedTile The first tile selected from a player.
-     * @param selector The player selector.
-     * @return The SelectMsg.
+     * @param selectedTile The tile selected by the player.
+     * @return A fresh SelectMsg.
      */
-    public static SelectMsg createSelectMsg(final Tile selectedTile,
-                                            final Player selector) {
-        return new SelectMsg(selectedTile,
-                selector);
+    public static SelectMsg createSelectMsg(final Tile selectedTile) {
+        return new SelectMsg(selectedTile);
     }
+
 
     /**
      * Create a SwapMsg.
-     * @param startTile The first tile selected from a player.
-     * @param destTile The second tile selected from a player.
-     * @param selector Theplayer selector.
-     * @return The SwapMSg.
+     * @param startTile The first tile selected by the player.
+     * @param destTile The second tile selected by the player.
+     * @return A fresh SwapMSg.
      */
-    public static SwapMsg createSwapMsg(final Tile startTile,
-                                        final Tile destTile,
-                                        final Player selector) {
-        return new SwapMsg(startTile, destTile,
-                selector);
+    public static SwapMsg createSwapMsg(final Tile startTile, final Tile destTile) {
+        return new SwapMsg(startTile, destTile);
     }
 }

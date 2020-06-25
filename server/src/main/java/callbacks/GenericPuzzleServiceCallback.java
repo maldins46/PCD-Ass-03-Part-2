@@ -23,17 +23,17 @@ abstract class GenericPuzzleServiceCallback implements PuzzleServiceCallback {
     /**
      * The game data.
      */
-    private final PuzzleServiceGameState state;
+    private final PuzzleServiceGameState gameState;
 
 
     /**
      * Construct a generic callback with server and data.
      * @param client The game server.
-     * @param state The game data.
+     * @param gameState The game data.
      */
-    GenericPuzzleServiceCallback(final PuzzleServiceClient client, final PuzzleServiceGameState state) {
+    GenericPuzzleServiceCallback(final PuzzleServiceClient client, final PuzzleServiceGameState gameState) {
         this.client = client;
-        this.state = state;
+        this.gameState = gameState;
     }
 
 
@@ -54,9 +54,9 @@ abstract class GenericPuzzleServiceCallback implements PuzzleServiceCallback {
     private void terminate(final PlayerMsg message) {
         final Player senderPlayer = message.getSenderPlayer();
 
-        PlayerTimeouts.addOrUpdateTimeout(senderPlayer, client, state);
-        final AckMsg ack = Messages.createAckMsg(senderPlayer);
-        client.sendMessageToMatch(state.generateGameDataMsg());
+        PlayerTimeouts.addOrUpdateTimeout(senderPlayer, client, gameState);
+        final AckMsg ack = Messages.createAckMsg();
+        client.sendMessageToMatch(gameState.generateGameDataMsg());
         client.sendMessageToPlayer(senderPlayer, ack);
     }
 
@@ -66,14 +66,14 @@ abstract class GenericPuzzleServiceCallback implements PuzzleServiceCallback {
      * message. Do not include the termination part in it.
      * @param rawMessage The received message.
      */
-    protected abstract void executeBody(Message rawMessage);
+    protected abstract void executeBody(PlayerMsg rawMessage);
 
 
     /**
      * Getter for the game data instance, for child classes.
      * @return The game data.
      */
-    protected PuzzleServiceGameState getState() {
-        return state;
+    protected PuzzleServiceGameState getGameState() {
+        return gameState;
     }
 }

@@ -9,18 +9,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The client module entry point.
+ * The player module entry point.
  */
 public class Main {
     private static final String HOST = Hosts.LOCAL;
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
-    private static PlayerGameState state;
+    private static PlayerGameState gameState;
     private static PlayerClient client;
     private static PlayerGui gui;
 
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         LOGGER.info("Assignment 03, pt.2 - Maldini, Gorini, Angelini - MultiPlayer Puzzle Client");
         LOGGER.info("Client started...");
 
@@ -36,9 +36,9 @@ public class Main {
      * First phase of the set-up. It creates the component used in the client.
      */
     private static void declareComponents() {
-        state = GameStates.player();
+        gameState = GameStates.player();
         client = AmqpClients.player(HOST);
-        gui = PlayerGui.of(client, state);
+        gui = PlayerGui.of(client, gameState);
     }
 
 
@@ -47,11 +47,11 @@ public class Main {
      */
     private static void configureComponents() {
         client.connect();
-        client.addCallback(PlayerCallbacks.gameStateMsg(client, state, gui));
-        client.addCallback(PlayerCallbacks.ackMsg(client, state, gui));
+        client.addCallback(PlayerCallbacks.gameStateMsg(client, gameState, gui));
+        client.addCallback(PlayerCallbacks.ackMsg(client, gameState, gui));
         client.listen();
 
-        state.setCurrentPlayer(client.getPersonalQueueName());
+        gameState.setCurrentPlayer(client.getPersonalQueueName());
     }
 
 

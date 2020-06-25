@@ -10,12 +10,13 @@ import java.util.Collections;
 import java.util.Optional;
 
 /**
- * Server of the game. This class has the privilege to modify the tiles sort.
+ * Implementation of the highly-modifiable game state used by the puzzle service.
  */
 final class PuzzleServiceGameStateImpl extends GenericGameState implements PuzzleServiceGameState {
 
     /**
-     * Instantiates a ServerGameState. It's create and shuflle the puzzle.
+     * Default constructor, it calls initialization of its superclass and initializes
+     * the puzzle with a shuffled set of tile.
      */
     PuzzleServiceGameStateImpl() {
         super();
@@ -50,19 +51,6 @@ final class PuzzleServiceGameStateImpl extends GenericGameState implements Puzzl
     }
 
 
-    /**
-     * Sort in casual order the tiles in the puzzle. Thanks to this method
-     * client can't see in the game the real order.
-     */
-    private void shufflePuzzle() {
-        Collections.shuffle(getPuzzle().getTiles());
-
-        for (int i = 0; i < Puzzle.SIZE; i++) {
-            getPuzzle().getTiles().get(i).setCurrentPos(i);
-        }
-    }
-
-
     @Override
     public void setTileAsSelected(final Tile tile, final Player player) {
         final Tile localTile = getPuzzle().getTileFromPos(tile.getOriginalPos());
@@ -80,8 +68,7 @@ final class PuzzleServiceGameStateImpl extends GenericGameState implements Puzzl
         final Tile locDestTile = getPuzzle().getTileFromPos(destTile.getOriginalPos());
 
         if (locStartTile.equals(startTile) && locDestTile.equals(destTile)
-                && getPlayers().contains(player)
-                && locStartTile.getSelector().equals(player)) {
+                && getPlayers().contains(player) && locStartTile.getSelector().equals(player)) {
             locStartTile.setCurrentPos(destTile.getCurrentPos());
             locStartTile.setSelector(Player.empty());
             locDestTile.setCurrentPos(startTile.getCurrentPos());
@@ -92,5 +79,18 @@ final class PuzzleServiceGameStateImpl extends GenericGameState implements Puzzl
     @Override
     public GameStateMsg generateGameDataMsg() {
         return Messages.createGameStateMsg(getPuzzle(), getPlayers());
+    }
+
+
+    /**
+     * Shuffles values of the current position field inside every tile
+     * of the puzzle.
+     */
+    private void shufflePuzzle() {
+        Collections.shuffle(getPuzzle().getTiles());
+
+        for (int i = 0; i < Puzzle.SIZE; i++) {
+            getPuzzle().getTiles().get(i).setCurrentPos(i);
+        }
     }
 }

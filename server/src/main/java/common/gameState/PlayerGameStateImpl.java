@@ -5,16 +5,21 @@ import common.model.Player;
 import common.model.Puzzle;
 import common.model.Tile;
 
+
 /**
- * Client instance that can play to the game. Clients can only clicks to the
- * tiles but only server do the swap.
+ * Implementation of the poorly-modifiable game state used by the players.
  */
 final class PlayerGameStateImpl extends GenericGameState implements PlayerGameState {
 
+    /**
+     * Memorizes the player that correspond to the current player module.
+     */
     private Player currentPlayer;
 
+
     /**
-     * Constructor for the class.
+     * Default constructor, it calls initialization of its superclass and initializes
+     * the puzzle with a blank set of tile.
      */
     PlayerGameStateImpl() {
         super();
@@ -29,7 +34,6 @@ final class PlayerGameStateImpl extends GenericGameState implements PlayerGameSt
     }
 
 
-
     @Override
     public boolean isGameJoined() {
         return getPlayers().contains(currentPlayer);
@@ -41,6 +45,7 @@ final class PlayerGameStateImpl extends GenericGameState implements PlayerGameSt
         return currentPlayer;
     }
 
+
     @Override
     public Tile getSelectedTile() {
         return getPuzzle().getTiles().stream()
@@ -49,9 +54,11 @@ final class PlayerGameStateImpl extends GenericGameState implements PlayerGameSt
                 .get();
     }
 
+
     @Override
     public boolean isPlayerSelector() {
-        return getPuzzle().getTiles().stream().anyMatch(x -> x.getSelector().equals(currentPlayer));
+        return getPuzzle().getTiles().stream()
+                .anyMatch(x -> x.getSelector().equals(currentPlayer));
     }
 
 

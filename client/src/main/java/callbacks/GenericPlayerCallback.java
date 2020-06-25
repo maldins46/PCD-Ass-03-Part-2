@@ -4,6 +4,8 @@ import common.amqp.client.PlayerClient;
 import common.amqp.config.MessageTypes;
 import common.amqp.messages.Message;
 import common.amqp.callback.PlayerCallback;
+import common.amqp.messages.PlayerMsg;
+import common.amqp.messages.PuzzleServiceMsg;
 import common.gameState.PlayerGameState;
 
 import gui.PlayerGui;
@@ -56,7 +58,7 @@ public abstract class GenericPlayerCallback implements PlayerCallback {
     @Override
     public final void execute(final Message rawMessage) {
         LOGGER.info("Received {} from puzzle service", MessageTypes.getTypeFromMessage(rawMessage));
-        executeBody(rawMessage);
+        executeBody((PuzzleServiceMsg) rawMessage);
     }
 
 
@@ -65,7 +67,7 @@ public abstract class GenericPlayerCallback implements PlayerCallback {
      * message.
      * @param rawMessage The received message.
      */
-    protected abstract void executeBody(Message rawMessage);
+    protected abstract void executeBody(PuzzleServiceMsg rawMessage);
 
 
     /**

@@ -4,25 +4,17 @@ package common.amqp.messages;
 import common.model.Player;
 
 /**
- * Class that represent a message for inform that a new player want to join the
- * game.
+ * Message used to inform the puzzle service that a new player wants to
+ * join the game.
  */
 public final class NewPlayerMsg extends GenericPlayerMsg {
 
     /**
-     * The new player that want join the game.
-     */
-    private final Player player;
-
-    NewPlayerMsg(final Player player) {
-        this.player = player;
-    }
-
-    /**
-     * Getter for the player.
-     * @return The player.
+     * The player that wants to be added to the game corresponds to the sender
+     * field.
+     * @return The player that wants to be added to the game.
      */
     public Player getPlayer() {
-        return player;
+        return getSenderPlayer();
     }
 }

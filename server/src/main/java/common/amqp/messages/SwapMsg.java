@@ -4,60 +4,56 @@ import common.model.Player;
 import common.model.Tile;
 
 /**
- * Message that represent the swap of two tiles.
+ * Message used to indicate to the puzzle service to swap two tiles.
  */
 public final class SwapMsg extends GenericPlayerMsg {
 
     /**
-     * The first tile selected.
+     * The first tile selected by the player.
      */
     private final Tile startTile;
 
     /**
-     * The second tile selected.
+     * The second tile selected by the player.
      */
     private final Tile destTile;
 
-    /**
-     * The selector player.
-     */
-    private final Player selector;
-
 
     /**
-     * Create a swap message.
-     * @param startTile The first tile selected.
-     * @param destTile The second tile selected.
-     * @param selector The player selector.
+     * Default constructor with field population.
+     * @param startTile The first tile selected by the player.
+     * @param destTile The second tile selected by the player.
      */
-    SwapMsg(final Tile startTile, final Tile destTile, final Player selector) {
+    SwapMsg(final Tile startTile, final Tile destTile) {
         this.startTile = startTile;
         this.destTile = destTile;
-        this.selector = selector;
     }
 
 
     /**
-     * Getter for the first tile.
-     * @return The first tile.
+     * Getter for the first tile field.
+     * @return The first tile selected by the player.
      */
     public Tile getStartTile() {
         return startTile;
     }
 
+
     /**
-     * Getter for the second tile.
-     * @return The second file.
+     * Getter for the second tile field.
+     * @return The second tile selected by the player.
      */
     public Tile getDestTile() {
         return destTile;
     }
 
+
     /**
-     * Getter for the player that selected.
-     * @return The player selected.
+     * The player that wants to perform the swap corresponds to the sender
+     * field.
+     * @return The player that wants to perform the swap.
      */
     public Player getSelector() {
-        return selector;
+        return getSenderPlayer();
     }
 }

@@ -8,6 +8,7 @@ import java.util.Optional;
  * Class that models the concept of puzzle.
  */
 public final class Puzzle {
+
     /**
      * Constant that defines how many tiles contains each row ot the puzzle.
      */
@@ -22,7 +23,6 @@ public final class Puzzle {
      * Constant that defines how many tiles contains the puzzle.
      */
     public static final int SIZE = HEIGHT * WIDTH;
-
 
     /**
      * Memorizes all tiles of the puzzle.
@@ -92,7 +92,7 @@ public final class Puzzle {
 
 
     /**
-     * Shortcut factory used to create a not initialized Puzzle instance
+     * Shortcut factory used to create a not initialized Puzzle instance.
      * @return A fresh non-initialized Puzzle instance.
      */
     public static Puzzle of() {

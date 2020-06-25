@@ -1,6 +1,6 @@
 package common.amqp.messages;
 
 /**
- * Interface for all messages.
+ * Interface common to all messages, to refer to them.
  */
 public interface Message { }

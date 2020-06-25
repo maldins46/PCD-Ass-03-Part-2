@@ -6,24 +6,30 @@ import common.model.Puzzle;
 import java.util.Set;
 
 /**
- * Used for update the puzzle.
+ * Message used to spread the game state information to the players.
  */
 public final class GameStateMsg implements PuzzleServiceMsg {
     /**
-     * The game's puzzle.
+     * Describes the state of the puzzle tiles.
      */
     private final Puzzle puzzle;
 
     /**
-     * Players in the game.
+     * Describes which players are connected to the game.
      */
     private final Set<Player> players;
 
 
+    /**
+     * Default constructor with field population.
+     * @param puzzle The puzzle instance.
+     * @param players The player set.
+     */
     GameStateMsg(final Puzzle puzzle, final Set<Player> players) {
         this.puzzle = puzzle;
         this.players = players;
     }
+
 
     /**
      * Getter for the puzzle.
@@ -32,6 +38,7 @@ public final class GameStateMsg implements PuzzleServiceMsg {
     public Puzzle getPuzzle() {
         return puzzle;
     }
+
 
     /**
      * Getter for the players.
