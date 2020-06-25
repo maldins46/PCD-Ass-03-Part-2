@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
  * The puzzle service entry point.
  */
 public class Main {
-    private static final String HOST = Hosts.LOCAL;
+    private static final String HOST = Hosts.INTERNAL_RABBIT;
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
     private static PuzzleServiceGameState gameState;

@@ -9,11 +9,11 @@ services:
       - 5672:5672
       - 15672:15672
 
-  server:
-    container_name: server
+  puzzle-service:
+    container_name: puzzle-service
     build:
       context: .
-      dockerfile: server/Dockerfile
+      dockerfile: puzzle-service/Dockerfile
     depends_on:
       - rabbit
     #ports:
