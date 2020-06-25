@@ -1,9 +1,9 @@
 package callbacks;
 
-import common.client.CtxCallback;
-import common.client.GameClient;
-import common.gameState.ClientGameState;
-import gui.PuzzleGui;
+import common.amqp.CtxCallback;
+import common.amqp.client.PlayerClient;
+import common.gameState.PlayerGameState;
+import gui.GameGui;
 
 /**
  * Factory for callbacks.
@@ -21,7 +21,7 @@ public final class  Callbacks {
      * @param gui The graphic interface.
      * @return The GameStateCallbacks.
      */
-    public static CtxCallback gameStateMsg(final GameClient client, final ClientGameState state, final PuzzleGui gui) {
+    public static CtxCallback gameStateMsg(final PlayerClient client, final PlayerGameState state, final GameGui gui) {
         return new GameStateCallback(client, state, gui);
     }
 
@@ -34,7 +34,7 @@ public final class  Callbacks {
      * @param gui The graphic interface.
      * @return The AckCallback.
      */
-    public static CtxCallback ackMsg(final GameClient client, final ClientGameState state, final PuzzleGui gui) {
+    public static CtxCallback ackMsg(final PlayerClient client, final PlayerGameState state, final GameGui gui) {
         return new AckCallback(client, state, gui);
     }
 

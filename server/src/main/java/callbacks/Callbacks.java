@@ -1,8 +1,9 @@
 package callbacks;
 
-import common.client.CtxCallback;
-import common.client.GameClient;
-import common.gameState.ServerGameState;
+
+import common.amqp.CtxCallback;
+import common.amqp.client.PuzzleServiceClient;
+import common.gameState.PuzzleServiceGameState;
 
 /**
  * Factory that returns the callbacks used inside the server.
@@ -17,7 +18,7 @@ public final class Callbacks {
      * @param state The entire puzzle as is.
      * @return the callback.
      */
-    public static CtxCallback newPlayerMsg(final GameClient client, final ServerGameState state) {
+    public static CtxCallback newPlayerMsg(final PuzzleServiceClient client, final PuzzleServiceGameState state) {
         return new NewPlayerCallback(client, state);
     }
 
@@ -28,7 +29,7 @@ public final class Callbacks {
      * @param state The entire puzzle as is.
      * @return the callback.
      */
-    public static CtxCallback selectMsg(final GameClient client, final ServerGameState state) {
+    public static CtxCallback selectMsg(final PuzzleServiceClient client, final PuzzleServiceGameState state) {
         return new SelectCallback(client, state);
     }
 
@@ -39,7 +40,7 @@ public final class Callbacks {
      * @param state The entire puzzle as is.
      * @return the callback.
      */
-    public static CtxCallback swapRequestMsg(final GameClient client, final ServerGameState state) {
+    public static CtxCallback swapRequestMsg(final PuzzleServiceClient client, final PuzzleServiceGameState state) {
         return new SwapCallback(client, state);
     }
 
@@ -50,7 +51,7 @@ public final class Callbacks {
      * @param state The entire puzzle as is.
      * @return the callback.
      */
-    public static CtxCallback rematchMsg(final GameClient client, final ServerGameState state) {
+    public static CtxCallback rematchMsg(final PuzzleServiceClient client, final PuzzleServiceGameState state) {
         return new RematchCallback(client, state);
     }
 }

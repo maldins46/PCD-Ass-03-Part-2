@@ -1,9 +1,9 @@
 package callbacks;
 
-import common.client.GameClient;
-import common.client.messages.Message;
-import common.client.messages.SelectMsg;
-import common.gameState.ServerGameState;
+import common.amqp.client.PuzzleServiceClient;
+import common.amqp.messages.Message;
+import common.amqp.messages.SelectMsg;
+import common.gameState.PuzzleServiceGameState;
 import common.model.Player;
 import common.model.Tile;
 
@@ -17,7 +17,7 @@ final class SelectCallback extends GenericServerCallback {
      * @param client the game model.client.
      * @param state the game data.
      */
-    SelectCallback(final GameClient client, final ServerGameState state) {
+    SelectCallback(final PuzzleServiceClient client, final PuzzleServiceGameState state) {
         super(client, state);
     }
 
@@ -31,6 +31,6 @@ final class SelectCallback extends GenericServerCallback {
         final SelectMsg message = (SelectMsg) rawMessage;
         final Tile tile = message.getSelectedTile();
         final Player selector = message.getSelector();
-        getGameState().setTileAsSelected(tile, selector);
+        getState().setTileAsSelected(tile, selector);
     }
 }

@@ -1,8 +1,7 @@
 package timeouts;
 
-import common.client.GameClient;
-import common.client.config.Destinations;
-import common.gameState.ServerGameState;
+import common.amqp.client.PuzzleServiceClient;
+import common.gameState.PuzzleServiceGameState;
 import common.model.Player;
 
 import java.util.HashMap;
@@ -44,7 +43,7 @@ public final class PlayerTimeouts {
      * @param state The data structure, that will be modified after timeout
      *                 expiration.
      */
-    public static void addOrUpdateTimer(final Player player, final GameClient client, final ServerGameState state) {
+    public static void addOrUpdateTimeout(final Player player, final PuzzleServiceClient client, final PuzzleServiceGameState state) {
 
         if (PLAYERS_TIMEOUTS.containsKey(player)) {
             CompletableFuture<Void> oldTimeoutFuture = PLAYERS_TIMEOUTS.get(player);
@@ -53,8 +52,6 @@ public final class PlayerTimeouts {
 
         final CompletableFuture<Void> newTimeoutFuture = schedulePlayerTimeout(() -> {
             state.removePlayer(player);
-            Destinations.removePlayerQueue(player.getName());
-
             client.sendMessageToMatch(state.generateGameDataMsg());
         });
 

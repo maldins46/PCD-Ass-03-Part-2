@@ -1,9 +1,9 @@
 package callbacks;
 
-import common.client.GameClient;
-import common.client.messages.Message;
-import common.client.messages.SwapMsg;
-import common.gameState.ServerGameState;
+import common.amqp.client.PuzzleServiceClient;
+import common.amqp.messages.Message;
+import common.amqp.messages.SwapMsg;
+import common.gameState.PuzzleServiceGameState;
 import common.model.Player;
 import common.model.Tile;
 
@@ -17,7 +17,7 @@ final class SwapCallback extends GenericServerCallback {
      * @param client the game model.client.
      * @param state the game data.
      */
-    SwapCallback(final GameClient client, final ServerGameState state) {
+    SwapCallback(final PuzzleServiceClient client, final PuzzleServiceGameState state) {
         super(client, state);
     }
 
@@ -32,6 +32,6 @@ final class SwapCallback extends GenericServerCallback {
         final Tile startTile = message.getStartTile();
         final Tile destTile = message.getDestTile();
         final Player selector = message.getSelector();
-        getGameState().swapTiles(startTile, destTile, selector);
+        getState().swapTiles(startTile, destTile, selector);
     }
 }

@@ -1,14 +1,15 @@
-import common.client.GameClient;
-import common.client.config.Hosts;
 import callbacks.Callbacks;
+import common.amqp.client.AmqpClients;
+import common.amqp.client.PuzzleServiceClient;
+import common.amqp.config.Hosts;
 import common.gameState.GameStates;
-import common.gameState.ServerGameState;
+import common.gameState.PuzzleServiceGameState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Main {
-    private static ServerGameState state;
-    private static GameClient client;
+    private static PuzzleServiceGameState state;
+    private static PuzzleServiceClient client;
 
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
@@ -18,13 +19,15 @@ public class Main {
         logger.info("Server started...");
 
         final String host = Hosts.LOCAL;
-        state = GameStates.serverGameState();
-        client = GameClient.of(host, true);
+        state = GameStates.puzzleService();
+        client = AmqpClients.puzzleService(host);
         client.connect();
+
         client.addCallback(Callbacks.newPlayerMsg(client, state));
         client.addCallback(Callbacks.selectMsg(client, state));
         client.addCallback(Callbacks.swapRequestMsg(client, state));
         client.addCallback(Callbacks.rematchMsg(client, state));
+
         client.listen();
         logger.info("✓ Server ready, waiting for messages");
     }

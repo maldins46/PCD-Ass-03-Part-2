@@ -4,32 +4,31 @@ package common.model;
 import java.util.Objects;
 
 /**
- * Tile of the puzzle.
+ * Class that models the concept of tile. A tile is a piece of the puzzle, and
+ * it is characterized by the original and the current position.
  */
 public final class Tile {
 
     /**
-     * The right position of the tile.
+     * The initial position of the tile inside the puzzle, and the correct one.
      */
     private final int originalPos;
 
-
     /**
-     * Current position.
+     * The current position of the tile inside the puzzle.
      */
     private int currentPos;
 
     /**
-     * Takes name of player that selected this element. Null if anyone have
-     * selected this tile.
+     * Memorizes the player that selected the tile. It is set to
+     * Player.empty(), if no one selected it.
      */
     private Player selector;
 
 
     /**
-     * Create a tile and set original and current positions to the original
-     * position.
-     * @param originalPos The original position.
+     * The constructor creates the tile, placing it in its original position.
+     * @param originalPos The original position in the puzzle.
      */
     public Tile(final int originalPos) {
         this.originalPos = originalPos;
@@ -82,14 +81,15 @@ public final class Tile {
         this.selector = selector;
     }
 
+
     /**
-     * Check if a tile is this.tile.
-     * @param tile The tile to check.
-     * @return True if the tile parameter have the same parameter of this.
+     * Checks whether the tile is in the correct position inside the puzzle.
+     * @return True, if the tile is in the correct position. False otherwise.
      */
-    public boolean positionEquals(final Tile tile) {
-        return this.currentPos == tile.currentPos && this.originalPos == tile.originalPos;
+    public boolean isInCorrectPosition() {
+        return originalPos == currentPos;
     }
+
 
     @Override
     public boolean equals(final Object o) {
@@ -105,8 +105,14 @@ public final class Tile {
                 && Objects.equals(selector, tile.selector);
     }
 
+
     @Override
     public int hashCode() {
         return Objects.hash(originalPos, currentPos, selector);
+    }
+
+
+    public static Tile of(final int originalPos) {
+        return new Tile(originalPos);
     }
 }

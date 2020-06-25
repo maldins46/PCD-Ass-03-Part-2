@@ -1,12 +1,12 @@
 package callbacks;
 
-import common.client.CtxCallback;
-import common.client.GameClient;
-import common.client.config.MessageTypes;
-import common.client.messages.Message;
-import common.gameState.ClientGameState;
+import common.amqp.CtxCallback;
+import common.amqp.client.PlayerClient;
+import common.amqp.config.MessageTypes;
+import common.amqp.messages.Message;
+import common.gameState.PlayerGameState;
 
-import gui.PuzzleGui;
+import gui.GameGui;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,17 +15,17 @@ public abstract class GenericClientCallback implements CtxCallback {
     /**
      * The client that have this callback.
      */
-    private final GameClient client;
+    private final PlayerClient client;
 
     /**
      * The GameState of the client.
      */
-    private final ClientGameState gameState;
+    private final PlayerGameState gameState;
 
     /**
      * The graphic interface.
      */
-    private final PuzzleGui gui;
+    private final GameGui gui;
 
     /**
      * The logger.
@@ -39,9 +39,9 @@ public abstract class GenericClientCallback implements CtxCallback {
      * @param gameState The game state of game.
      * @param gui The graphic interface.
      */
-    public GenericClientCallback(final GameClient client,
-                                 final ClientGameState gameState,
-                                 final PuzzleGui gui) {
+    public GenericClientCallback(final PlayerClient client,
+                                 final PlayerGameState gameState,
+                                 final GameGui gui) {
         this.client = client;
         this.gameState = gameState;
         this.gui = gui;
@@ -50,7 +50,7 @@ public abstract class GenericClientCallback implements CtxCallback {
 
     @Override
     public final void execute(final Message rawMessage) {
-        logger.info("Received " + MessageTypes.getTypeFromMessage(rawMessage) + " from " + rawMessage.getSender());
+        logger.info("Received {} from puzzle service", MessageTypes.getTypeFromMessage(rawMessage));
         executeBody(rawMessage);
     }
 
@@ -66,7 +66,7 @@ public abstract class GenericClientCallback implements CtxCallback {
      * Return the host.
      * @return The host.
      */
-    protected final GameClient getClient() {
+    protected final PlayerClient getClient() {
         return client;
     }
 
@@ -74,7 +74,7 @@ public abstract class GenericClientCallback implements CtxCallback {
      * Getter for the instance of client associated.
      * @return The client's instance.
      */
-    protected final ClientGameState getGameState() {
+    protected final PlayerGameState getGameState() {
         return gameState;
     }
 
@@ -82,7 +82,7 @@ public abstract class GenericClientCallback implements CtxCallback {
      * Getter for the graphic interface.
      * @return The graphic interface.
      */
-    protected final PuzzleGui getGui() {
+    protected final GameGui getGui() {
         return gui;
     }
 }

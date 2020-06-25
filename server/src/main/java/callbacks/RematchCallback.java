@@ -1,9 +1,10 @@
 package callbacks;
 
-import common.client.GameClient;
-import common.client.messages.Message;
-import common.client.messages.RematchMsg;
-import common.gameState.ServerGameState;
+
+import common.amqp.client.PuzzleServiceClient;
+import common.amqp.messages.Message;
+import common.amqp.messages.RematchMsg;
+import common.gameState.PuzzleServiceGameState;
 
 /**
  * The callback used when a new player notifies the will to restart the game,
@@ -16,17 +17,19 @@ final class RematchCallback extends GenericServerCallback {
      * @param client the game model.client.
      * @param state the game data.
      */
-    RematchCallback(final GameClient client, final ServerGameState state) {
+    RematchCallback(final PuzzleServiceClient client, final PuzzleServiceGameState state) {
         super(client, state);
     }
+
 
     @Override
     public Class<? extends Message> getMessageType() {
         return RematchMsg.class;
     }
 
+
     @Override
     public void executeBody(final Message rawMessage) {
-        getGameState().rematch();
+        getState().rematch();
     }
 }

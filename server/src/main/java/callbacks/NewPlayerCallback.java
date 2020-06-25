@@ -1,10 +1,10 @@
 package callbacks;
 
-import common.client.GameClient;
-import common.client.config.Destinations;
-import common.client.messages.Message;
-import common.client.messages.NewPlayerMsg;
-import common.gameState.ServerGameState;
+
+import common.amqp.client.PuzzleServiceClient;
+import common.amqp.messages.Message;
+import common.amqp.messages.NewPlayerMsg;
+import common.gameState.PuzzleServiceGameState;
 
 /**
  * The callback used when a new player notifies the will to join the game.
@@ -14,10 +14,10 @@ final class NewPlayerCallback extends GenericServerCallback {
     /**
      * Standard callback, with superclass initialization.
      * @param client the game model.client.
-     * @param data the game data.
+     * @param state the game data.
      */
-    NewPlayerCallback(final GameClient client, final ServerGameState data) {
-        super(client, data);
+    NewPlayerCallback(final PuzzleServiceClient client, final PuzzleServiceGameState state) {
+        super(client, state);
     }
 
 
@@ -30,7 +30,6 @@ final class NewPlayerCallback extends GenericServerCallback {
     @Override
     public void executeBody(final Message rawMessage) {
         final NewPlayerMsg message = (NewPlayerMsg) rawMessage;
-        getGameState().addPlayer(message.getPlayer());
-        Destinations.addPlayerQueue(message.getSender());
+        getState().addPlayer(message.getPlayer());
     }
 }

@@ -27,5 +27,5 @@ public interface GameState {
      * Getter hat checks if a match is finished.
      * @return True if a match is finished, false otherwise.
      */
-    boolean getWin();
+    boolean isFinished();
 }

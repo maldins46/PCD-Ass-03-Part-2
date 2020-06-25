@@ -1,15 +1,16 @@
 package callbacks;
 
-import common.client.GameClient;
-import common.client.messages.GameStateMsg;
-import common.client.messages.Message;
-import common.gameState.ClientGameState;
-import gui.PuzzleGui;
+import common.amqp.client.PlayerClient;
+import common.amqp.messages.GameStateMsg;
+import common.amqp.messages.Message;
+import common.gameState.PlayerGameState;
+import gui.GameGui;
 
 final class GameStateCallback extends GenericClientCallback {
 
-    GameStateCallback(final GameClient client, final ClientGameState gameState,
-                      final PuzzleGui gui) {
+    GameStateCallback(final PlayerClient client,
+            final PlayerGameState gameState,
+                      final GameGui gui) {
         super(client, gameState, gui);
     }
 
@@ -23,6 +24,18 @@ final class GameStateCallback extends GenericClientCallback {
     public void executeBody(final Message rawMessage) {
         final GameStateMsg message = (GameStateMsg) rawMessage;
         getGameState().updateData(message);
-        getGui().rearrangeTiles();
+
+        if (!getGameState().isGameJoined()) {
+            getGui().leaveGame();
+
+        } else if (getGameState().isFinished()) {
+            getGui().finishMatch();
+
+        } else if (!getGameState().isPlayerSelector()) {
+            getGui().setPuzzleSelectable();
+
+        } else if (getGameState().isPlayerSelector()) {
+            getGui().setPuzzleSwappable();
+        }
     }
 }

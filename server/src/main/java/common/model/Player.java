@@ -3,7 +3,7 @@ package common.model;
 import java.util.Objects;
 
 /**
- * Class for players in the game.
+ * Class that models the concept of player.
  */
 public final class Player {
 
@@ -12,9 +12,16 @@ public final class Player {
      */
     private final String name;
 
+
+    /**
+     * A player can be build using a player name, as it is identified
+     * unically by that.
+     * @param name The player's name.
+     */
     private Player(final String name) {
         this.name = name;
     }
+
 
     /**
      * Getter for the name.
@@ -22,23 +29,6 @@ public final class Player {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * Create an empty player.
-     * @return The new empty player.
-     */
-    public static Player empty() {
-        return new Player("");
-    }
-
-    /**
-     * Factory for the player.
-     * @param name The player name.
-     * @return The player.
-     */
-    public static Player of(final String name) {
-        return new Player(name);
     }
 
 
@@ -54,5 +44,24 @@ public final class Player {
     @Override
     public int hashCode() {
         return Objects.hash(name);
+    }
+
+
+    /**
+     * Create an empty player.
+     * @return The new empty player.
+     */
+    public static Player empty() {
+        return new Player("");
+    }
+
+
+    /**
+     * Factory for a generic player.
+     * @param name The player name.
+     * @return The player.
+     */
+    public static Player of(final String name) {
+        return new Player(name);
     }
 }

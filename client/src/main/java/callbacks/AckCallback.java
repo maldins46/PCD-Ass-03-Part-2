@@ -1,10 +1,10 @@
 package callbacks;
 
-import common.client.GameClient;
-import common.client.messages.AckMsg;
-import common.client.messages.Message;
-import common.gameState.ClientGameState;
-import gui.PuzzleGui;
+import common.amqp.client.PlayerClient;
+import common.amqp.messages.AckMsg;
+import common.amqp.messages.Message;
+import common.gameState.PlayerGameState;
+import gui.GameGui;
 
 /**
  * Create a callback for the AckMsg. This msg confirms an action of the player.
@@ -17,9 +17,7 @@ final class AckCallback extends GenericClientCallback {
      * @param gameState The state of the game.
      * @param gui The graphic interface.
      */
-    AckCallback(final GameClient client,
-                       final ClientGameState gameState,
-                       final PuzzleGui gui) {
+    AckCallback(final PlayerClient client, final PlayerGameState gameState, final GameGui gui) {
         super(client, gameState, gui);
     }
 
@@ -31,6 +29,6 @@ final class AckCallback extends GenericClientCallback {
 
     @Override
     public void executeBody(final Message rawMessage) {
-        getGui().unlockInterface();
+        getGui().unlockPuzzle();
     }
 }

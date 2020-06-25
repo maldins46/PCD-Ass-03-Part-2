@@ -1,12 +1,12 @@
 package callbacks;
 
-import common.client.CtxCallback;
-import common.client.GameClient;
-
-import common.client.messages.Message;
-import common.client.messages.AckMsg;
-import common.client.messages.Messages;
-import common.gameState.ServerGameState;
+import common.amqp.CtxCallback;
+import common.amqp.client.PuzzleServiceClient;
+import common.amqp.messages.AckMsg;
+import common.amqp.messages.Message;
+import common.amqp.messages.Messages;
+import common.amqp.messages.PlayerMsg;
+import common.gameState.PuzzleServiceGameState;
 import common.model.Player;
 import timeouts.PlayerTimeouts;
 
@@ -18,29 +18,30 @@ abstract class GenericServerCallback implements CtxCallback {
     /**
      * Server for the callback.
      */
-    private final GameClient client;
+    private final PuzzleServiceClient client;
 
     /**
      * The game data.
      */
-    private final ServerGameState gameState;
+    private final PuzzleServiceGameState state;
 
 
     /**
      * Construct a generic callback with server and data.
      * @param client The game server.
-     * @param gameState The game data.
+     * @param state The game data.
      */
-    GenericServerCallback(final GameClient client, final ServerGameState gameState) {
+    GenericServerCallback(final PuzzleServiceClient client, final PuzzleServiceGameState state) {
         this.client = client;
-        this.gameState = gameState;
+        this.state = state;
     }
 
 
     @Override
     public final void execute(final Message rawMessage) {
-        executeBody(rawMessage);
-        terminate(rawMessage);
+        final PlayerMsg message = (PlayerMsg) rawMessage;
+        executeBody(message);
+        terminate(message);
     }
 
 
@@ -50,13 +51,13 @@ abstract class GenericServerCallback implements CtxCallback {
      * the ack to the player. This method handles it.
      * @param message The received message.
      */
-    private void terminate(final Message message) {
-        final Player senderPlayer = Player.of(message.getSender());
+    private void terminate(final PlayerMsg message) {
+        final Player senderPlayer = message.getSenderPlayer();
 
-        PlayerTimeouts.addOrUpdateTimer(senderPlayer, client, gameState);
+        PlayerTimeouts.addOrUpdateTimeout(senderPlayer, client, state);
         final AckMsg ack = Messages.createAckMsg(senderPlayer);
-        client.sendMessageToMatch(gameState.generateGameDataMsg());
-        client.sendMessageToPlayer(Player.of(message.getSender()), ack);
+        client.sendMessageToMatch(state.generateGameDataMsg());
+        client.sendMessageToPlayer(senderPlayer, ack);
     }
 
 
@@ -72,7 +73,7 @@ abstract class GenericServerCallback implements CtxCallback {
      * Getter for the game data instance, for child classes.
      * @return The game data.
      */
-    protected ServerGameState getGameState() {
-        return gameState;
+    protected PuzzleServiceGameState getState() {
+        return state;
     }
 }
