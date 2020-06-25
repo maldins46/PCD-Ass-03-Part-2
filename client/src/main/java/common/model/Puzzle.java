@@ -74,8 +74,8 @@ public final class Puzzle {
      * @return An Optional corresponding to the tile, if present;
      *         an empty Optional otherwise.
      */
-    public Optional<Tile> getTileFromPos(final int originalPos) {
-        return tiles.stream().filter(x -> x.getOriginalPos() == originalPos).findFirst();
+    public Tile getTileFromPos(final int originalPos) {
+        return tiles.stream().filter(x -> x.getOriginalPos() == originalPos).findFirst().get();
     }
 
 

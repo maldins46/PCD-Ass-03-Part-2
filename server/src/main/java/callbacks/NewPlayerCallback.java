@@ -4,12 +4,13 @@ package callbacks;
 import common.amqp.client.PuzzleServiceClient;
 import common.amqp.messages.Message;
 import common.amqp.messages.NewPlayerMsg;
+import common.amqp.messages.PlayerMsg;
 import common.gameState.PuzzleServiceGameState;
 
 /**
  * The callback used when a new player notifies the will to join the game.
  */
-final class NewPlayerCallback extends GenericServerCallback {
+final class NewPlayerCallback extends GenericPuzzleServiceCallback {
 
     /**
      * Standard callback, with superclass initialization.
@@ -22,7 +23,7 @@ final class NewPlayerCallback extends GenericServerCallback {
 
 
     @Override
-    public Class<? extends Message> getMessageType() {
+    public Class<? extends PlayerMsg> getMessageType() {
         return NewPlayerMsg.class;
     }
 

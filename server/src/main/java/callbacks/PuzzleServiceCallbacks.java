@@ -1,16 +1,16 @@
 package callbacks;
 
 
-import common.amqp.CtxCallback;
+import common.amqp.callback.PuzzleServiceCallback;
 import common.amqp.client.PuzzleServiceClient;
 import common.gameState.PuzzleServiceGameState;
 
 /**
  * Factory that returns the callbacks used inside the server.
  */
-public final class Callbacks {
+public final class PuzzleServiceCallbacks {
 
-    private Callbacks() { }
+    private PuzzleServiceCallbacks() { }
 
     /**
      * Create a callback for the newPlayerMsg.
@@ -18,7 +18,7 @@ public final class Callbacks {
      * @param state The entire puzzle as is.
      * @return the callback.
      */
-    public static CtxCallback newPlayerMsg(final PuzzleServiceClient client, final PuzzleServiceGameState state) {
+    public static PuzzleServiceCallback newPlayerMsg(final PuzzleServiceClient client, final PuzzleServiceGameState state) {
         return new NewPlayerCallback(client, state);
     }
 
@@ -29,7 +29,7 @@ public final class Callbacks {
      * @param state The entire puzzle as is.
      * @return the callback.
      */
-    public static CtxCallback selectMsg(final PuzzleServiceClient client, final PuzzleServiceGameState state) {
+    public static PuzzleServiceCallback selectMsg(final PuzzleServiceClient client, final PuzzleServiceGameState state) {
         return new SelectCallback(client, state);
     }
 
@@ -40,7 +40,7 @@ public final class Callbacks {
      * @param state The entire puzzle as is.
      * @return the callback.
      */
-    public static CtxCallback swapRequestMsg(final PuzzleServiceClient client, final PuzzleServiceGameState state) {
+    public static PuzzleServiceCallback swapRequestMsg(final PuzzleServiceClient client, final PuzzleServiceGameState state) {
         return new SwapCallback(client, state);
     }
 
@@ -51,7 +51,7 @@ public final class Callbacks {
      * @param state The entire puzzle as is.
      * @return the callback.
      */
-    public static CtxCallback rematchMsg(final PuzzleServiceClient client, final PuzzleServiceGameState state) {
+    public static PuzzleServiceCallback rematchMsg(final PuzzleServiceClient client, final PuzzleServiceGameState state) {
         return new RematchCallback(client, state);
     }
 }

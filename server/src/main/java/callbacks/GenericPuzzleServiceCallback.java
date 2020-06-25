@@ -1,6 +1,6 @@
 package callbacks;
 
-import common.amqp.CtxCallback;
+import common.amqp.callback.PuzzleServiceCallback;
 import common.amqp.client.PuzzleServiceClient;
 import common.amqp.messages.AckMsg;
 import common.amqp.messages.Message;
@@ -13,7 +13,7 @@ import timeouts.PlayerTimeouts;
 /**
  * The class is a base for callback.
  */
-abstract class GenericServerCallback implements CtxCallback {
+abstract class GenericPuzzleServiceCallback implements PuzzleServiceCallback {
 
     /**
      * Server for the callback.
@@ -31,7 +31,7 @@ abstract class GenericServerCallback implements CtxCallback {
      * @param client The game server.
      * @param state The game data.
      */
-    GenericServerCallback(final PuzzleServiceClient client, final PuzzleServiceGameState state) {
+    GenericPuzzleServiceCallback(final PuzzleServiceClient client, final PuzzleServiceGameState state) {
         this.client = client;
         this.state = state;
     }

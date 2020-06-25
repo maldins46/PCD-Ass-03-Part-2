@@ -15,7 +15,7 @@ public final class Player {
 
     /**
      * A player can be build using a player name, as it is identified
-     * unically by that.
+     * only by that.
      * @param name The player's name.
      */
     private Player(final String name) {

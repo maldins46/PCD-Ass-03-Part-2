@@ -9,7 +9,7 @@ import java.util.Map.Entry;
 /**
  * Utility class used to handle the equivalence between the message type,
  * defined as a string, and the class type of the POJO. This conversion is
- * used as the message type is includer inside header of the messages.
+ * used as the message type is included inside header of the messages.
  */
 public final class MessageTypes {
 

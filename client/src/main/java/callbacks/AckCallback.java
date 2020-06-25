@@ -3,26 +3,23 @@ package callbacks;
 import common.amqp.client.PlayerClient;
 import common.amqp.messages.AckMsg;
 import common.amqp.messages.Message;
+import common.amqp.messages.PuzzleServiceMsg;
 import common.gameState.PlayerGameState;
-import gui.GameGui;
+import gui.PlayerGui;
 
 /**
- * Create a callback for the AckMsg. This msg confirms an action of the player.
+ * A callback that react to an ack message from the puzzle service. The ack
+ * unlocks the GUI, making the user continue the game.
  */
-final class AckCallback extends GenericClientCallback {
+final class AckCallback extends GenericPlayerCallback {
 
-    /**
-     * Create an AckCallback.
-     * @param client The client to respond with an Ack.
-     * @param gameState The state of the game.
-     * @param gui The graphic interface.
-     */
-    AckCallback(final PlayerClient client, final PlayerGameState gameState, final GameGui gui) {
+    AckCallback(final PlayerClient client, final PlayerGameState gameState, final PlayerGui gui) {
         super(client, gameState, gui);
     }
 
+
     @Override
-    public Class<? extends Message> getMessageType() {
+    public Class<? extends PuzzleServiceMsg> getMessageType() {
         return AckMsg.class;
     }
 

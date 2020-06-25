@@ -15,9 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-public class PuzzlePanel extends JPanel {
+class PuzzlePanel extends JPanel {
     /**
      * The image path.
      */
@@ -44,24 +43,18 @@ public class PuzzlePanel extends JPanel {
 
     void setSwappable() {
         for (int i = 0; i < tileButtons.size(); i++) {
-            final Optional<Tile> updatedTileOpt = state.getPuzzle().getTileFromPos(i);
-
-            if (updatedTileOpt.isPresent()) {
-                final Tile updatedTile = updatedTileOpt.get();
-                tileButtons.get(i).setSwappable(updatedTile, tileImages.get(updatedTile.getCurrentPos()));
-            }
+            final Tile updatedTile = state.getPuzzle().getTileFromPos(i);
+            final Image updatedImage = tileImages.get(updatedTile.getCurrentPos());
+            tileButtons.get(i).setSwappable(updatedTile, updatedImage);
         }
     }
 
 
     void setSelectable() {
         for (int i = 0; i < tileButtons.size(); i++) {
-            final Optional<Tile> updatedTileOpt = state.getPuzzle().getTileFromPos(i);
-
-            if (updatedTileOpt.isPresent()) {
-                final Tile updatedTile = updatedTileOpt.get();
-                tileButtons.get(i).setSelectable(updatedTile, tileImages.get(updatedTile.getCurrentPos()));
-            }
+            final Tile updatedTile = state.getPuzzle().getTileFromPos(i);
+            final Image updatedImage = tileImages.get(updatedTile.getCurrentPos());
+            tileButtons.get(i).setSelectable(updatedTile, updatedImage);
         }
     }
 
@@ -82,24 +75,18 @@ public class PuzzlePanel extends JPanel {
 
     void enablePuzzle() {
         for (int i = 0; i < tileButtons.size(); i++) {
-            final Optional<Tile> updatedTileOpt = state.getPuzzle().getTileFromPos(i);
-
-            if (updatedTileOpt.isPresent()) {
-                final Tile updatedTile = updatedTileOpt.get();
-                tileButtons.get(i).setEnabled(true, updatedTile, tileImages.get(updatedTile.getCurrentPos()));
-            }
+            final Tile updatedTile = state.getPuzzle().getTileFromPos(i);
+            final Image updatedImage = tileImages.get(updatedTile.getCurrentPos());
+            tileButtons.get(i).setEnabled(true, updatedTile, updatedImage);
         }
     }
 
 
     void disablePuzzle() {
         for (int i = 0; i < tileButtons.size(); i++) {
-            final Optional<Tile> updatedTileOpt = state.getPuzzle().getTileFromPos(i);
-
-            if (updatedTileOpt.isPresent()) {
-                final Tile updatedTile = updatedTileOpt.get();
-                tileButtons.get(i).setEnabled(false, updatedTile, tileImages.get(updatedTile.getCurrentPos()));
-            }
+            final Tile updatedTile = state.getPuzzle().getTileFromPos(i);
+            final Image updatedImage = tileImages.get(updatedTile.getCurrentPos());
+            tileButtons.get(i).setEnabled(false, updatedTile, updatedImage);
         }
     }
 

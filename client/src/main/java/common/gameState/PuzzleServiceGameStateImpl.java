@@ -65,35 +65,28 @@ final class PuzzleServiceGameStateImpl extends GenericGameState implements Puzzl
 
     @Override
     public void setTileAsSelected(final Tile tile, final Player player) {
-        final Optional<Tile> localTile = getPuzzle().getTileFromPos(tile.getOriginalPos());
-        localTile.ifPresent(x -> {
-            if (x.equals(tile)
-                    && getPlayers().contains(player)
-                    && x.getSelector().equals(Player.empty())) {
-                x.setSelector(player);
-            }
-        });
-    }
+        final Tile localTile = getPuzzle().getTileFromPos(tile.getOriginalPos());
 
+        if (localTile.equals(tile) && getPlayers().contains(player)
+                && localTile.getSelector().equals(Player.empty())) {
+            localTile.setSelector(player);
+        }
+    }
 
 
     @Override
     public void swapTiles(final Tile startTile, final Tile destTile, final Player player) {
-        final Optional<Tile> locStartTile = getPuzzle().getTileFromPos(startTile.getOriginalPos());
-        final Optional<Tile> locDestTile = getPuzzle().getTileFromPos(destTile.getOriginalPos());
+        final Tile locStartTile = getPuzzle().getTileFromPos(startTile.getOriginalPos());
+        final Tile locDestTile = getPuzzle().getTileFromPos(destTile.getOriginalPos());
 
-        locStartTile.ifPresent(x -> {
-            locDestTile.ifPresent(y -> {
-                if (x.equals(startTile) && y.equals(destTile)
-                        && getPlayers().contains(player)
-                        && x.getSelector().equals(player)) {
-                    x.setCurrentPos(destTile.getCurrentPos());
-                    x.setSelector(Player.empty());
-                    y.setCurrentPos(startTile.getCurrentPos());
-                    y.setSelector(Player.empty());
-                }
-            });
-        });
+        if (locStartTile.equals(startTile) && locDestTile.equals(destTile)
+                && getPlayers().contains(player)
+                && locStartTile.getSelector().equals(player)) {
+            locStartTile.setCurrentPos(destTile.getCurrentPos());
+            locStartTile.setSelector(Player.empty());
+            locDestTile.setCurrentPos(startTile.getCurrentPos());
+            locDestTile.setSelector(Player.empty());
+        }
     }
 
     @Override

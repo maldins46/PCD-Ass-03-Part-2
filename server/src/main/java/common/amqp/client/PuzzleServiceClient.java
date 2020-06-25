@@ -1,13 +1,23 @@
 package common.amqp.client;
 
+import common.amqp.callback.PuzzleServiceCallback;
 import common.amqp.messages.PuzzleServiceMsg;
 import common.model.Player;
 
 /**
- * It describes the AMQP client used by the puzzle service, to communicate with
- * the broker service.
+ * It describes the AMQP client used by the puzzle service. Gives the
+ * possibility to communicate with players, directly or in a multicast
+ * fashion.
  */
 public interface PuzzleServiceClient extends AmqpClient {
+
+    /**
+     * Add a callback to the client.
+     * @param callback The callback that have to be added.
+     */
+    void addCallback(PuzzleServiceCallback callback);
+
+
     /**
      * Sends a message to a specific player.
      * @param player The player to which send the message.

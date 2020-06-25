@@ -1,15 +1,11 @@
 package common.amqp.config;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
- * It contains all known destinations used by the broker for this project,
- * and gives utility methods about them.
+ * It contains all known destinations used by the broker for this project.
  */
 public final class Destinations {
     /**
-     * The destination used to refer to the service.
+     * The destination used to refer to the puzzle service.
      */
     public static final String PUZZLE_SERVICE_QUEUE_NAME = "server-queue";
 

@@ -10,7 +10,7 @@ import common.gameState.PlayerGameState;
 import javax.swing.*;
 import java.awt.*;
 
-public final class GameGuiImpl implements GameGui {
+final class PlayerGuiImpl implements PlayerGui {
 
     private final JFrame mainFrame;
 
@@ -35,7 +35,7 @@ public final class GameGuiImpl implements GameGui {
      * @param state The clientGameState that update the puzzle data.
      * @param client The AMQP client that do the network work.
      */
-    GameGuiImpl(final PlayerGameState state, final PlayerClient client) {
+    PlayerGuiImpl(final PlayerGameState state, final PlayerClient client) {
 
         this.mainFrame = new JFrame();
         this.mainFrame.setTitle("MultiPlayer Puzzle - Client");

@@ -1,16 +1,8 @@
-package common.amqp;
+package common.amqp.callback;
 
 import common.amqp.messages.Message;
 
-/**
- * An action to be executed when a message of a specific type,
- * from a specific destination, is received.
- */
-public interface CtxCallback {
-    /**
-     * The type of the received message.
-     */
-    Class<? extends Message> getMessageType();
+public interface Callback {
 
     /**
      * The action to be executed when message arrives.
@@ -18,4 +10,10 @@ public interface CtxCallback {
      *                to the specific message type without problems.
      */
     void execute(Message message);
+
+
+    /**
+     * The type of the received message.
+     */
+    Class<? extends Message> getMessageType();
 }

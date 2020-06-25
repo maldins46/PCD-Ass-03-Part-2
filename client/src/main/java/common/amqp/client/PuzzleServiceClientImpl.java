@@ -1,15 +1,16 @@
 package common.amqp.client;
 
+import common.amqp.callback.PuzzleServiceCallback;
 import common.amqp.config.Destinations;
 import common.amqp.config.MessageTypes;
-import common.amqp.messages.Message;
 import common.amqp.messages.PuzzleServiceMsg;
 import common.model.Player;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
+/**
+ * Implementation of the AMQP client used by the puzzle service.
+ */
 final class PuzzleServiceClientImpl extends GenericAmqpClient implements PuzzleServiceClient {
 
     /**
@@ -19,6 +20,7 @@ final class PuzzleServiceClientImpl extends GenericAmqpClient implements PuzzleS
     PuzzleServiceClientImpl(final String host) {
         super(host);
     }
+
 
     @Override
     public void connect() {
@@ -31,6 +33,12 @@ final class PuzzleServiceClientImpl extends GenericAmqpClient implements PuzzleS
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    @Override
+    public void addCallback(final PuzzleServiceCallback callback) {
+        super.addCallback(callback);
     }
 
 
@@ -52,7 +60,7 @@ final class PuzzleServiceClientImpl extends GenericAmqpClient implements PuzzleS
 
 
     @Override
-    public void sendMessageToMatch(PuzzleServiceMsg message) {
+    public void sendMessageToMatch(final PuzzleServiceMsg message) {
         try {
             if (!isConnected()) {
                 throw new InvalidClientStateException();

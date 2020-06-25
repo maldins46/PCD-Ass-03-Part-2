@@ -2,7 +2,7 @@ package common.amqp.client;
 
 import com.google.gson.Gson;
 import com.rabbitmq.client.*;
-import common.amqp.CtxCallback;
+import common.amqp.callback.Callback;
 import common.amqp.config.Hosts;
 import common.amqp.config.MessageTypes;
 import common.amqp.messages.Message;
@@ -17,13 +17,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
+/**
+ * Implementation of common features of the AMQP clients used
+ * in the project. All client types shares some core behavior.
+ */
 public abstract class GenericAmqpClient implements AmqpClient {
 
     /**
-     * Used to print logs into the shell.
+     * The logger gives some facility for debug purposes.
      */
-    private static final Logger logger = LoggerFactory
-            .getLogger(GenericAmqpClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GenericAmqpClient.class);
 
     /**
      * The broker host. "Localhost" is the standard used for tests.
@@ -37,11 +40,10 @@ public abstract class GenericAmqpClient implements AmqpClient {
     private String personalQueue;
 
     /**
-     * Standard callbacks, i.e. of which anyone is related to the server
-     * queue or the match topic, and that is related to a specific message
-     * type.
+     * Callbacks associated to each message received. Depending on the
+     * message type, the callback executed is different.
      */
-    private final Set<CtxCallback> ctxCallbacks = new HashSet<>();
+    private final Set<Callback> callbacks = new HashSet<>();
 
     /**
      * The connection AMQP instance, used to open channels.
@@ -55,19 +57,18 @@ public abstract class GenericAmqpClient implements AmqpClient {
 
     /**
      * True if the client is correctly connected to the AMQP server
-     * (the broker).
+     * (the broker), false otherwise.
      */
     private boolean connected;
 
     /**
-     * True if the client is correctly consuming his queue.
+     * True if the client is correctly consuming his queue, false otherwise.
      */
     private boolean listening;
 
 
     /**
-     * The standard constructor, that configures host.
-     *
+     * The standard constructor sets the used host.
      * @param host The broker host.
      */
     GenericAmqpClient(final String host) {
@@ -77,6 +78,10 @@ public abstract class GenericAmqpClient implements AmqpClient {
     }
 
 
+    /**
+     * Opens connection of the client with the broker. If overrode, super must
+     * be called immediately.
+     */
     @Override
     public void connect() {
         try {
@@ -90,7 +95,7 @@ public abstract class GenericAmqpClient implements AmqpClient {
             connection = factory.newConnection();
             channel = connection.createChannel();
             connected = true;
-            logger.info("Connected to the broker, with host {}", host);
+            LOGGER.info("Connected to the broker, with host {}", host);
 
         } catch (InvalidClientStateException | IOException | TimeoutException e) {
             e.printStackTrace();
@@ -99,7 +104,7 @@ public abstract class GenericAmqpClient implements AmqpClient {
 
 
     @Override
-    public void disconnect() {
+    public final void disconnect() {
         try {
             if (!connected) {
                 throw new InvalidClientStateException();
@@ -115,12 +120,12 @@ public abstract class GenericAmqpClient implements AmqpClient {
 
 
     @Override
-    public void addCallback(final CtxCallback callback) {
+    public final void addCallback(final Callback callback) {
         try {
             if (!connected || listening) {
                 throw new InvalidClientStateException();
             }
-            ctxCallbacks.add(callback);
+            callbacks.add(callback);
 
         } catch (InvalidClientStateException e) {
             e.printStackTrace();
@@ -129,7 +134,7 @@ public abstract class GenericAmqpClient implements AmqpClient {
 
 
     @Override
-    public void listen() {
+    public final void listen() {
         try {
             if (!connected || listening) {
                 throw new InvalidClientStateException();
@@ -139,31 +144,11 @@ public abstract class GenericAmqpClient implements AmqpClient {
                     generateAmqpCallback(), consumerTag -> { });
 
             listening = true;
-            logger.info("Listening in personal queue");
+            LOGGER.info("Listening in personal queue");
 
         } catch (InvalidClientStateException | IOException e) {
             e.printStackTrace();
         }
-
-
-    }
-
-
-    /**
-     * Getter used to access to the logger instance.
-     * @return The logger.
-     */
-    protected static Logger getLogger() {
-        return logger;
-    }
-
-
-    /**
-     * Setter for the client personal queue.
-     * @param queue The new queue.
-     */
-    protected final void setPersonalQueue(final String queue) {
-        this.personalQueue = queue;
     }
 
 
@@ -171,6 +156,7 @@ public abstract class GenericAmqpClient implements AmqpClient {
     public final String getPersonalQueueName() {
         return personalQueue;
     }
+
 
     @Override
     public final boolean isConnected() {
@@ -185,7 +171,16 @@ public abstract class GenericAmqpClient implements AmqpClient {
 
 
     /**
-     * Getter used to access the Channel instance.
+     * Getter used to access to the logger instance from subclasses.
+     * @return The logger.
+     */
+    protected static Logger getLogger() {
+        return LOGGER;
+    }
+
+
+    /**
+     * Getter used to access the Channel instance from subclasses.
      * @return The channel instance.
      */
     protected final Channel getChannel() {
@@ -194,37 +189,43 @@ public abstract class GenericAmqpClient implements AmqpClient {
 
 
     /**
-     * Generates a callback as specified by the AmqpClient library, composing it
-     * with the given stdCallbacks.
-     *
-     * @return The generated callback.
+     * Setter for the client personal queue from subclasses.
+     * @param queue The new queue.
+     */
+    protected final void setPersonalQueue(final String queue) {
+        this.personalQueue = queue;
+    }
+
+
+    /**
+     * Generates an AMQP callback as specified by the AmqpClient library,
+     * composing it with the given message-type-relative callbacks.
+     * @return The generated AMQP callback.
      */
     private DeliverCallback generateAmqpCallback() {
         return (consumerTag, rawMsg) -> {
             final Gson gson = new Gson();
 
-            final String stringifiedMsg = new String(rawMsg.getBody(), StandardCharsets.UTF_8);
+            final String stringMsg = new String(rawMsg.getBody(), StandardCharsets.UTF_8);
             final String typeHeader = rawMsg.getProperties().getHeaders().get("type").toString();
 
             final Class<? extends Message> messageClass = MessageTypes.getClassFromType(typeHeader);
-            final Message message = gson.fromJson(stringifiedMsg, messageClass);
+            final Message message = gson.fromJson(stringMsg, messageClass);
 
-            logger.info("Received " + MessageTypes.getTypeFromMessage(message) + " into personal queue");
+            LOGGER.info("Received {} into personal queue", MessageTypes.getTypeFromMessage(message));
 
-            ctxCallbacks.stream()
-                    .filter(ctxCallback -> ctxCallback.getMessageType().equals(messageClass))
-                    .forEach(ctxCallback -> ctxCallback.execute(message));
+            callbacks.stream()
+                    .filter(msgTypeCallback -> msgTypeCallback.getMessageType().equals(messageClass))
+                    .forEach(msgTypeCallback -> msgTypeCallback.execute(message));
         };
     }
 
 
     /**
-     * Sends a message in a topic, that is something that can be subscribed
-     * by at least one clients. The method abstracts the RabbitMQ
+     * Sends a message in a topic. The method abstracts the RabbitMQ
      * exchange-queue mechanism. Given a message, it creates a custom header
-     * that indicates the message type; Then it creates a dedicated fanout
-     * exchange, if not present. Then, it sends the message in it.
-     *
+     * that indicates the message type; then, it creates a dedicated fanout
+     * exchange, if not present. Finally, it sends the message in it.
      * @param topicName The name of topic.
      * @param message   The message to be sent, as an instance of the message
      *                  interface.
@@ -248,8 +249,7 @@ public abstract class GenericAmqpClient implements AmqpClient {
      * mechanism. Given a message, it creates a custom header that indicates
      * the message type; declares the queue if not present, and sends the
      * message to the standard exchange (with the queue as the routing key).
-     *
-     * @param queueName The name of the topic.
+     * @param queueName The name of the queue.
      * @param message   The message to be sent, as an instance of the message
      *                  interface.
      */
@@ -268,7 +268,6 @@ public abstract class GenericAmqpClient implements AmqpClient {
     /**
      * It creates a custom header for the AMQP message, including the
      * message type, inferring it from the message.
-     *
      * @param message The message, as a Message instance.
      * @return The custom properties of the message.
      */
@@ -285,7 +284,6 @@ public abstract class GenericAmqpClient implements AmqpClient {
     /**
      * It transforms the message in an array of of bytes, to be send
      * to the broker.
-     *
      * @param message The message, as a Message instance.
      * @return The message, as an array of bytes.
      */

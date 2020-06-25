@@ -3,19 +3,24 @@ package callbacks;
 import common.amqp.client.PlayerClient;
 import common.amqp.messages.GameStateMsg;
 import common.amqp.messages.Message;
+import common.amqp.messages.PuzzleServiceMsg;
 import common.gameState.PlayerGameState;
-import gui.GameGui;
+import gui.PlayerGui;
 
-final class GameStateCallback extends GenericClientCallback {
+/**
+ * A callback that reacts to GameState messages. When this message is received,
+ * the client has to update its data structure, and update the puzzle displayed
+ * inside the GUI accordingly.
+ */
+final class GameStateCallback extends GenericPlayerCallback {
 
-    GameStateCallback(final PlayerClient client,
-            final PlayerGameState gameState,
-                      final GameGui gui) {
+    GameStateCallback(final PlayerClient client, final PlayerGameState gameState, final PlayerGui gui) {
         super(client, gameState, gui);
     }
 
+
     @Override
-    public Class<? extends Message> getMessageType() {
+    public Class<? extends PuzzleServiceMsg> getMessageType() {
         return GameStateMsg.class;
     }
 

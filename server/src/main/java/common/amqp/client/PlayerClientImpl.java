@@ -1,5 +1,6 @@
 package common.amqp.client;
 
+import common.amqp.callback.PlayerCallback;
 import common.amqp.config.Destinations;
 import common.amqp.config.MessageTypes;
 import common.amqp.messages.PlayerMsg;
@@ -11,6 +12,7 @@ import java.io.IOException;
  * Implementation of the player AMQP client.
  */
 final class PlayerClientImpl extends GenericAmqpClient implements PlayerClient {
+
     /**
      * The standard constructor. It configures the host.
      * @param host The broker host.
@@ -32,6 +34,12 @@ final class PlayerClientImpl extends GenericAmqpClient implements PlayerClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    @Override
+    public void addCallback(final PlayerCallback callback) {
+        super.addCallback(callback);
     }
 
 

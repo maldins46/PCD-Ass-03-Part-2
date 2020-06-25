@@ -12,8 +12,6 @@ import common.model.Tile;
 final class PlayerGameStateImpl extends GenericGameState implements PlayerGameState {
 
     private Player currentPlayer;
-    private boolean gameJoined;
-
 
     /**
      * Constructor for the class.
@@ -28,15 +26,13 @@ final class PlayerGameStateImpl extends GenericGameState implements PlayerGameSt
     public void updateData(final GameStateMsg updatedData) {
         setPuzzle(updatedData.getPuzzle());
         setPlayers(updatedData.getPlayers());
-
-        this.gameJoined = getPlayers().contains(currentPlayer);
     }
 
 
 
     @Override
     public boolean isGameJoined() {
-        return gameJoined;
+        return getPlayers().contains(currentPlayer);
     }
 
 

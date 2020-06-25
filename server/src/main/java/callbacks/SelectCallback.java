@@ -2,6 +2,7 @@ package callbacks;
 
 import common.amqp.client.PuzzleServiceClient;
 import common.amqp.messages.Message;
+import common.amqp.messages.PlayerMsg;
 import common.amqp.messages.SelectMsg;
 import common.gameState.PuzzleServiceGameState;
 import common.model.Player;
@@ -10,7 +11,7 @@ import common.model.Tile;
 /**
  * The callback used when a new player notifies the will to select a tile.
  */
-final class SelectCallback extends GenericServerCallback {
+final class SelectCallback extends GenericPuzzleServiceCallback {
 
     /**
      * Standard callback, with superclass initialization.
@@ -22,7 +23,7 @@ final class SelectCallback extends GenericServerCallback {
     }
 
     @Override
-    public Class<? extends Message> getMessageType() {
+    public Class<? extends PlayerMsg> getMessageType() {
         return SelectMsg.class;
     }
 

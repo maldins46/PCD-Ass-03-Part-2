@@ -1,4 +1,4 @@
-import callbacks.Callbacks;
+import callbacks.PuzzleServiceCallbacks;
 import common.amqp.client.AmqpClients;
 import common.amqp.client.PuzzleServiceClient;
 import common.amqp.config.Hosts;
@@ -23,10 +23,10 @@ public class Main {
         client = AmqpClients.puzzleService(host);
         client.connect();
 
-        client.addCallback(Callbacks.newPlayerMsg(client, state));
-        client.addCallback(Callbacks.selectMsg(client, state));
-        client.addCallback(Callbacks.swapRequestMsg(client, state));
-        client.addCallback(Callbacks.rematchMsg(client, state));
+        client.addCallback(PuzzleServiceCallbacks.newPlayerMsg(client, state));
+        client.addCallback(PuzzleServiceCallbacks.selectMsg(client, state));
+        client.addCallback(PuzzleServiceCallbacks.swapRequestMsg(client, state));
+        client.addCallback(PuzzleServiceCallbacks.rematchMsg(client, state));
 
         client.listen();
         logger.info("✓ Server ready, waiting for messages");

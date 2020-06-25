@@ -16,7 +16,7 @@ import java.awt.event.ActionListener;
 /**
  * Class that enclose concept of Tile with the functionalities of JButton.
  */
-public final class TileButton extends JButton {
+final class TileButton extends JButton {
 
     /**
      * Actually tile in this tile button.
@@ -52,7 +52,7 @@ public final class TileButton extends JButton {
      * @param state The clientGameState used for updates.
      * @param client The GameClient used for connecting.
      */
-    public TileButton(final Tile tile, final Image originalImage,
+    TileButton(final Tile tile, final Image originalImage,
                       final PlayerGameState state,
                       final PlayerClient client,
                       final PuzzlePanel puzzlePanel) {

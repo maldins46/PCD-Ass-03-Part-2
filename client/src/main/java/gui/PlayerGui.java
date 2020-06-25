@@ -3,7 +3,7 @@ package gui;
 import common.amqp.client.PlayerClient;
 import common.gameState.PlayerGameState;
 
-public interface GameGui {
+public interface PlayerGui {
 
     /**
      * Start the visual graphic.
@@ -27,7 +27,7 @@ public interface GameGui {
      * @param gameState The GameState of the game.
      * @return The implementation of this interface.
      */
-    static GameGui of(PlayerClient client, PlayerGameState gameState) {
-        return new GameGuiImpl(gameState, client);
+    static PlayerGui of(PlayerClient client, PlayerGameState gameState) {
+        return new PlayerGuiImpl(gameState, client);
     }
 }

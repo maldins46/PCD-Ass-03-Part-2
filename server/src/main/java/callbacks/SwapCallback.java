@@ -2,6 +2,7 @@ package callbacks;
 
 import common.amqp.client.PuzzleServiceClient;
 import common.amqp.messages.Message;
+import common.amqp.messages.PlayerMsg;
 import common.amqp.messages.SwapMsg;
 import common.gameState.PuzzleServiceGameState;
 import common.model.Player;
@@ -10,7 +11,7 @@ import common.model.Tile;
 /**
  * The callback used when a new player notifies the will to swap two tiles.
  */
-final class SwapCallback extends GenericServerCallback {
+final class SwapCallback extends GenericPuzzleServiceCallback {
 
     /**
      * Standard callback, with superclass initialization.
@@ -22,7 +23,7 @@ final class SwapCallback extends GenericServerCallback {
     }
 
     @Override
-    public Class<? extends Message> getMessageType() {
+    public Class<? extends PlayerMsg> getMessageType() {
         return SwapMsg.class;
     }
 

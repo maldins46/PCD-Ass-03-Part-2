@@ -3,6 +3,7 @@ package callbacks;
 
 import common.amqp.client.PuzzleServiceClient;
 import common.amqp.messages.Message;
+import common.amqp.messages.PlayerMsg;
 import common.amqp.messages.RematchMsg;
 import common.gameState.PuzzleServiceGameState;
 
@@ -10,7 +11,7 @@ import common.gameState.PuzzleServiceGameState;
  * The callback used when a new player notifies the will to restart the game,
  * mixing the puzzle.
  */
-final class RematchCallback extends GenericServerCallback {
+final class RematchCallback extends GenericPuzzleServiceCallback {
 
     /**
      * Standard callback, with superclass initialization.
@@ -23,7 +24,7 @@ final class RematchCallback extends GenericServerCallback {
 
 
     @Override
-    public Class<? extends Message> getMessageType() {
+    public Class<? extends PlayerMsg> getMessageType() {
         return RematchMsg.class;
     }
 
