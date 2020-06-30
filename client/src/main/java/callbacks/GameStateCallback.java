@@ -2,8 +2,6 @@ package callbacks;
 
 import common.amqp.client.PlayerClient;
 import common.amqp.messages.GameStateMsg;
-import common.amqp.messages.Message;
-import common.amqp.messages.PlayerMsg;
 import common.amqp.messages.PuzzleServiceMsg;
 import common.gameState.PlayerGameState;
 import gui.PlayerGui;

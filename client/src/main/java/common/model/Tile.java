@@ -113,7 +113,7 @@ public final class Tile {
 
 
     /**
-     * Factorf for a tile, initialized at a given position.
+     * Factory for a tile, initialized at a given position.
      * @param originalPos The original position of the tile.
      * @return The freshly created tile.
      */
